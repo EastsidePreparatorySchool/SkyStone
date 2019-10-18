@@ -48,6 +48,8 @@ public class Simple8103Teleop extends LinearOpMode {
         boolean isClawOpen;
         boolean extendUp;
         boolean extendDown;
+        boolean pivotUp;
+        boolean pivotDown;
 
 
         /* Initialize the hardware variables.
@@ -99,17 +101,27 @@ public class Simple8103Teleop extends LinearOpMode {
             extendDown = gamepad2.dpad_down;
             isClawOpen = gamepad2.x;
             boolean openclaw = gamepad2.b;
-            if(extendUp){
+            if (extendUp) {
                 robot.armExtender.setPower(-0.5);
-            } else if (extendDown){
+            } else if (extendDown) {
                 robot.armExtender.setPower(0.5);
-            }else {
+            } else {
                 robot.armExtender.setPower(0.0);
             }
 
+            pivotUp = gamepad2.dpad_right;
+            pivotDown = gamepad2.dpad_left;
+            isClawOpen = gamepad2.x;
+            if (pivotUp) {
+                robot.armPivot.setPower(-1);
+            } else if (pivotDown) {
+                robot.armPivot.setPower(1);
+            } else {
+                robot.armPivot.setPower(0.0);
+            }
 
             // Send telemetry message to signify robot running
-           /* telemetry.addLine().addData("some variable", "%.2f", 0); */
+            /* telemetry.addLine().addData("some variable", "%.2f", 0); */
 
             telemetry.addLine();
             telemetry.update();

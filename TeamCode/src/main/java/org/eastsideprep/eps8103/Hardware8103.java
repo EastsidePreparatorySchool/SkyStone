@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /**
- * Hardware definitions for 9884
+ * Hardware definitions for 8103
  */
 public class Hardware8103 {
     /* Public OpMode members. */
