@@ -46,10 +46,9 @@ public class Simple8103Teleop extends LinearOpMode {
         double left;
         double right;
         boolean isClawOpen;
-        boolean extendUp;
-        boolean extendDown;
-        boolean pivotUp;
-        boolean pivotDown;
+        float extendControl;
+        float pivotControl;
+
 
 
         /* Initialize the hardware variables.
@@ -97,39 +96,29 @@ public class Simple8103Teleop extends LinearOpMode {
             }
 
 
-            extendUp = gamepad2.dpad_up;
-            extendDown = gamepad2.dpad_down;
+            extendControl = gamepad2.left_stick_y;
+
             isClawOpen = gamepad2.x;
             boolean openclaw = gamepad2.b;
-            if (extendUp) {
-                robot.armExtender.setPower(-0.5);
-            } else if (extendDown) {
-                robot.armExtender.setPower(0.5);
-            } else {
-                robot.armExtender.setPower(0.0);
-            }
 
-            pivotUp = gamepad2.dpad_right;
-            pivotDown = gamepad2.dpad_left;
-            isClawOpen = gamepad2.x;
-            if (pivotUp) {
-                robot.armPivot.setPower(-1);
-            } else if (pivotDown) {
-                robot.armPivot.setPower(1);
-            } else {
-                robot.armPivot.setPower(0.0);
-            }
-
-            // Send telemetry message to signify robot running
-            /* telemetry.addLine().addData("some variable", "%.2f", 0); */
-
-            telemetry.addLine();
-            telemetry.update();
-
-            // Pause for 40 mS each cycle = update 25 times a second.
-            sleep(40);
-
+            robot.armExtender.setPower(-extendControl);
         }
+
+        pivotControl = gamepad2.right_stick_y;
+
+
+        robot.armPivot.setPower(pivotControl);
+
+
+        // Send telemetry message to signify robot running
+        /* telemetry.addLine().addData("some variable", "%.2f", 0); */
+
+        telemetry.addLine();
+        telemetry.update();
+
+        // Pause for 40 mS each cycle = update 25 times a second.
+        sleep(40);
+
     }
 }
 

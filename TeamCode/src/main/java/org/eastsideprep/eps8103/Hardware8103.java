@@ -2,6 +2,7 @@ package org.eastsideprep.eps8103;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -16,6 +17,7 @@ public class Hardware8103 {
     public DcMotor rightBackMotor = null;
     public DcMotor armPivot = null;
     public DcMotor armExtender = null;
+    public Servo wrist = null;
     public DcMotor [] allMotors;
     double [] rotationArray;
 
