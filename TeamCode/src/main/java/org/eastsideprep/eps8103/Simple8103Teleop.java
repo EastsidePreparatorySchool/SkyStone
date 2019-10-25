@@ -98,15 +98,20 @@ public class Simple8103Teleop extends LinearOpMode {
 
             extendControl = gamepad2.left_stick_y;
 
-            isClawOpen = gamepad2.x;
-            boolean openclaw = gamepad2.b;
-
             robot.armExtender.setPower(-extendControl);
+
+            
 
             pivotControl = gamepad2.right_stick_y;
 
-
             robot.armPivot.setPower(pivotControl);
+
+
+
+
+            isClawOpen = gamepad2.x;
+            boolean openclaw = gamepad2.b;
+
         }
 
 

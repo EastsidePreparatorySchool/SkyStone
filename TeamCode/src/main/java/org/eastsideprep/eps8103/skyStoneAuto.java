@@ -29,11 +29,12 @@ public class skyStoneAuto extends LinearOpMode {
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
 
-    public void driveForward() {
+    public void driveForward(int l) {
         robot.leftBackMotor.setPower(0.25);
         robot.leftFrontMotor.setPower(0.25);
         robot.rightFrontMotor.setPower(0.25);
         robot.rightBackMotor.setPower(0.25);
+        sleep(l*48)
     }
 
     public void turnright() {
@@ -57,11 +58,12 @@ public class skyStoneAuto extends LinearOpMode {
         robot.rightFrontMotor.setPower(0.25);
     }
 
-    public void backwards() {
+    public void backwards(int l) {
         robot.leftBackMotor.setPower(-0.25);
         robot.leftFrontMotor.setPower(-0.25);
         robot.rightFrontMotor.setPower(-0.25);
         robot.rightBackMotor.setPower(-0.25);
+        sleep(l*58);
     }
 
     public void motorStop() {
@@ -85,11 +87,12 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftBackMotor.setPower(0.05);
     }
 
-    public void straferightslowly(){
+    public void straferightslowly(int l){
         robot.rightFrontMotor.setPower(-0.05);
         robot.rightBackMotor.setPower(0.05);
         robot.leftFrontMotor.setPower(0.05);
         robot.leftBackMotor.setPower(-0.05);
+        sleep(l*12*2000);
     }
 
     public void strafeleft(){
@@ -105,6 +108,23 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftFrontMotor.setPower(0.5);
         robot.leftBackMotor.setPower(-0.5);
     }
+
+    public void lowerarm(int a){
+        robot.armPivot.setPower(1);
+        sleep(1000*t);
+    }
+
+    public void raisearm(int a){
+        robot.armPivot.setPower(-1);
+        sleep(1000*t);
+    }
+
+    public void extendarm(int l){
+        robot.armExtender.setPower(-1);
+
+    }
+
+
 
     @Override
     public void runOpMode() {
@@ -271,18 +291,25 @@ public class skyStoneAuto extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            driveForward();
-            sleep(1200);
-            straferightslowly();
-            sleep(10000);
+
+            //make sure that all 
+            driveForward(25);
+            //sleep(1200);
+            straferightslowly(5);
+            //sleep(10000);
             strafeleft();
             sleep(2000);
-            driveForward();
+            driveForward(35);
             sleep(1700);
             strafeleft();
             sleep(700);
-            backwards();
+            backwards(60);
             sleep(3500 );
+
+            robot.armPivot.setPower(1);
+            sleep(1000);
+            robot.armExtender.setPower(-1);
+            sleep(1000);
 
             // update all visuals
 
