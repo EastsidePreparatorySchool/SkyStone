@@ -104,7 +104,7 @@ public class Simple8103Teleop extends LinearOpMode {
 
             pivotControl = gamepad2.right_stick_y;
 
-            robot.armPivot.setPower(pivotControl);
+            robot.armPivot.setPower(Math.min(pivotControl, 0.6));
 
 
 
