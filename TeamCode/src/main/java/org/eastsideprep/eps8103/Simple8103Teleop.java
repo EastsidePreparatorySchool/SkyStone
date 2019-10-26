@@ -103,9 +103,10 @@ public class Simple8103Teleop extends LinearOpMode {
 
             pivotControl = gamepad2.right_stick_y;
 
-            robot.armPivot.setPower(Math.min(pivotControl, 0.6));
-            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
+            robot.armPivot.setPower(Math.min(pivotControl, 0.3));
 
+            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
+            telemetry.update();
 
             int whereswrist = 0;
             boolean wristpos = gamepad2.x;
@@ -125,9 +126,9 @@ public class Simple8103Teleop extends LinearOpMode {
             boolean openclaw = gamepad2.b;
             boolean closeclaw = gamepad2.a;
             if (openclaw) {
-                robot.updown.setPosition(-40);
-            }else if (closeclaw) {
-                robot.updown.setPosition(-10);
+                robot.closer.setPosition(180);
+            } else if (closeclaw) {
+                robot.closer.setPosition(180);
             }
 
         }
