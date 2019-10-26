@@ -183,9 +183,9 @@ public class skyStoneAuto extends LinearOpMode {
         float mmFTCFieldWidth = (46 * 46 - 2) * mmPerInch;   // size of FTC field (glass panels)
         float mmTargetHeight   = (6) * mmPerInch;
 
-         float bridgeZ = 6.42f * mmPerInch;
-         float bridgeY = 23 * mmPerInch;
-         float bridgeX = 5.18f * mmPerInch;
+        float bridgeZ = 6.42f * mmPerInch;
+        float bridgeY = 23 * mmPerInch;
+        float bridgeX = 5.18f * mmPerInch;
          float bridgeRotY = 59;                                 // Units are degrees
          float bridgeRotZ = 180;
          float stoneZ = 2.00f * mmPerInch;
@@ -193,72 +193,72 @@ public class skyStoneAuto extends LinearOpMode {
          float quadField  = 36 * mmPerInch;
 
          boolean targetVisible = false;
-        float phoneXRotate    = 0;
-        float phoneYRotate    = 0;
-        float phoneZRotate    = 0;
+         float phoneXRotate    = 0;
+         float phoneYRotate    = 0;
+         float phoneZRotate    = 0;
 
 
 
-        OpenGLMatrix redTargetLocationOnField = OpenGLMatrix
-                .translation(-mmFTCFieldWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XZX, AngleUnit.DEGREES, 90, 90, 0));
+         OpenGLMatrix redTargetLocationOnField = OpenGLMatrix
+         .translation(-mmFTCFieldWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XZX, AngleUnit.DEGREES, 90, 90, 0));
 
-        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix.translation(mmBotWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.YZY, AngleUnit.DEGREES, -90, 0, 0));
-        RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
+         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix.translation(mmBotWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.YZY, AngleUnit.DEGREES, -90, 0, 0));
+         RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
 
 
-        stoneTarget.setLocation(OpenGLMatrix
-                .translation(0, 0, stoneZ)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
+         stoneTarget.setLocation(OpenGLMatrix
+            .translation(0, 0, stoneZ)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
 
         //Set the position of the bridge support targets with relation to origin (center of field)
-        blueFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, bridgeRotZ)));
+         blueFrontBridge.setLocation(OpenGLMatrix
+            .translation(-bridgeX, bridgeY, bridgeZ)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, bridgeRotZ)));
 
-        blueRearBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, bridgeRotZ)));
+         blueRearBridge.setLocation(OpenGLMatrix
+            .translation(-bridgeX, bridgeY, bridgeZ)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, bridgeRotZ)));
 
-        redFrontBridge.setLocation(OpenGLMatrix
-                .translation(-bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, 0)));
+         redFrontBridge.setLocation(OpenGLMatrix
+            .translation(-bridgeX, -bridgeY, bridgeZ)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, 0)));
 
-        redRearBridge.setLocation(OpenGLMatrix
-                .translation(bridgeX, -bridgeY, bridgeZ)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, 0)));
+         redRearBridge.setLocation(OpenGLMatrix
+            .translation(bridgeX, -bridgeY, bridgeZ)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, 0)));
 
         //Set the position of the perimeter targets with relation to origin (center of field)
-        red1.setLocation(OpenGLMatrix
-                .translation(quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
+         red1.setLocation(OpenGLMatrix
+            .translation(quadField, -halfField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
 
-        red2.setLocation(OpenGLMatrix
-                .translation(-quadField, -halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
+         red2.setLocation(OpenGLMatrix
+            .translation(-quadField, -halfField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
 
-        front1.setLocation(OpenGLMatrix
-                .translation(-halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0 , 90)));
+         front1.setLocation(OpenGLMatrix
+            .translation(-halfField, -quadField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0 , 90)));
 
-        front2.setLocation(OpenGLMatrix
-                .translation(-halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 90)));
+         front2.setLocation(OpenGLMatrix
+            .translation(-halfField, quadField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 90)));
 
-        blue1.setLocation(OpenGLMatrix
-                .translation(-quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
+         blue1.setLocation(OpenGLMatrix
+            .translation(-quadField, halfField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
 
-        blue2.setLocation(OpenGLMatrix
-                .translation(quadField, halfField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
+         blue2.setLocation(OpenGLMatrix
+            .translation(quadField, halfField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
 
-        rear1.setLocation(OpenGLMatrix
-                .translation(halfField, quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0 , -90)));
+         rear1.setLocation(OpenGLMatrix
+            .translation(halfField, quadField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0 , -90)));
 
-        rear2.setLocation(OpenGLMatrix
-                .translation(halfField, -quadField, mmTargetHeight)
-                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
+         rear2.setLocation(OpenGLMatrix
+            .translation(halfField, -quadField, mmTargetHeight)
+            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
 
 
         ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection); //listen for each type //change
@@ -322,6 +322,8 @@ public class skyStoneAuto extends LinearOpMode {
             extendarm(6);
             reelarm(1);
 
+            
+
             // update all visuals
 
             for (VuforiaTrackable trackable : allTrackables) {
@@ -338,7 +340,11 @@ public class skyStoneAuto extends LinearOpMode {
                     //if you see something
                   //  stopmotors(); //stop
                     //grab block
-                   // backwards();
+                    //robot.updown.setPosition(30);//pls grabber servos work
+                     //robot.closer.setPosition(90);
+                   // backwards(12);
+//turnleft(90);
+                //forwards(60); //go robot go
                 //}
 
 

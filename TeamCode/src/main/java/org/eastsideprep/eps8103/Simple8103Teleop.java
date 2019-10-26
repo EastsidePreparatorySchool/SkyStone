@@ -67,6 +67,13 @@ public class Simple8103Teleop extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            //make sure everything starts in the same position at the beginning of teleop every time
+            robot.closer.setPosition(180);
+            robot.wrist.setPosition(0);
+            robot.updown.setPosition(30);
+
+
             float x = gamepad1.left_stick_x;
             float y = -gamepad1.left_stick_y; // Negate to get +y forward.
             float rotation = -gamepad1.right_stick_x;
@@ -109,8 +116,10 @@ public class Simple8103Teleop extends LinearOpMode {
             telemetry.update();
 
             int whereswrist = 0;
-            boolean wristpos = gamepad2.x;
+            boolean wristpos = gamepad2.a;
             if (wristpos) {
+                robot.wrist.setPosition(whereswrist==0?180:0)
+
                 if (whereswrist == 0) {
                     robot.wrist.setPosition(180);
                     whereswrist = 1;
@@ -123,8 +132,8 @@ public class Simple8103Teleop extends LinearOpMode {
 
             }
 
-            boolean openclaw = gamepad2.b;
-            boolean closeclaw = gamepad2.a;
+            boolean openclaw = gamepad2.x;
+            boolean closeclaw = gamepad2.y;
             if (openclaw) {
                 robot.closer.setPosition(180);
             } else if (closeclaw) {
