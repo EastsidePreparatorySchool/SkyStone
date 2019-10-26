@@ -42,12 +42,18 @@ public class Simple8103Teleop extends LinearOpMode {
     Hardware8103 robot = new Hardware8103();
 
 
+    public void toggleWrist(int wristpos){        
+        robot.wrist.setPosition(wristpos==0?180:0);
+        wristpos = wristpos==0?1:0; //i like me my ternary bois
+    }
+
+
     @Override
     public void runOpMode() {
-        double left;
-        double right;
-        float extendControl;
-        float pivotControl;
+            double left;
+            double right;
+            float extendControl;
+            float pivotControl;
 
 
 
@@ -95,7 +101,7 @@ public class Simple8103Teleop extends LinearOpMode {
                 double scale = Math.sqrt(pow2);
                 for (int i = 0; i < robot.allMotors.length; i++) {
                     robot.allMotors[i].setPower(
-                            powers[i] / scale * biggestWithRotation * speedControl);
+                        powers[i] / scale * biggestWithRotation * speedControl);
                 }
             } else {
                 for (int i = 0; i < robot.allMotors.length; i++)
@@ -109,36 +115,34 @@ public class Simple8103Teleop extends LinearOpMode {
 
 
             pivotControl = gamepad2.right_stick_y;
+            robot.armPivot.setTargetPosition(100*pivotControl);//this needs extensive testing to figure out the coefficient
+            robot.armPivot.setPower(1);
 
-            robot.armPivot.setPower(Math.min(pivotControl, 0.3));
-
-            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
+            telemetry.addData("pivot motor encoder", robot.armPivot.getCurrentPosition());
             telemetry.update();
 
             int whereswrist = 0;
-            boolean wristpos = gamepad2.a;
-            if (wristpos) {
-                robot.wrist.setPosition(whereswrist==0?180:0)
+            // A toggles the wrist
+            if (gamepad2.dpad_left==1 || gamepad2.dpad_right==1) {
+                toggleWrist(whereswrist);
+            }
 
-                if (whereswrist == 0) {
-                    robot.wrist.setPosition(180);
-                    whereswrist = 1;
-                }
-                if (whereswrist == 1) {
-                    robot.wrist.setPosition(0);
-                    whereswrist = 0;
-                }
-
-
+            if (gamepad2.dpad_up==1){
+                robot.updown.setPosition(100);
+            }
+            if (gamepad2.dpad_down==1){
+                robot.updown.setPosition(0);
             }
 
             boolean openclaw = gamepad2.x;
             boolean closeclaw = gamepad2.y;
             if (openclaw) {
-                robot.closer.setPosition(180);
+                robot.closer.setPosition(100);
             } else if (closeclaw) {
-                robot.closer.setPosition(180);
+                robot.closer.setPosition(10);
             }
+
+
 
         }
 

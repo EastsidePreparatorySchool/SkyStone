@@ -297,6 +297,14 @@ public class skyStoneAuto extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            //take arm out and unfold grabber
+            raisearm(30);//30 deg
+            extendarm(4);//4 inch
+            robot.updown.setLocation(180);//starts out all folded up
+            robot.wrist.setLocation(0);//make sure its alligned
+            robot.closer.setLocation(60);
+
+
             //make sure that all lengths are good
 
             driveForward(25);
