@@ -34,7 +34,7 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftFrontMotor.setPower(0.25);
         robot.rightFrontMotor.setPower(0.25);
         robot.rightBackMotor.setPower(0.25);
-        sleep(l*48)
+        sleep(l*48);
     }
 
     public void turnright() {
@@ -109,19 +109,24 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftBackMotor.setPower(-0.5);
     }
 
-    public void lowerarm(int a){
-        robot.armPivot.setPower(1);
-        sleep(1000*t);
+    public void lowerarm(int angle){
+        robot.armPivot.setPower(0.6);
+        sleep(1000*angle);
     }
 
-    public void raisearm(int a){
+    public void raisearm(int angle){
         robot.armPivot.setPower(-1);
-        sleep(1000*t);
+        sleep(1000*angle);
     }
 
     public void extendarm(int l){
         robot.armExtender.setPower(-1);
+        sleep(1000*l);
+    }
 
+    public void reelarm(int l){
+        robot.armExtender.setPower(1);
+        sleep(1000*l);
     }
 
 
@@ -292,24 +297,30 @@ public class skyStoneAuto extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //make sure that all 
+            //make sure that all lengths are good
+
             driveForward(25);
             //sleep(1200);
+
             straferightslowly(5);
             //sleep(10000);
+
             strafeleft();
             sleep(2000);
+
             driveForward(35);
-            sleep(1700);
+            //sleep(1700);
+
             strafeleft();
             sleep(700);
-            backwards(60);
-            sleep(3500 );
 
-            robot.armPivot.setPower(1);
-            sleep(1000);
-            robot.armExtender.setPower(-1);
-            sleep(1000);
+            backwards(60);
+            //sleep(3500 );
+
+            raisearm(60);
+            lowerarm(30);
+            extendarm(6);
+            reelarm(1);
 
             // update all visuals
 

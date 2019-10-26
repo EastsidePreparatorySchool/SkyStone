@@ -18,6 +18,8 @@ public class Hardware8103 {
     public DcMotor armPivot = null;
     public DcMotor armExtender = null;
     public Servo wrist = null;
+    public Servo updown = null;
+    public Servo closer = null;
     public DcMotor [] allMotors;
     double [] rotationArray;
 
@@ -45,7 +47,12 @@ public class Hardware8103 {
 
         armPivot = hwMap.dcMotor.get("pivot");
         armExtender = hwMap.dcMotor.get("extend");
-        
+
+        closer = hwMap.servo.get("servo1");
+        updown = hwMap.servo.get("servo2");
+        wrist = hwMap.servo.get("servo3");
+
+
         allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};
 

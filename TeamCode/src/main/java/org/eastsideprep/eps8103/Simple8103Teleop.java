@@ -41,11 +41,11 @@ public class Simple8103Teleop extends LinearOpMode {
     /* Declare OpMode members. */
     Hardware8103 robot = new Hardware8103();
 
+
     @Override
     public void runOpMode() {
         double left;
         double right;
-        boolean isClawOpen;
         float extendControl;
         float pivotControl;
 
@@ -70,7 +70,7 @@ public class Simple8103Teleop extends LinearOpMode {
             float x = gamepad1.left_stick_x;
             float y = -gamepad1.left_stick_y; // Negate to get +y forward.
             float rotation = -gamepad1.right_stick_x;
-            float speedControl = 0.75f * (1.0f + gamepad1.left_trigger);
+            float speedControl = 0.75f * (1.2f + gamepad1.left_trigger);
             double biggestControl = Math.sqrt(x * x + y * y);
             double biggestWithRotation = Math.sqrt(x * x + y * y + rotation * rotation);
 
@@ -100,21 +100,37 @@ public class Simple8103Teleop extends LinearOpMode {
 
             robot.armExtender.setPower(-extendControl);
 
-            
 
             pivotControl = gamepad2.right_stick_y;
 
             robot.armPivot.setPower(Math.min(pivotControl, 0.6));
+            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
 
 
+            int whereswrist = 0;
+            boolean wristpos = gamepad2.x;
+            if (wristpos) {
+                if (whereswrist == 0) {
+                    robot.wrist.setPosition(180);
+                    whereswrist = 1;
+                }
+                if (whereswrist == 1) {
+                    robot.wrist.setPosition(0);
+                    whereswrist = 0;
+                }
 
 
-            isClawOpen = gamepad2.x;
+            }
+
             boolean openclaw = gamepad2.b;
+            boolean closeclaw = gamepad2.a;
+            if (openclaw) {
+                robot.updown.setPosition(-40);
+            }else if (closeclaw) {
+                robot.updown.setPosition(-10);
+            }
 
         }
-
-
 
 
         // Send telemetry message to signify robot running
