@@ -31,6 +31,7 @@ package org.eastsideprep.eps8103;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.eastsideprep.eps8103.Hardware8103;
 
@@ -40,7 +41,6 @@ public class Simple8103Teleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware8103 robot = new Hardware8103();
-
 
     public void toggleWrist(int wristpos){        
         robot.wrist.setPosition(wristpos==0?180:0);
@@ -66,6 +66,10 @@ public class Simple8103Teleop extends LinearOpMode {
         telemetry.addData("Say", "Ready");
         telemetry.update();
 
+        //robot.closer.setPosition(180);
+        //robot.wrist.setPosition(0);
+        //robot.updown.setPosition(30);
+
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         waitForStart();
@@ -75,9 +79,7 @@ public class Simple8103Teleop extends LinearOpMode {
         while (opModeIsActive()) {
 
             //make sure everything starts in the same position at the beginning of teleop every time
-            robot.closer.setPosition(180);
-            robot.wrist.setPosition(0);
-            robot.updown.setPosition(30);
+
 
 
             float x = gamepad1.left_stick_x;
@@ -112,28 +114,31 @@ public class Simple8103Teleop extends LinearOpMode {
             extendControl = gamepad2.left_stick_y;
 
             robot.armExtender.setPower(-extendControl);
-
+            telemetry.addData("extend encoder", robot.armExtender.getCurrentPosition());
+            telemetry.update();
 
             pivotControl = gamepad2.right_stick_y;
-            robot.armPivot.setTargetPosition(100*pivotControl);//this needs extensive testing to figure out the coefficient
-            robot.armPivot.setPower(1);
+            //robot.armPivot.setTargetPosition((int) (100*pivotControl));//this needs extensive testing to figure out the coefficient
+            //robot.armPivot.setPower(1);
+            robot.armPivot.setPower(pivotControl);
 
+            telemetry.addData("pivot controller position", pivotControl);
             telemetry.addData("pivot motor encoder", robot.armPivot.getCurrentPosition());
             telemetry.update();
 
-            int whereswrist = 0;
-            // A toggles the wrist
-            if (gamepad2.dpad_left==1 || gamepad2.dpad_right==1) {
-                toggleWrist(whereswrist);
-            }
-
-            if (gamepad2.dpad_up==1){
-                robot.updown.setPosition(100);
-            }
-            if (gamepad2.dpad_down==1){
-                robot.updown.setPosition(0);
-            }
-
+//            int whereswrist = 0;
+//            // A toggles the wrist
+//            if (gamepad2.dpad_left || gamepad2.dpad_right) {
+//                toggleWrist(whereswrist);
+//            }
+//
+//            if (gamepad2.dpad_up){
+//                robot.updown.setPosition(100);
+//            }
+//            if (gamepad2.dpad_down){
+//                robot.updown.setPosition(0);
+//            }
+//
             boolean openclaw = gamepad2.x;
             boolean closeclaw = gamepad2.y;
             if (openclaw) {

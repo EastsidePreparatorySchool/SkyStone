@@ -46,11 +46,16 @@ public class Hardware8103 {
         rightBackMotor = hwMap.dcMotor.get("RB");
 
         armPivot = hwMap.dcMotor.get("pivot");
-        armExtender = hwMap.dcMotor.get("extend");
+        armPivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armPivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        wrist = hwMap.servo.get("servo1");
-        updown = hwMap.servo.get("servo2");
-        closer = hwMap.servo.get("servo3");
+
+        armExtender = hwMap.dcMotor.get("extend");
+        armExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        updown = hwMap.servo.get("servo1");
+        closer = hwMap.servo.get("servo2");
+        wrist = hwMap.servo.get("servo3");
 
 
         allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
