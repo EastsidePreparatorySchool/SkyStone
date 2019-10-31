@@ -29,6 +29,8 @@
 
 package org.eastsideprep.eps8103;
 
+import java.util.Arrays;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -50,10 +52,13 @@ public class Simple8103Teleop extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-            double left;
-            double right;
-            float extendControl;
-            float pivotControl;
+        double left;
+        double right;
+        float extendControl;
+        float pivotControl;
+
+        double globalX;
+        double globalY;
 
 
 
@@ -61,6 +66,10 @@ public class Simple8103Teleop extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+
+        for (DcMotor m : allMotors) {
+            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.COAST); //better for driver control
+        }
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Ready");
@@ -93,6 +102,7 @@ public class Simple8103Teleop extends LinearOpMode {
 
             double[] powers = robot.getDrivePowersFromAngle(angle);
             double pow2 = 0.0;
+            double[] drivetrainEncoders = new double[4];
             for (int i = 0; i < robot.allMotors.length; i++) {
                 double pow = powers[i] * biggestControl + rotation * robot.rotationArray[i];
                 powers[i] = pow;
@@ -108,6 +118,7 @@ public class Simple8103Teleop extends LinearOpMode {
             } else {
                 for (int i = 0; i < robot.allMotors.length; i++)
                     robot.allMotors[i].setPower(0.0);
+                    drivetrainEncoders[i]=robot.allMotors[i].getCurrentPosition;
             }
 
 
@@ -124,6 +135,7 @@ public class Simple8103Teleop extends LinearOpMode {
 
             telemetry.addData("pivot controller position", pivotControl);
             telemetry.addData("pivot motor encoder", robot.armPivot.getCurrentPosition());
+            telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
             telemetry.update();
 
 //            int whereswrist = 0;
