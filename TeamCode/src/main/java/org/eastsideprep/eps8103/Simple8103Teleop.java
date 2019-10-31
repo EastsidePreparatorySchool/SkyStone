@@ -52,23 +52,26 @@ public class Simple8103Teleop extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        robot.init(hardwareMap);
+
         double left;
         double right;
         float extendControl;
         float pivotControl;
 
-        double globalX;
-        double globalY;
+        double globalX = robot.xpos;
+        double globalY = robot.ypos;
 
-
-
+        double[] drivetrainEncoders = new double[4];
+        
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        
 
-        for (DcMotor m : allMotors) {
-            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.COAST); //better for driver control
+        for (DcMotor m : robot.allMotors) {
+            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); //better for driver control
         }
 
         // Send telemetry message to signify robot waiting;
@@ -102,7 +105,7 @@ public class Simple8103Teleop extends LinearOpMode {
 
             double[] powers = robot.getDrivePowersFromAngle(angle);
             double pow2 = 0.0;
-            double[] drivetrainEncoders = new double[4];
+
             for (int i = 0; i < robot.allMotors.length; i++) {
                 double pow = powers[i] * biggestControl + rotation * robot.rotationArray[i];
                 powers[i] = pow;
@@ -116,9 +119,9 @@ public class Simple8103Teleop extends LinearOpMode {
                         powers[i] / scale * biggestWithRotation * speedControl);
                 }
             } else {
-                for (int i = 0; i < robot.allMotors.length; i++)
+                for (int i = 0; i < robot.allMotors.length; i++){
                     robot.allMotors[i].setPower(0.0);
-                    drivetrainEncoders[i]=robot.allMotors[i].getCurrentPosition;
+                    drivetrainEncoders[i]=robot.allMotors[i].getCurrentPosition();
             }
 
 
@@ -174,5 +177,6 @@ public class Simple8103Teleop extends LinearOpMode {
         sleep(40);
 
     }
+}
 }
 

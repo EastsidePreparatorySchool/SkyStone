@@ -23,6 +23,9 @@ public class Hardware8103 {
     public DcMotor [] allMotors;
     double [] rotationArray;
 
+    double xpos;
+    double ypos;
+
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -71,9 +74,7 @@ public class Hardware8103 {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
-
         }
-
 
     }
     public double[] getDrivePowersFromAngle(double angle) {
