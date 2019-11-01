@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Path;
 
@@ -28,7 +27,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import javax.crypto.spec.OAEPParameterSpec;
 
-@Autonomous(name = "SubiAuto1", group = "Tests")
+@Autonomous(name = "SubiAuto1", group = "autos")
 public class SubiAuto1  extends OpMode{
 
     VuforiaLocalizer vuforia;
@@ -65,11 +64,7 @@ public class SubiAuto1  extends OpMode{
 
     double clawPower = 1.0;
 
-    double fLM = 0.0;
-    double bLM = 0.0;
-    double fRM = 0.0;
-    double bRM = 0.0;
-    double turn = 0.0;
+
 
     // this may need to be changed, depending on what we want the default for this servo to be
     double clawInit = 0.0;
@@ -106,19 +101,7 @@ public class SubiAuto1  extends OpMode{
 
 
 
-        // now for motor and other grabbing
-        frontLeftMotor =hardwareMap.dcMotor.get("FrontLeftMotor");
-        frontRightMotor =hardwareMap.dcMotor.get("FrontRightMotor");
-        backLeftMotor =hardwareMap.dcMotor.get("BackLeftMotor");
-        backRightMotor =hardwareMap.dcMotor.get("BackRightMotor");
 
-        pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
-        armMotor = hardwareMap.dcMotor.get("ArmMotor");
-
-        clawServo = hardwareMap.servo.get("ClawServo");
-
-        clawServo.setPosition(clawInit);
-        // NOTE: we may need a sleep() here if the servo takes too much time to move.
 
 
         setVuforia();
@@ -271,146 +254,11 @@ public class SubiAuto1  extends OpMode{
 
 
 
-        moveRobot();
-
-        fLM = defaultMotor(fLM);
-        bLM = defaultMotor(bLM);
-        fRM = defaultMotor(fRM);
-        bRM = defaultMotor(bRM);
-
-        setMotors();
-    }
-
-    public void setMotors(){
-        backRightMotor.setPower(robotMotors.bR);
-        frontRightMotor.setPower(robotMotors.fR);
-        backLeftMotor.setPower(robotMotors.bL);
-        frontLeftMotor.setPower(robotMotors.fL);
-
-    }
-
-    public void moveRobot(){
-
-        switch (mode){
-
-            case 0:
-                totalControl();
-            case 1:
-                turnInPlace();
-            case 2:
-                strafe();
-            case 3:
-                turnWhileMoving();
-        }
-        if(clawOpen){
-            ungrab();
-        }else if(clawClose){
-            grab();
-        }
-
-    }
-
-
-
-    // normalizes motor
-    // if motor is lower than threshold itll also set it to 0
-    // if motor magnitude greater than 1, set to 1
-    public double defaultMotor(double motor){
-
-        if(motor < -1.0){
-            motor = -1.0;
-
-        }else if( motor> 1.0){
-
-            motor = 1.0;
-        } else{
-
-            motor = thresholdCheck(motor);
-        }
-
-        return motor;
-
-    }
-
-    public double thresholdCheck(double motor){
-        if( -threshold<motor && motor<threshold){
-
-            motor = 0.0;
-
-        }
-
-        return motor;
-    }
-    //motor actions below
-
-    public void forwardBack(){
-
-        fRM = -desiredY*speed;
-        fLM = -desiredY*speed;
-        bLM = -desiredY*speed;
-        bRM = -desiredY*speed;
-
-    }
-
-    public void turnInPlace(float LR){
-        turn = LR;
-        fLM = turn*speed;
-        bLM = turn*speed;
-        fRM = -turn*speed;
-        bRM = -turn*speed;
 
 
 
     }
 
-    public void turnWhileMoving(float LR, float dY) {
-        turn = LR;
-        desiredY = dY;
-        fLM = (-desiredY + turn)*speed;
-        bLM = (-desiredY + turn)*speed;
-        fRM = (-desiredY + -turn)*speed;
-        bRM = (-desiredY + -turn)*speed;
-
-
-
-    }
-
-    public void strafe(float FB){
-
-        fLM = FB*speed;
-        bLM = -FB*speed;
-        fRM = -FB*speed;
-        bRM = FB*speed;
-
-    }
-
-    public void parallelStrafe(float LR, B){
-
-
-        fLM = FB*speed
-
-
-    }
-
-    public void totalControl(){
-
-        fLM = (-desiredY + turn + g1LeftAnalogX)*speed;
-        bLM = (-desiredY + turn + -g1LeftAnalogX)*speed;
-        fRM = (-desiredY + -turn + -g1LeftAnalogX)*speed;
-        bRM = (-desiredY + -turn + g1RightAnalogX)*speed;
-
-    }
-
-    public void grab(){
-        clawServo.setPosition(clawGrab);
-
-    }
-
-    public void ungrab()
-    {
-
-        clawServo.setPosition(clawInit);
-    }
 
     public void setVuforia(){
         // which camera view
@@ -497,6 +345,8 @@ public class SubiAuto1  extends OpMode{
                 multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES, u, v, w));
     }
+
+
 
 
 }
