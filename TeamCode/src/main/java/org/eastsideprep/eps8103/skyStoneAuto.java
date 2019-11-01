@@ -326,11 +326,22 @@ public class skyStoneAuto extends LinearOpMode {
             //sleep(3500 );
 
             raisearm(60);
-            lowerarm(30);
-            extendarm(6);
-            reelarm(1);
+            //expected: 60degrees
+            //actual:
 
-            
+            lowerarm(30);
+            //expected: 30degrees
+            //actual:
+
+            extendarm(6);
+            //expected: 6in
+            //actual:
+
+            reelarm(1);
+            //expected: 1in
+            //actual:
+
+
 
             // update all visuals
 
