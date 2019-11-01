@@ -64,6 +64,7 @@ public class Simple8103Teleop extends LinearOpMode {
         double globalY = robot.ypos;
 
         double[] drivetrainEncoders = new double[4];
+        double[] servoPositions = new double[3];
         
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -138,30 +139,34 @@ public class Simple8103Teleop extends LinearOpMode {
 
             telemetry.addData("pivot controller position", pivotControl);
             telemetry.addData("pivot motor encoder", robot.armPivot.getCurrentPosition());
-            telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
+            telemetry.addData("drivetrain encoders", drivetrainEncoders.toString());
             telemetry.update();
 
-//            int whereswrist = 0;
-//            // A toggles the wrist
-//            if (gamepad2.dpad_left || gamepad2.dpad_right) {
-//                toggleWrist(whereswrist);
-//            }
-//
-//            if (gamepad2.dpad_up){
-//                robot.updown.setPosition(100);
-//            }
-//            if (gamepad2.dpad_down){
-//                robot.updown.setPosition(0);
-//            }
+            int whereswrist = 0;
+            // A toggles the wrist
+            if (gamepad2.dpad_left || gamepad2.dpad_right) {
+                toggleWrist(whereswrist);
+            }
+
+            if (gamepad2.dpad_up){
+                robot.updown.setPosition(0.4);
+            }
+            if (gamepad2.dpad_down){
+                robot.updown.setPosition(0.2);
+            }
 //
             boolean openclaw = gamepad2.x;
             boolean closeclaw = gamepad2.y;
             if (openclaw) {
-                robot.closer.setPosition(100);
+                robot.closer.setPosition(0.6);
             } else if (closeclaw) {
-                robot.closer.setPosition(10);
+                robot.closer.setPosition(0.01);
             }
 
+            for(int i = 0; i<robot.allServos.length; i++){
+                servoPositions[i] = robot.allServos[i].getPosition();
+            }
+            telemetry.addData("servo positions", servoPositions.toString());
 
 
         }

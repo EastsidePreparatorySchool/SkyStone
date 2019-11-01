@@ -20,7 +20,8 @@ public class Hardware8103 {
     public Servo wrist = null;
     public Servo updown = null;
     public Servo closer = null;
-    public DcMotor [] allMotors;
+    public DcMotor[] allMotors;
+    public Servo[] allServos;
     double [] rotationArray;
 
     double xpos;
@@ -62,6 +63,7 @@ public class Hardware8103 {
 
 
         allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
+        allServos = new Servo[] {wrist, updown, closer};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -85,6 +87,5 @@ public class Hardware8103 {
         unscaledPowers[3] = unscaledPowers[0];
         return unscaledPowers;
     }
-
 }
 
