@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Path;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -11,10 +13,13 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraManager;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 
+import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.MotionDetection;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -23,8 +28,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import javax.crypto.spec.OAEPParameterSpec;
 
-@TeleOp(name = "VuforiaTest", group = "Tests")
-public class VuforiaTest  extends OpMode{
+@Autonomous(name = "SubiAuto1", group = "Tests")
+public class SubiAuto1  extends OpMode{
 
     VuforiaLocalizer vuforia;
     VuforiaTrackables skystoneTrackables;
@@ -45,6 +50,7 @@ public class VuforiaTest  extends OpMode{
     DcMotor backRightMotor;
     DcMotor pivotMotor;
     DcMotor armMotor;
+    MotorPowers robotMotors;
     Servo clawServo;
     CameraManager cm;
 
@@ -75,10 +81,11 @@ public class VuforiaTest  extends OpMode{
     double speed = 1;
 
     double g1LeftAnalogX;
-    double g1LeftAnalogY;
+    double desiredY;
     double g1RightAnalogX;
     double g1RightAnalogY;
 
+    float tolerance = 1;
 
     // height of the trackables
     float tHeight;
@@ -87,8 +94,12 @@ public class VuforiaTest  extends OpMode{
     float len1;
     float len2;
     float len3;
+
+    MatrixF moveVector;
+
     OpenGLMatrix webcamLocation;
     OpenGLMatrix lastLocation;
+    OpenGLMatrix targetLocation;
     @Override
     public void init() {
 
@@ -119,15 +130,120 @@ public class VuforiaTest  extends OpMode{
     @Override
     public void start() {
         //last known location of the robot
-        lastLocation = newMatrix(0,0,0,0,0,0);
+        lastLocation = newMatrix(len1,0,0,0,0,0);
         // activate tracking of all of them
         skystoneTrackables.activate();
+        // based on our own self-estimations, we may be able to estimate our positions
+        // by the positions of the skystones
+        // because they are always in one of three places.
+
+
+        while(!inRange()){
+
+        }
+        lineUp()
+
+
+    }
+
+    public void targetToWheels(OpenGLMatrix targetLocation, mode){
+
+        // to find angle between the
+        VectorF est = lastLocation.toVector();
+
+
+        VectorF tgl = targetLocation.toVector();
+        tgl.put(2, 0);
+        VectorF tglDire = tgl.normalized3D();
+        VectorF heading = est.subtracted(tgl);
+        //gets rid of the z axis (up and down)
+        heading.put(2,0);
+        float[] headingF = heading.getData();
+        float distance = heading.magnitude();
+        VectorF direction = new VectorF(headingF[0]/distance,headingF[1]/distance,headingF[2]/distance);
+        // angle need to be turned to face the object
+        double angleA = Math.cos((est.dotProduct(heading)));
+
+
+
+        switch (mode){
+
+            case 0:
+
+                totalControl(();
+            case 1:
+                if(moveVector.)
+                turnInPlace((float)angleA);
+            case 2:
+                strafe();
+            case 3:
+                turnWhileMoving();
+        }
+
+
 
     }
 
 
+    public void findRobot(){
+
+        //if Vuforia can't see any targets, this will be null
+        OpenGLMatrix trackedLocation = null;
+
+        int li = 0;
+        while(trackedLocation == null && li <listeners.length){
+            trackedLocation = listeners[li].getUpdatedRobotLocation();
+            if(trackedLocation != null){
+                telemetry.addData("This target is: ", skystoneTrackables.get(li+5).getName());
+
+            }
+            li++;
+        }
+
+        //trackedLocation = listener.getUpdatedRobotLocation();
+        if(trackedLocation != null){
+            lastLocation = trackedLocation;
+            telemetry.addData("Location: ", lastLocation);
+
+        }
+
+    }
+
+    public boolean inRange(){
+        findRobot();
+
+
+
+
+
+        // this part of the code will have to change to account for variance
+        // ie, if the robot moves faster or slower than expected
+        // or the camera's off, the code will need to assume the robot is close enough.
+        // so the constrictions of hte location of hte robot will change
+
+        for(int i = 12; 11<i && i<15; i++){
+            // this may need to be changed, as a difference in angles and a difference in spacing
+            // result in two different things
+            if(Math.abs(estPlacing[i]-wishPlacing[i]) > tolerance){
+                VectorF a  = new VectorF(0, 3, 0, 5);
+                a
+                return false;
+
+            }
+
+        }
+
+
+
+
+        return true;
+
+    }
+
+
+
     @Override
-    public void loop(){
+    public void (){
 
 
 
@@ -154,7 +270,7 @@ public class VuforiaTest  extends OpMode{
         }
 
 
-        getInput();
+
         moveRobot();
 
         fLM = defaultMotor(fLM);
@@ -162,37 +278,14 @@ public class VuforiaTest  extends OpMode{
         fRM = defaultMotor(fRM);
         bRM = defaultMotor(bRM);
 
-        frontRightMotor.setPower(fRM);
-        frontLeftMotor.setPower(fLM);
-        backLeftMotor.setPower(bLM);
-        backRightMotor.setPower(bRM);
+        setMotors();
     }
 
-    public void getInput(){
-    // checks threshold here as well
-        g1RightAnalogX = thresholdCheck(this.gamepad1.right_stick_x);
-        g1RightAnalogY = thresholdCheck(this.gamepad1.right_stick_y);
-        g1LeftAnalogX = thresholdCheck(this.gamepad1.left_stick_x);
-        g1LeftAnalogY = thresholdCheck(this.gamepad1.left_stick_y);
-
-        clawOpen = this.gamepad1.left_bumper;
-        clawClose = this.gamepad1.right_bumper;
-
-        linkageMove = this.gamepad1.left_trigger - this.gamepad1.right_trigger;
-
-        if(this.gamepad1.dpad_up){
-            mode = 0;
-
-        } else if(this.gamepad1.dpad_right){
-            mode = 1;
-
-        }else if(this.gamepad1.dpad_down){
-            mode = 2;
-
-        }else if(this.gamepad1.dpad_left){
-            mode = 3;
-
-        }
+    public void setMotors(){
+        backRightMotor.setPower(robotMotors.bR);
+        frontRightMotor.setPower(robotMotors.fR);
+        backLeftMotor.setPower(robotMotors.bL);
+        frontLeftMotor.setPower(robotMotors.fL);
 
     }
 
@@ -217,16 +310,7 @@ public class VuforiaTest  extends OpMode{
 
     }
 
-    public void convertAngle(){
 
-
-    }
-
-    public double getTurn(){
-
-        return g1RightAnalogX;
-
-    }
 
     // normalizes motor
     // if motor is lower than threshold itll also set it to 0
@@ -261,15 +345,15 @@ public class VuforiaTest  extends OpMode{
 
     public void forwardBack(){
 
-        fRM = -g1LeftAnalogY*speed;
-        fLM = -g1LeftAnalogY*speed;
-        bLM = -g1LeftAnalogY*speed;
-        bRM = -g1LeftAnalogY*speed;
+        fRM = -desiredY*speed;
+        fLM = -desiredY*speed;
+        bLM = -desiredY*speed;
+        bRM = -desiredY*speed;
 
     }
 
-    public void turnInPlace(){
-        turn = getTurn();
+    public void turnInPlace(float LR){
+        turn = LR;
         fLM = turn*speed;
         bLM = turn*speed;
         fRM = -turn*speed;
@@ -279,44 +363,41 @@ public class VuforiaTest  extends OpMode{
 
     }
 
-    public void turnWhileMoving() {
+    public void turnWhileMoving(float LR, float dY) {
+        turn = LR;
+        desiredY = dY;
+        fLM = (-desiredY + turn)*speed;
+        bLM = (-desiredY + turn)*speed;
+        fRM = (-desiredY + -turn)*speed;
+        bRM = (-desiredY + -turn)*speed;
 
-        fLM = (-g1LeftAnalogY + turn)*speed;
-        bLM = (-g1LeftAnalogY + turn)*speed;
-        fRM = (-g1LeftAnalogY + -turn)*speed;
-        bRM = (-g1LeftAnalogY + -turn)*speed;
 
-
-
-    }
-
-    public void strafe(){
-
-        fLM = g1LeftAnalogX*speed;
-        bLM = -g1LeftAnalogX*speed;
-        fRM = -g1LeftAnalogY*speed;
-        bRM = g1LeftAnalogX*speed;
 
     }
 
-    public void forwardStrafe(){
+    public void strafe(float FB){
 
-        fLM = (-g1LeftAnalogY + g1LeftAnalogX)*speed;
-        bLM = (-g1LeftAnalogY + -g1LeftAnalogX)*speed;
-        fRM = (-g1LeftAnalogY + -g1LeftAnalogX)*speed;
-        bRM = (-g1LeftAnalogY + g1RightAnalogX)*speed;
+        fLM = FB*speed;
+        bLM = -FB*speed;
+        fRM = -FB*speed;
+        bRM = FB*speed;
+
+    }
+
+    public void parallelStrafe(float LR, B){
 
 
+        fLM = FB*speed
 
 
     }
 
     public void totalControl(){
 
-        fLM = (-g1LeftAnalogY + turn + g1LeftAnalogX)*speed;
-        bLM = (-g1LeftAnalogY + turn + -g1LeftAnalogX)*speed;
-        fRM = (-g1LeftAnalogY + -turn + -g1LeftAnalogX)*speed;
-        bRM = (-g1LeftAnalogY + -turn + g1LeftAnalogX)*speed;
+        fLM = (-desiredY + turn + g1LeftAnalogX)*speed;
+        bLM = (-desiredY + turn + -g1LeftAnalogX)*speed;
+        fRM = (-desiredY + -turn + -g1LeftAnalogX)*speed;
+        bRM = (-desiredY + -turn + g1RightAnalogX)*speed;
 
     }
 
