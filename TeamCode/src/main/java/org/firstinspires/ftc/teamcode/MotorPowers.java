@@ -22,6 +22,14 @@ public class MotorPowers {
 
     }
 
+    public void set(double fL, double bL, double fR, double bR){
+        this.fL = fL;
+        this.bL = bL;
+        this.fR = fR;
+        this.bR = bR;
+
+    }
+
     public double[] asArray(){
         double[] motors = new double[4];
         motors[0] = fL;
@@ -43,6 +51,16 @@ public class MotorPowers {
             }
         }
 
+
+    }
+    @Override
+    public String toString(){
+        String m = "";
+        for (double a:
+             asArray()) {
+            m+= " "+a;
+        }
+        return m;
 
     }
 

@@ -72,4 +72,15 @@ public class DriveTrain {
         motors[3] = backRightMotor;
         return motors;
     }
+
+    @Override
+    public String toString(){
+        String m = "";
+        DcMotor[] motors = asArray();
+        for (DcMotor m1: motors) {
+            m+=(" "+m1.getPower());
+        }
+        return m;
+
+    }
 }

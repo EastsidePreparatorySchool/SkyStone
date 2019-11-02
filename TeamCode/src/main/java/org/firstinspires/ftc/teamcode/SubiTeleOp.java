@@ -20,7 +20,7 @@ public class SubiTeleOp extends OpMode {
     // a modifier to all movement
     int moves = 0;
 
-    double speed;
+    double speed = 0.5;
     double sprint = 1;
     double normal = 0.5;
     double slow = 0.25;
@@ -29,15 +29,17 @@ public class SubiTeleOp extends OpMode {
     double g1LeftAnalogY;
     double g1RightAnalogX;
     double g1RightAnalogY;
-    double fLM;
-    double bLM;
-    double fRM;
-    double bRM;
+    double fLM=0;
+    double bLM=0;
+    double fRM=0;
+    double bRM=0;
     double turn;
-
-    int mode;
+    double pivotPower = 0;
+    int i = 0;
+    int mode=0;
     boolean clawOpen;
     boolean clawClose;
+
 
 
 
@@ -45,7 +47,7 @@ public class SubiTeleOp extends OpMode {
 
     @Override
     public void init() {
-        robot = new TeleopRobot(hardwareMap);
+        robot = new TeleopRobot(hardwareMap, this.telemetry);
         robot.init();
         motorPowers = new MotorPowers(0,0,0,0);
         telemetry.addData("Status", "Initialized");
@@ -53,21 +55,42 @@ public class SubiTeleOp extends OpMode {
 
     }
 
+    @Override
+    public void start(){
+        telemetry.addData("here", "here2");
+        updateTelemetry(telemetry);
+    }
 
 
     @Override
     public void loop() {
+        telemetry.addData("hi", fLM);
+
+        telemetry.addData("mode", mode);
         getInput();
+        telemetry.addData("loops", i);
         goMotor();
-        robot.setMotors(new MotorPowers(fLM, bLM, fRM, bRM));
-        if(clawOpen){
+
+        motorPowers.set(fLM, bLM, fLM, bRM);
+        robot.setMotors(motorPowers);
+        telemetry.addData("robot",robot.driveTrain);
+        robot.moveMotors();
+        telemetry.addData("robot", robot.driveMotors);
+       /* if(clawOpen){
             robot.ungrab();
         }else{
             robot.grab();
         }
         if(linkageMove != 0.0){
-            robot.moveArm(linkageMove);
+            //robot.moveArm(linkageMove);
         }
+        if(pivotPower != 0.0){
+            robot.pivotArm(pivotPower);
+        }
+        */
+
+       i++;
+
 
     }
 
@@ -79,7 +102,7 @@ public class SubiTeleOp extends OpMode {
         g1LeftAnalogY = thresholdCheck(this.gamepad1.left_stick_y);
 
 
-        if(this.gamepad1.left_bumper){
+        /*if(this.gamepad1.left_bumper){
             if(clawOpen){
                 clawOpen = false;
             }else{
@@ -87,6 +110,18 @@ public class SubiTeleOp extends OpMode {
 
             }
         }
+
+         */
+        /*
+
+        if(this.gamepad1.x){
+            pivotPower = 1;
+        }else if(this.gamepad1.y){
+            pivotPower = -1;
+        }else{
+            pivotPower = 0;
+        }
+        * */
 
         // switch between normal, sprint, and precise slow speeds
         if(this.gamepad1.right_bumper){
@@ -109,7 +144,7 @@ public class SubiTeleOp extends OpMode {
 
         }
 
-        linkageMove = thresholdCheck(this.gamepad1.left_trigger - this.gamepad1.right_trigger);
+//        linkageMove = thresholdCheck(this.gamepad1.left_trigger - this.gamepad1.right_trigger);
 
 
 

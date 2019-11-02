@@ -19,10 +19,7 @@ public class Point implements Cloneable{
 
     }
 
-    public double aTan(){
 
-
-    }
 
     @Override
     public Point clone(){

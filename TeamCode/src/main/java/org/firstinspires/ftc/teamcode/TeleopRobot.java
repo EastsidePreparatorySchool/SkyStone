@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class TeleopRobot implements Robot  {
 
     MotorPowers driveMotors;
@@ -13,10 +15,11 @@ public class TeleopRobot implements Robot  {
     DcMotor backLeftMotor;
     DcMotor frontRightMotor;
     DcMotor backRightMotor;
-    DcMotor pivotMotor;
-    DcMotor armMotor;
+    Telemetry telemetry;
+    //DcMotor pivotMotor;
+    //DcMotor armMotor;
     DriveTrain driveTrain;
-    Servo clawServo;
+    //Servo clawServo;
 
     // this may need to be changed, depending on what we want the default for this servo to be
     double clawInit = 0.0;
@@ -29,8 +32,9 @@ public class TeleopRobot implements Robot  {
 
     }
 
-    public TeleopRobot(HardwareMap hardwareMap){
+    public TeleopRobot(HardwareMap hardwareMap, Telemetry telemetry){
         this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
     }
 
     public void init(){
@@ -39,15 +43,14 @@ public class TeleopRobot implements Robot  {
         backLeftMotor =hardwareMap.dcMotor.get("BackLeftMotor");
         backRightMotor =hardwareMap.dcMotor.get("BackRightMotor");
         driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+        driveMotors = new MotorPowers(0,0,0,0);
 
+       // pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
+       // armMotor = hardwareMap.dcMotor.get("ArmMotor");
 
-        pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
-        armMotor = hardwareMap.dcMotor.get("ArmMotor");
+       // clawServo = hardwareMap.servo.get("ClawServo");
 
-        clawServo = hardwareMap.servo.get("ClawServo");
-
-        clawServo.setPosition(clawInit);
-        grabbing = false;
+//        grabbing = false;
 
     }
 
@@ -66,6 +69,7 @@ public class TeleopRobot implements Robot  {
 
     public void moveMotors(){
         driveMotors.scale();
+        telemetry.addData("dmotor",driveMotors);
         driveTrain.runMotors(driveMotors);
 
 
@@ -76,13 +80,18 @@ public class TeleopRobot implements Robot  {
         return driveMotors;
     }
 
-    public void moveArm(double m){
+    /*public void moveArm(double m){
         armMotor.setPower(m);
 
 
-    }
+    }*/
+    /*
+    public void pivotArm(double m){
+        pivotMotor.setPower(m);
 
-    public void grab(){
+    }
+    */
+   /* public void grab(){
 
         clawServo.setPosition(clawGrab);
         grabbing = true;
@@ -96,5 +105,5 @@ public class TeleopRobot implements Robot  {
         grabbing = false;
     }
 
-
+*/
 }

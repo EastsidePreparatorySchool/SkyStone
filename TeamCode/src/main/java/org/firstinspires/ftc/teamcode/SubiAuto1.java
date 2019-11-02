@@ -28,7 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import javax.crypto.spec.OAEPParameterSpec;
 
 @Autonomous(name = "SubiAuto1", group = "autos")
-public class SubiAuto1  extends OpMode{
+public class SubiAuto1 extends OpMode {
 
     VuforiaLocalizer vuforia;
     VuforiaTrackables skystoneTrackables;
@@ -98,12 +98,6 @@ public class SubiAuto1  extends OpMode{
     @Override
     public void init() {
 
-
-
-
-
-
-
         setVuforia();
 
         telemetry.addData("Status", "Initialized");
@@ -124,14 +118,20 @@ public class SubiAuto1  extends OpMode{
         while(!inRange()){
 
         }
-        lineUp()
+
 
 
     }
 
-    public void targetToWheels(OpenGLMatrix targetLocation, mode){
+    @Override
+    public void loop() {
 
-        // to find angle between the
+        int i =0;
+
+    }
+
+    public void targetToWheels(OpenGLMatrix targetLocation, int mode){
+
         VectorF est = lastLocation.toVector();
 
 
@@ -149,7 +149,7 @@ public class SubiAuto1  extends OpMode{
 
 
 
-        switch (mode){
+       /* switch (mode){
 
             case 0:
 
@@ -162,8 +162,7 @@ public class SubiAuto1  extends OpMode{
             case 3:
                 turnWhileMoving();
         }
-
-
+*/
 
     }
 
@@ -204,7 +203,7 @@ public class SubiAuto1  extends OpMode{
         // or the camera's off, the code will need to assume the robot is close enough.
         // so the constrictions of hte location of hte robot will change
 
-        for(int i = 12; 11<i && i<15; i++){
+       /* for(int i = 12; 11<i && i<15; i++){
             // this may need to be changed, as a difference in angles and a difference in spacing
             // result in two different things
             if(Math.abs(estPlacing[i]-wishPlacing[i]) > tolerance){
@@ -215,7 +214,7 @@ public class SubiAuto1  extends OpMode{
             }
 
         }
-
+*/
 
 
 
@@ -225,7 +224,7 @@ public class SubiAuto1  extends OpMode{
 
 
 
-    @Override
+   /* @Override
     public void (){
 
 
@@ -258,7 +257,7 @@ public class SubiAuto1  extends OpMode{
 
 
     }
-
+*/
 
     public void setVuforia(){
         // which camera view

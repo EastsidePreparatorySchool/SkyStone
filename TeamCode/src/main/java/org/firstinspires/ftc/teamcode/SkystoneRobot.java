@@ -54,6 +54,7 @@ public class SkystoneRobot implements Robot {
         backLeftMotor =hardwareMap.dcMotor.get("BackLeftMotor");
         backRightMotor =hardwareMap.dcMotor.get("BackRightMotor");
         driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+        driveMotors = new MotorPowers(0,0,0,0);
 
 
         pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
@@ -65,6 +66,8 @@ public class SkystoneRobot implements Robot {
 
 
     }
+
+
 
 
     public Pose getPose(){
@@ -132,7 +135,7 @@ public class SkystoneRobot implements Robot {
 
         //trackedLocation = listener.getUpdatedRobotLocation();
         if(trackedLocation != null){
-            pose = trackedLocation.;
+            //pose = trackedLocation.;
             telemetry.addData("Location:", "changed");
 
         }
