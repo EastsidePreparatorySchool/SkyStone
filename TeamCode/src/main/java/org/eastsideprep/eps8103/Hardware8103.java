@@ -77,6 +77,10 @@ public class Hardware8103 {
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
 
+//        for (Servo s: allServos){
+//            s.setDirection(Servo.Direction.FORWARD);
+//        }
+
     }
     public double[] getDrivePowersFromAngle(double angle) {
         double[] unscaledPowers = new double[4];
