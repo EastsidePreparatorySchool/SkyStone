@@ -319,53 +319,81 @@ public class skyStoneAuto extends LinearOpMode {
                     driveForward();
                     sleep(1200);
                     telemetry.addData("Pos", "going forward");
+                    telemetry.update();
 
                     straferightslowly();
                     sleep(10000);
                     telemetry.addData("Pos", "strafing right");
+                    telemetry.update();
 
                     strafeleft();
                     sleep(2000);
                     telemetry.addData("Pos", "strafing left");
+                    telemetry.update();
 
                     driveForward();
                     sleep(1700);
                     telemetry.addData("Pos", "going forward");
+                    telemetry.update();
 
                     strafeleft();
                     sleep(700);
                     telemetry.addData("Pos", "strafing left");
+                    telemetry.update();
 
                     backwards(60);
                     telemetry.addData("Pos", "going backwards");
+                    telemetry.update();
 
                     straferight();
                     sleep(700);
                     telemetry.addData("Pos", "strafing right");
+                    telemetry.update();
                     //sleep(3500 );
 
                     driveForward();
                     sleep(1200);
                     telemetry.addData("Pos", "driving forward");
+                    telemetry.update();
+            raisearm(60);
+            //expected: 60degrees
+            //actual:
+
+            lowerarm(30);
+            //expected: 30degrees
+            //actual:
+
+            extendarm(6);
+            //expected: 6in
+            //actual:
+
+            reelarm(1);
+            //expected: 1in
+            //actual:
 
                     straferightslowly();
                     sleep(10000);
                     telemetry.addData("Pos", "strafing right");
+                    telemetry.update();
 
                     strafeleft();
                     sleep(2000);
                     telemetry.addData("Pos", "strafing left");
+                    telemetry.update();
 
                     driveForward();
                     sleep(1700);
                     telemetry.addData("Pos", "driving foward");
+                    telemetry.update();
 
                     strafeleft();
                     sleep(700);
                     telemetry.addData("Pos", "strafing left");
+                    telemetry.update();
 
                     backwards(60);
                     telemetry.addData("Pos", "backwards");
+                    telemetry.update();
                     //sleep(3500 );
 
                     //raisearm(60);
