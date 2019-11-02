@@ -27,108 +27,188 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.eastsideprep.whitmerbot;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-/**
- * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
- * All device access is managed through the HardwarePushbot class.
- * The code is structured as a LinearOpMode
- *
- * This particular OpMode executes a POV Game style Teleop for a PushBot
- * In this mode the left stick moves the robot FWD and back, the Right stick turns left and right.
- * It raises and lowers the claw using the Gampad Y and A buttons respectively.
- * It also opens and closes the claws slowly using the left and right Bumper buttons.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name="Pushbot: Teleop POV", group="Pushbot")
-@Disabled
-public class PushbotTeleopPOV_Linear extends LinearOpMode {
-
+@TeleOp(name="cwbot: Teleop Drive", group="cwbot")
+public class cwTeleop_Linear extends LinearOpMode
+{
     /* Declare OpMode members. */
-    HardwarePushbot robot           = new HardwarePushbot();   // Use a Pushbot's hardware
-    double          clawOffset      = 0;                       // Servo mid position
-    final double    CLAW_SPEED      = 0.02 ;                   // sets rate to move servo
+    cwRobot robot = new cwRobot();
 
     @Override
     public void runOpMode() {
-        double left;
-        double right;
-        double drive;
-        double turn;
-        double max;
-
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
+        telemetry.addData("Say", "Init robot...");    //
+        telemetry.update();
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (drive r presses PLAY)
         waitForStart();
+        robot.resetTickPeriod();
+
+        boolean aLastState = false;
+        boolean aPressed = false;
+        boolean bLastState = false;
+        boolean bPressed = false;
+        boolean yLastState = false;
+        boolean yPressed = false;
+        boolean xLastState = false;
+        boolean xPressed = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            //robot.backRight.setPower(gamepad1.right_bumper ? 1.0 : 0.0);
+            //robot.backLeft.setPower(gamepad1.left_bumper ? 1.0 : 0.0);
 
-            // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
-            // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
-            // This way it's also easy to just drive straight, or just turn.
-            drive = -gamepad1.left_stick_y;
-            turn  =  gamepad1.right_stick_x;
 
-            // Combine drive and turn for blended motion.
-            left  = drive + turn;
-            right = drive - turn;
+            float x = gamepad1.left_stick_x;
+            float y = -gamepad1.left_stick_y; // Negate to get +y forward.
+            float rotation = gamepad1.right_stick_x;
+            float speedControl = 0.5f*(1.0f + gamepad1.left_trigger);
+            double biggestControl = Math.sqrt(x*x+y*y);
+            double biggestWithRotation = Math.sqrt(x*x+y*y+rotation*rotation);
 
-            // Normalize the values so neither exceed +/- 1.0
-            max = Math.max(Math.abs(left), Math.abs(right));
-            if (max > 1.0)
+            double angle = Math.atan2(y,-x) - Math.PI/2.0;
+
+            double[] powers = robot.getDrivePowersFromAngle(angle);
+            double pow2 = 0.0;
+            for (int i=0; i<robot.allMotors.length; i++)
             {
-                left /= max;
-                right /= max;
+                double pow = powers[i]*biggestControl + rotation * robot.turnFactors[i];
+                powers[i] = pow;
+                pow2 += pow*pow;
             }
 
-            // Output the safe vales to the motor drives.
-            robot.leftDrive.setPower(left);
-            robot.rightDrive.setPower(right);
-
-            // Use gamepad left & right Bumpers to open and close the claw
-            if (gamepad1.right_bumper)
-                clawOffset += CLAW_SPEED;
-            else if (gamepad1.left_bumper)
-                clawOffset -= CLAW_SPEED;
-
-            // Move both servos to new position.  Assume servos are mirror image of each other.
-            clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-            robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-            robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
-
-            // Use gamepad buttons to move arm up (Y) and down (A)
-            if (gamepad1.y)
-                robot.leftArm.setPower(robot.ARM_UP_POWER);
-            else if (gamepad1.a)
-                robot.leftArm.setPower(robot.ARM_DOWN_POWER);
+            if (biggestWithRotation != 0.0) {
+                double scale = Math.sqrt(pow2);
+                for (int i = 0; i < robot.allMotors.length; i++) {
+                    robot.allMotors[i].setPower(
+                            powers[i]/scale*biggestWithRotation*speedControl);
+                }
+            }
             else
-                robot.leftArm.setPower(0.0);
+            {
+                for (int i = 0; i < robot.allMotors.length; i++)
+                    robot.allMotors[i].setPower(0.0);
+            }
 
-            // Send telemetry message to signify robot running;
-            telemetry.addData("claw",  "Offset = %.2f", clawOffset);
-            telemetry.addData("left",  "%.2f", left);
-            telemetry.addData("right", "%.2f", right);
+//            if (gamepad1.right_bumper)
+//                TestAutoR();
+//            if (gamepad1.left_bumper)
+//                TestAutoL();
+
+            aPressed = gamepad1.a && !aLastState;
+            aLastState = gamepad1.a;
+            bPressed = gamepad1.b && !bLastState;
+            bLastState = gamepad1.b;
+            yPressed = gamepad1.y && !yLastState;
+            yLastState = gamepad1.y;
+            xPressed = gamepad1.x && !xLastState;
+            xLastState = gamepad1.x;
+
+            // YBA = PID
+            if (yPressed)
+            {
+                ExerciseDistanceSensors();
+            }
+
+            if (bPressed)
+            {
+                ApproachAndLogSensors();
+            }
+
+            if (xPressed)
+            {
+                RetreatAndLogSensors();
+            }
+
+            int encoderA = robot.frontLeft.getCurrentPosition();
+            int encoderB = robot.backLeft.getCurrentPosition();
+            int encoderC = robot.frontRight.getCurrentPosition();
+            int encoderD = robot.backRight.getCurrentPosition();
+
+            //Quaternion q = robot.imu.getQuaternionOrientation();
+            //telemetry.addData("Q", "%.5f %.5f %.5f %.5f",q.w,q.x,q.y,q.z);
+            telemetry.addData("heading", "%.1f",robot.getHeading());
+            telemetry.addData("Encoders","%6d %6d %6d %6d", encoderA,encoderB,encoderC,encoderD);
+//            telemetry.addData("PID", "%.5f %.5f %.5f",robot.runWithHeadingKp,robot.runWithHeadingKi,robot.runWithHeadingKd);
+            // The sonar only refreshes at 6.7 Hz.
+            // We will average over 1 second to reduce noise.
+            double dLeft = robot.getFrontDistance();
+            double dRight = robot.rev2M.getDistance(DistanceUnit.CM);
+            telemetry.addData("ds",  "%.2f %.2f", dLeft, dRight);
             telemetry.update();
 
-            // Pace this loop so jaw action is reasonable speed.
-            sleep(50);
+            // Pause for 40 mS each cycle = update 25 times a second.
+            //sleep(40);
+            robot.waitForTick(40);
         }
     }
+
+//    void LogMeasurements()
+//    {
+//        robot.waitForTick(1000);
+//        int[] encoders = new int[4];
+//        for (int i=0; i<4; i++)
+//            encoders[i] = robot.allMotors[i].getCurrentPosition();
+//        double ultraSoundSensor = robot.getFrontDistance();
+//        double laserSensor =  robot.rev2M.getDistance(DistanceUnit.CM);
+//        robot.waitForTick(200);
+//        double heading = robot.getHeading();
+//        double ultraSoundSensor2 = robot.getFrontDistance();
+//        double laserSensor2 =  robot.rev2M.getDistance(DistanceUnit.CM);
+//        Log.i("foo",String.format("distance %6.1f %5d %5d %5d %5d %6.1f %6.1f %6.1f %6.1f",
+//                heading,
+//                encoders[0], encoders[1], encoders[2], encoders[3],
+//                ultraSoundSensor, laserSensor, ultraSoundSensor2, laserSensor2));
+//    }
+//
+    void TestAutoR()
+    {
+        robot.RunProgram(AutoPath.programOrbit,this);
+    }
+    void TestAutoC()
+    {
+        robot.RunProgram(AutoPath.programToAndFro,this);
+    }
+    void TestAutoL()
+    {
+        robot.RunProgram(AutoPath.programLeftGold,this);
+    }
+
+    int[] programTestDrive = new int[]
+            {
+                    cwRobot.DRIVE, HardwareCwBot.inches(12.0),
+                    HardwareCwBot.DRIVE, HardwareCwBot.inches(12.0),
+                    HardwareCwBot.DRIVE, HardwareCwBot.inches(12.0)
+            };
+    int[] programTestStrafe = new int[]
+            {
+                    HardwareCwBot.STRAFE, HardwareCwBot.inches(12.0),
+                    HardwareCwBot.STRAFE, HardwareCwBot.inches(12.0),
+                    HardwareCwBot.STRAFE, HardwareCwBot.inches(12.0)
+            };
+
+    int[] programTestTurns = new int[]
+            {
+                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0),
+                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0),
+                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0),
+                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0)
+            };
+
 }
