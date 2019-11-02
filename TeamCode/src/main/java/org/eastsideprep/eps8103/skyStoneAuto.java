@@ -29,12 +29,12 @@ public class skyStoneAuto extends LinearOpMode {
     OpenGLMatrix lastLocation = null;
     VuforiaLocalizer vuforia;
 
-    public void driveForward(int l) {
+    public void driveForward() {
         robot.leftBackMotor.setPower(0.25);
         robot.leftFrontMotor.setPower(0.25);
         robot.rightFrontMotor.setPower(0.25);
         robot.rightBackMotor.setPower(0.25);
-        sleep(l*48);
+        //sleep(l*48);
     }
 
     public void turnright() {
@@ -87,12 +87,12 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftBackMotor.setPower(0.05);
     }
 
-    public void straferightslowly(int l){
+    public void straferightslowly(){
         robot.rightFrontMotor.setPower(-0.05);
         robot.rightBackMotor.setPower(0.05);
         robot.leftFrontMotor.setPower(0.05);
         robot.leftBackMotor.setPower(-0.05);
-        sleep(l*12*2000);
+        //sleep(l*12*2000);
     }
 
     public void strafeleft(){
@@ -179,7 +179,7 @@ public class skyStoneAuto extends LinearOpMode {
         allTrackables.addAll(targetsSkyStone);
 
         float mmPerInch = 25.4f; //allow it to convert
-        float mmBotWidth = 13 * mmPerInch;        //size of robot //change size of robot
+        float mmBotWidth = 17 * mmPerInch;        //size of robot //change size of robot
         float mmFTCFieldWidth = (46 * 46 - 2) * mmPerInch;   // size of FTC field (glass panels)
         float mmTargetHeight   = (6) * mmPerInch;
 
@@ -193,7 +193,7 @@ public class skyStoneAuto extends LinearOpMode {
          float quadField  = 36 * mmPerInch;
 
          boolean targetVisible = false;
-         float phoneXRotate    = 0;
+         float phoneXRotate    = 90;
          float phoneYRotate    = 0;
          float phoneZRotate    = 0;
 
@@ -298,41 +298,14 @@ public class skyStoneAuto extends LinearOpMode {
         while (opModeIsActive()) {
 
             //take arm out and unfold grabber
-            raisearm(30);//30 deg
-            extendarm(4);//4 inch
-            robot.updown.setPosition(180);//starts out all folded up
-            robot.wrist.setPosition(0);//make sure its alligned
-            robot.closer.setPosition(60);
+           // raisearm(30);//30 deg
+            //extendarm(4);//4 inch
+            //robot.updown.setPosition(180);//starts out all folded up
+            //robot.wrist.setPosition(0);//make sure its alligned
+            //robot.closer.setPosition(60);
 
 
             //make sure that all lengths are good
-
-            driveForward(25);
-            //sleep(1200);
-
-            straferightslowly(5);
-            //sleep(10000);
-
-            strafeleft();
-            sleep(2000);
-
-            driveForward(35);
-            //sleep(1700);
-
-            strafeleft();
-            sleep(700);
-
-            backwards(60);
-            //sleep(3500 );
-
-            raisearm(60);
-            lowerarm(30);
-            extendarm(6);
-            reelarm(1);
-
-            
-
-            // update all visuals
 
             for (VuforiaTrackable trackable : allTrackables) {
                 telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible() ? "Visible" : "Not Visible");
@@ -340,32 +313,107 @@ public class skyStoneAuto extends LinearOpMode {
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
-               // if (!((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                if (!((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
                     //if you can't see anything
                  //   straferightslowly(); //start turning
-                //}
-                //if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
+                    driveForward();
+                    sleep(1200);
+                    telemetry.addData("Pos", "going forward");
+
+                    straferightslowly();
+                    sleep(10000);
+                    telemetry.addData("Pos", "strafing right");
+
+                    strafeleft();
+                    sleep(2000);
+                    telemetry.addData("Pos", "strafing left");
+
+                    driveForward();
+                    sleep(1700);
+                    telemetry.addData("Pos", "going forward");
+
+                    strafeleft();
+                    sleep(700);
+                    telemetry.addData("Pos", "strafing left");
+
+                    backwards(60);
+                    telemetry.addData("Pos", "going backwards");
+
+                    straferight();
+                    sleep(700);
+                    telemetry.addData("Pos", "strafing right");
+                    //sleep(3500 );
+
+                    driveForward();
+                    sleep(1200);
+                    telemetry.addData("Pos", "driving forward");
+
+                    straferightslowly();
+                    sleep(10000);
+                    telemetry.addData("Pos", "strafing right");
+
+                    strafeleft();
+                    sleep(2000);
+                    telemetry.addData("Pos", "strafing left");
+
+                    driveForward();
+                    sleep(1700);
+                    telemetry.addData("Pos", "driving foward");
+
+                    strafeleft();
+                    sleep(700);
+                    telemetry.addData("Pos", "strafing left");
+
+                    backwards(60);
+                    telemetry.addData("Pos", "backwards");
+                    //sleep(3500 );
+
+                    //raisearm(60);
+                    //lowerarm(30);
+                    //extendarm(6);
+                    //reelarm(1);
+
+
+
+                    // update all visuals
+
+                }
+               else if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible())
+                    { 
                     //if you see something
-                  //  stopmotors(); //stop
+                    stopmotors(); //stop
+                        sleep(40000);
+                         telemetry.addData("Pos", "We see it!");
+                        if (lastLocation != null) {
+                            telemetry.addData("Pos", format(lastLocation)); //if there was a last location, add it
+                        } else {
+                            telemetry.addData("Pos", "Unknown");
+                        }
+                        telemetry.update();
+
+                        if (lastLocation == null) {
+                        }
                     //grab block
                     //robot.updown.setPosition(30);//pls grabber servos work
                      //robot.closer.setPosition(90);
                    // backwards(12);
 //turnleft(90);
                 //forwards(60); //go robot go
+                }
+
+               // if (lastLocation != null) {
+                 //   telemetry.addData("Pos", format(lastLocation)); //if there was a last location, add it
+               // } else {
+                   // telemetry.addData("Pos", "Unknown");
                 //}
+               // telemetry.update();
+
+              //  if (lastLocation == null) {
+               // }
 
 
             }
-            if (lastLocation != null) {
-                telemetry.addData("Pos", format(lastLocation)); //if there was a last location, add it
-            } else {
-                telemetry.addData("Pos", "Unknown");
-            }
-            telemetry.update();
 
-            if (lastLocation == null) {
-            }
         }
     }
 
