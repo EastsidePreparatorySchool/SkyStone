@@ -71,7 +71,7 @@ public class SubiTeleOp extends OpMode {
         telemetry.addData("loops", i);
         goMotor();
 
-        motorPowers.set(fLM, bLM, fLM, bRM);
+        motorPowers.set(fLM, bLM, fRM, bRM);
         robot.setMotors(motorPowers);
         telemetry.addData("robot",robot.driveTrain);
         robot.moveMotors();
