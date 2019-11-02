@@ -34,7 +34,7 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftFrontMotor.setPower(0.25);
         robot.rightFrontMotor.setPower(0.25);
         robot.rightBackMotor.setPower(0.25);
-        //sleep(l*48);
+        //sleep(l * 48);
     }
 
     public void turnright() {
@@ -58,12 +58,12 @@ public class skyStoneAuto extends LinearOpMode {
         robot.rightFrontMotor.setPower(0.25);
     }
 
-    public void backwards(int l) {
+    public void backwards() {
         robot.leftBackMotor.setPower(-0.25);
         robot.leftFrontMotor.setPower(-0.25);
         robot.rightFrontMotor.setPower(-0.25);
         robot.rightBackMotor.setPower(-0.25);
-        sleep(l*58);
+        //sleep(l * 58);
     }
 
     public void motorStop() {
@@ -80,14 +80,14 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftFrontMotor.setPower(0);
     }
 
-    public void strafeleftslowly(){
+    public void strafeleftslowly() {
         robot.rightFrontMotor.setPower(0.05);
         robot.rightBackMotor.setPower(-0.05);
         robot.leftFrontMotor.setPower(-0.05);
         robot.leftBackMotor.setPower(0.05);
     }
 
-    public void straferightslowly(){
+    public void straferightslowly() {
         robot.rightFrontMotor.setPower(-0.05);
         robot.rightBackMotor.setPower(0.05);
         robot.leftFrontMotor.setPower(0.05);
@@ -95,40 +95,39 @@ public class skyStoneAuto extends LinearOpMode {
         //sleep(l*12*2000);
     }
 
-    public void strafeleft(){
+    public void strafeleft() {
         robot.rightFrontMotor.setPower(0.5);
         robot.rightBackMotor.setPower(-0.5);
         robot.leftFrontMotor.setPower(-0.5);
         robot.leftBackMotor.setPower(0.5);
     }
 
-    public void straferight(){
+    public void straferight() {
         robot.rightFrontMotor.setPower(-0.5);
         robot.rightBackMotor.setPower(0.5);
         robot.leftFrontMotor.setPower(0.5);
         robot.leftBackMotor.setPower(-0.5);
     }
 
-    public void lowerarm(int angle){
+    public void lowerarm(int angle) {
         robot.armPivot.setPower(0.6);
-        sleep(1000*angle);
+        sleep(1000 * angle);
     }
 
-    public void raisearm(int angle){
+    public void raisearm(int angle) {
         robot.armPivot.setPower(-1);
-        sleep(1000*angle);
+        sleep(1000 * angle);
     }
 
-    public void extendarm(int l){
+    public void extendarm(int l) {
         robot.armExtender.setPower(-1);
-        sleep(1000*l);
+        sleep(1000 * l);
     }
 
-    public void reelarm(int l){
+    public void reelarm(int l) {
         robot.armExtender.setPower(1);
-        sleep(1000*l);
+        sleep(1000 * l);
     }
-
 
 
     @Override
@@ -181,84 +180,83 @@ public class skyStoneAuto extends LinearOpMode {
         float mmPerInch = 25.4f; //allow it to convert
         float mmBotWidth = 17 * mmPerInch;        //size of robot //change size of robot
         float mmFTCFieldWidth = (46 * 46 - 2) * mmPerInch;   // size of FTC field (glass panels)
-        float mmTargetHeight   = (6) * mmPerInch;
+        float mmTargetHeight = (6) * mmPerInch;
 
         float bridgeZ = 6.42f * mmPerInch;
         float bridgeY = 23 * mmPerInch;
         float bridgeX = 5.18f * mmPerInch;
-         float bridgeRotY = 59;                                 // Units are degrees
-         float bridgeRotZ = 180;
-         float stoneZ = 2.00f * mmPerInch;
-         float halfField = 72 * mmPerInch;
-         float quadField  = 36 * mmPerInch;
+        float bridgeRotY = 59;                                 // Units are degrees
+        float bridgeRotZ = 180;
+        float stoneZ = 2.00f * mmPerInch;
+        float halfField = 72 * mmPerInch;
+        float quadField = 36 * mmPerInch;
 
-         boolean targetVisible = false;
-         float phoneXRotate    = 90;
-         float phoneYRotate    = 0;
-         float phoneZRotate    = 0;
-
-
-
-         OpenGLMatrix redTargetLocationOnField = OpenGLMatrix
-         .translation(-mmFTCFieldWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XZX, AngleUnit.DEGREES, 90, 90, 0));
-
-         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix.translation(mmBotWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.YZY, AngleUnit.DEGREES, -90, 0, 0));
-         RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
+        boolean targetVisible = false;
+        float phoneXRotate = 90;
+        float phoneYRotate = 0;
+        float phoneZRotate = 0;
 
 
-         stoneTarget.setLocation(OpenGLMatrix
-            .translation(0, 0, stoneZ)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
+        OpenGLMatrix redTargetLocationOnField = OpenGLMatrix
+                .translation(-mmFTCFieldWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XZX, AngleUnit.DEGREES, 90, 90, 0));
+
+        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix.translation(mmBotWidth / 2, 0, 0).multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.YZY, AngleUnit.DEGREES, -90, 0, 0));
+        RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
+
+
+        stoneTarget.setLocation(OpenGLMatrix
+                .translation(0, 0, stoneZ)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
 
         //Set the position of the bridge support targets with relation to origin (center of field)
-         blueFrontBridge.setLocation(OpenGLMatrix
-            .translation(-bridgeX, bridgeY, bridgeZ)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, bridgeRotZ)));
+        blueFrontBridge.setLocation(OpenGLMatrix
+                .translation(-bridgeX, bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, bridgeRotZ)));
 
-         blueRearBridge.setLocation(OpenGLMatrix
-            .translation(-bridgeX, bridgeY, bridgeZ)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, bridgeRotZ)));
+        blueRearBridge.setLocation(OpenGLMatrix
+                .translation(-bridgeX, bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, bridgeRotZ)));
 
-         redFrontBridge.setLocation(OpenGLMatrix
-            .translation(-bridgeX, -bridgeY, bridgeZ)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, 0)));
+        redFrontBridge.setLocation(OpenGLMatrix
+                .translation(-bridgeX, -bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, -bridgeRotY, 0)));
 
-         redRearBridge.setLocation(OpenGLMatrix
-            .translation(bridgeX, -bridgeY, bridgeZ)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, 0)));
+        redRearBridge.setLocation(OpenGLMatrix
+                .translation(bridgeX, -bridgeY, bridgeZ)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 0, bridgeRotY, 0)));
 
         //Set the position of the perimeter targets with relation to origin (center of field)
-         red1.setLocation(OpenGLMatrix
-            .translation(quadField, -halfField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
+        red1.setLocation(OpenGLMatrix
+                .translation(quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
 
-         red2.setLocation(OpenGLMatrix
-            .translation(-quadField, -halfField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
+        red2.setLocation(OpenGLMatrix
+                .translation(-quadField, -halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 180)));
 
-         front1.setLocation(OpenGLMatrix
-            .translation(-halfField, -quadField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0 , 90)));
+        front1.setLocation(OpenGLMatrix
+                .translation(-halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 90)));
 
-         front2.setLocation(OpenGLMatrix
-            .translation(-halfField, quadField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 90)));
+        front2.setLocation(OpenGLMatrix
+                .translation(-halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 90)));
 
-         blue1.setLocation(OpenGLMatrix
-            .translation(-quadField, halfField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
+        blue1.setLocation(OpenGLMatrix
+                .translation(-quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
 
-         blue2.setLocation(OpenGLMatrix
-            .translation(quadField, halfField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
+        blue2.setLocation(OpenGLMatrix
+                .translation(quadField, halfField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0)));
 
-         rear1.setLocation(OpenGLMatrix
-            .translation(halfField, quadField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0 , -90)));
+        rear1.setLocation(OpenGLMatrix
+                .translation(halfField, quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
 
-         rear2.setLocation(OpenGLMatrix
-            .translation(halfField, -quadField, mmTargetHeight)
-            .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
+        rear2.setLocation(OpenGLMatrix
+                .translation(halfField, -quadField, mmTargetHeight)
+                .multiplied(Orientation.getRotationMatrix(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, -90)));
 
 
         ((VuforiaTrackableDefaultListener) stoneTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection); //listen for each type //change
@@ -274,11 +272,6 @@ public class skyStoneAuto extends LinearOpMode {
         ((VuforiaTrackableDefaultListener) blue2.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection); //change
         ((VuforiaTrackableDefaultListener) rear1.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection); //change
         ((VuforiaTrackableDefaultListener) rear2.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection); //change
-
-
-
-
-
 
 
         telemetry.addData(">", "Press Play to start tracking");
@@ -297,15 +290,6 @@ public class skyStoneAuto extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //take arm out and unfold grabber
-           // raisearm(30);//30 deg
-            //extendarm(4);//4 inch
-            //robot.updown.setPosition(180);//starts out all folded up
-            //robot.wrist.setPosition(0);//make sure its alligned
-            //robot.closer.setPosition(60);
-
-
-            //make sure that all lengths are good
 
             for (VuforiaTrackable trackable : allTrackables) {
                 telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible() ? "Visible" : "Not Visible");
@@ -313,138 +297,67 @@ public class skyStoneAuto extends LinearOpMode {
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
-                if (!((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
-                    //if you can't see anything
-                 //   straferightslowly(); //start turning
-                    driveForward();
-                    sleep(1200);
-                    telemetry.addData("Pos", "going forward");
-                    telemetry.update();
+                driveForward();
+                sleep(7000);
 
-                    straferightslowly();
-                    sleep(10000);
-                    telemetry.addData("Pos", "strafing right");
-                    telemetry.update();
+                straferightslowly();
+                sleep(6000);
 
-                    strafeleft();
-                    sleep(2000);
-                    telemetry.addData("Pos", "strafing left");
-                    telemetry.update();
+                strafeleft();
+                sleep(2000);
 
-                    driveForward();
-                    sleep(1700);
-                    telemetry.addData("Pos", "going forward");
-                    telemetry.update();
+                driveForward();
+                sleep(5000);
 
-                    strafeleft();
-                    sleep(700);
-                    telemetry.addData("Pos", "strafing left");
-                    telemetry.update();
+                strafeleft();
+                sleep(3000);
 
-                    backwards(60);
-                    telemetry.addData("Pos", "going backwards");
-                    telemetry.update();
+                backwards();
+                sleep(7000);
 
-                    straferight();
-                    sleep(700);
-                    telemetry.addData("Pos", "strafing right");
-                    telemetry.update();
-                    //sleep(3500 );
+                straferight();
+                sleep(3000);
+                //sleep(3500 );
 
-                    driveForward();
-                    sleep(1200);
-                    telemetry.addData("Pos", "driving forward");
-                    telemetry.update();
-            raisearm(60);
-            //expected: 60degrees
-            //actual:
+                driveForward();
+                sleep(4000);
 
-            lowerarm(30);
-            //expected: 30degrees
-            //actual:
+                straferightslowly();
+                sleep(1000);
 
-            extendarm(6);
-            //expected: 6in
-            //actual:
+                strafeleft();
+                sleep(2000);
 
-            reelarm(1);
-            //expected: 1in
-            //actual:
+                driveForward();
+                sleep(2000);
 
-                    straferightslowly();
-                    sleep(10000);
-                    telemetry.addData("Pos", "strafing right");
-                    telemetry.update();
+                strafeleft();
+                sleep(4000);
 
-                    strafeleft();
-                    sleep(2000);
-                    telemetry.addData("Pos", "strafing left");
-                    telemetry.update();
+                backwards();
+                sleep(3000);
 
-                    driveForward();
-                    sleep(1700);
-                    telemetry.addData("Pos", "driving foward");
-                    telemetry.update();
-
-                    strafeleft();
-                    sleep(700);
-                    telemetry.addData("Pos", "strafing left");
-                    telemetry.update();
-
-                    backwards(60);
-                    telemetry.addData("Pos", "backwards");
-                    telemetry.update();
-                    //sleep(3500 );
-
-                    //raisearm(60);
-                    //lowerarm(30);
-                    //extendarm(6);
-                    //reelarm(1);
-
-
-
-                    // update all visuals
-
-                }
-               else if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible())
-                    { 
-                    //if you see something
-                    stopmotors(); //stop
-                        sleep(40000);
-                         telemetry.addData("Pos", "We see it!");
-                        if (lastLocation != null) {
-                            telemetry.addData("Pos", format(lastLocation)); //if there was a last location, add it
-                        } else {
-                            telemetry.addData("Pos", "Unknown");
-                        }
-                        telemetry.update();
-
-                        if (lastLocation == null) {
-                        }
-                    //grab block
-                    //robot.updown.setPosition(30);//pls grabber servos work
-                     //robot.closer.setPosition(90);
-                   // backwards(12);
-//turnleft(90);
-                //forwards(60); //go robot go
-                }
-
-               // if (lastLocation != null) {
-                 //   telemetry.addData("Pos", format(lastLocation)); //if there was a last location, add it
-               // } else {
-                   // telemetry.addData("Pos", "Unknown");
+                //if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
+                  //  stopmotors();
+                    //sleep(2000);
                 //}
-               // telemetry.update();
-
-              //  if (lastLocation == null) {
-               // }
-
 
             }
-
         }
-    }
 
+
+        telemetry.addData("Pos", "We see it!");
+        if (lastLocation != null) {
+            telemetry.addData("Pos", format(lastLocation)); //if there was a last location, add it
+        } else {
+            telemetry.addData("Pos", "Unknown");
+        }
+        telemetry.update();
+
+        if (lastLocation == null) {
+        }
+
+    }
 
     String format(OpenGLMatrix transformationMatrix) {
         return transformationMatrix.formatAsTransform();

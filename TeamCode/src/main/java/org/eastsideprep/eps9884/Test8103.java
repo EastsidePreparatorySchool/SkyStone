@@ -40,29 +40,92 @@ public class Test8103 extends LinearOpMode{
 
             //sleep(4000);
 
-          robot.rightBackMotor.setPower(0.25);
+          //robot.rightBackMotor.setPower(1);
 
-          sleep(5000);
+          //sleep(4000);
 
-          robot.rightBackMotor.setPower(-0.25);
+            ///robot.rightBackMotor.setPower(0.5);
 
-            sleep(5000);
+            //sleep(4000);
+            //robot.rightFrontMotor.setPower(0);
 
+            //robot.leftFrontMotor.setPower(1);
+
+            //sleep(2000);
+            //robot.leftFrontMotor.setPower(0);
+
+            //robot.leftFrontMotor.setPower(-1);
+
+            //sleep(2000);
+            //robot.leftFrontMotor.setPower(0);
+
+            //robot.rightFrontMotor.setPower(1);
+
+            //sleep(2000);
+            //robot.rightFrontMotor.setPower(0);
+
+            //robot.rightFrontMotor.setPower(-1);
+
+            //sleep(2000);
+            //robot.rightFrontMotor.setPower(0);
+
+            //robot.leftBackMotor.setPower(1);
+            //sleep(4000);
+            //robot.leftBackMotor.setPower(0.5);
+            //sleep(4000);
+            //robot.leftBackMotor.setPower(0);
+
+            robot.leftBackMotor.setPower(1);
+            robot.rightBackMotor.setPower(1);
+            robot.leftFrontMotor.setPower(1);
+            robot.rightFrontMotor.setPower(1);
+            float startlb = robot.leftBackMotor.getCurrentPosition();
+            float startrb = robot.rightBackMotor.getCurrentPosition();
+            float startrf = robot.rightFrontMotor.getCurrentPosition();
+            float startlf = robot.leftFrontMotor.getCurrentPosition();
+            for(int i=0; i<10; i++) {
+                telemetry.addData("left back", (robot.leftBackMotor.getCurrentPosition()-startlb)/i);
+                telemetry.addData("right back", (robot.rightBackMotor.getCurrentPosition()-startrb)/i);
+                telemetry.addData("left front", (robot.leftFrontMotor.getCurrentPosition()-startlf)/i);
+                telemetry.addData("right front", (robot.rightFrontMotor.getCurrentPosition()-startrf)/i);
+                telemetry.update();
+                sleep(1000);
+            }
+
+            robot.leftBackMotor.setPower(0.25);
+            robot.rightBackMotor.setPower(0.25);
             robot.leftFrontMotor.setPower(0.25);
-
-            sleep(5000);
-
-            robot.leftFrontMotor.setPower(-0.25);
-
-            sleep(5000);
-
             robot.rightFrontMotor.setPower(0.25);
+            startlb = robot.leftBackMotor.getCurrentPosition();
+            startrb = robot.rightBackMotor.getCurrentPosition();
+            startrf = robot.rightFrontMotor.getCurrentPosition();
+            startlf = robot.leftFrontMotor.getCurrentPosition();
+            for(int i=0; i<10; i++) {
+                telemetry.addData("left back", (robot.leftBackMotor.getCurrentPosition()-startlb)/i);
+                telemetry.addData("right back", (robot.rightBackMotor.getCurrentPosition()-startrb)/i);
+                telemetry.addData("left front", (robot.leftFrontMotor.getCurrentPosition()-startlf)/i);
+                telemetry.addData("right front", (robot.rightFrontMotor.getCurrentPosition()-startrf)/i);
+                telemetry.update();
+                sleep(1000);
 
-            sleep(5000);
+            }
 
-            robot.rightFrontMotor.setPower(-0.25);
-
-            sleep(5000);
+            robot.leftBackMotor.setPower(0.1);
+            robot.rightBackMotor.setPower(0.1);
+            robot.leftFrontMotor.setPower(0.1);
+            robot.rightFrontMotor.setPower(0.1);
+            startlb = robot.leftBackMotor.getCurrentPosition();
+            startrb = robot.rightBackMotor.getCurrentPosition();
+            startrf = robot.rightFrontMotor.getCurrentPosition();
+            startlf = robot.leftFrontMotor.getCurrentPosition();
+            for(int i=0; i<10; i++) {
+                telemetry.addData("left back", (robot.leftBackMotor.getCurrentPosition()-startlb)/i);
+                telemetry.addData("right back", (robot.rightBackMotor.getCurrentPosition()-startrb)/i);
+                telemetry.addData("left front", (robot.leftFrontMotor.getCurrentPosition()-startlf)/i);
+                telemetry.addData("right front", (robot.rightFrontMotor.getCurrentPosition()-startrf)/i);
+                telemetry.update();
+                sleep(1000);
+            }
 
 
             // Send telemetry message to signify robot waiting;

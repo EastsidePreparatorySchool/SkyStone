@@ -72,7 +72,7 @@ public class Hardware8103 {
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
          for (DcMotor m : allMotors) {
-            m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+           // m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
