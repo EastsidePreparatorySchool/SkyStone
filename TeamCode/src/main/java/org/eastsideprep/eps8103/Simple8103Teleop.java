@@ -79,9 +79,9 @@ public class Simple8103Teleop extends LinearOpMode {
         telemetry.addData("Say", "Ready");
         telemetry.update();
 
-        //robot.closer.setPosition(180);
-        //robot.wrist.setPosition(0);
-        //robot.updown.setPosition(30);
+        robot.closer.setPosition(0.3);
+        robot.wrist.setPosition(0);
+        robot.updown.setPosition(0.3);
 
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -132,8 +132,8 @@ public class Simple8103Teleop extends LinearOpMode {
             telemetry.addData("extend encoder", robot.armExtender.getCurrentPosition());
 
             pivotControl = gamepad2.right_stick_y;
-            //robot.armPivot.setTargetPosition((int) (100*pivotControl));//this needs extensive testing to figure out the coefficient
-            //robot.armPivot.setPower(1);
+            robot.armPivot.setTargetPosition((int) (100*pivotControl));//this needs extensive testing to figure out the coefficient
+            robot.armPivot.setPower(1);
             robot.armPivot.setPower(pivotControl);
 
             telemetry.addData("pivot controller position", pivotControl);
@@ -159,13 +159,29 @@ public class Simple8103Teleop extends LinearOpMode {
             // A toggles the wrist
             if (gamepad2.dpad_left) {
                 robot.wrist.setPosition(0);
+                boolean openclaw = gamepad2.x;
+                boolean closeclaw = gamepad2.y;
+                if (gamepad2.x) {
+                    robot.closer.setPosition(0.3);
+                } else if (gamepad2.y) {
+                    robot.closer.setPosition(0.1);
+                }
+
             }
             if (gamepad2.dpad_right) {
                 robot.wrist.setPosition(1);
+                boolean openclaw = gamepad2.x;
+                boolean closeclaw = gamepad2.y;
+                if (gamepad2.x) {
+                    robot.closer.setPosition(0.09);
+                } else if (gamepad2.y) {
+                    robot.closer.setPosition(0.09);
+                }
+
             }
 
             if (gamepad2.dpad_up) {
-                robot.updown.setPosition(0.6);
+                robot.updown.setPosition(0.2);
             }
             if (gamepad2.dpad_down) {
                 robot.updown.setPosition(0.1);
@@ -173,14 +189,6 @@ public class Simple8103Teleop extends LinearOpMode {
 
 
             telemetry.addData("pad data:", Arrays.toString(new boolean[]{gamepad2.dpad_up, gamepad2.dpad_right, gamepad2.dpad_down, gamepad2.dpad_left}));
-
-            boolean openclaw = gamepad2.x;
-            boolean closeclaw = gamepad2.y;
-            if (gamepad2.x) {
-                robot.closer.setPosition(0.6);
-            } else if (gamepad2.y) {
-                robot.closer.setPosition(0.01);
-            }
 
             for (int i = 0; i < robot.allServos.length; i++) {
                 servoPositions[i] = robot.allServos[i].getPosition();
