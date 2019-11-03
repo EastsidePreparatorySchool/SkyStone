@@ -61,7 +61,7 @@ public class VuforiaTest  extends OpMode{
     @Override
     public void start() {
         //last known location of the robot
-        lastLocation = newMatrix(0,0,0,0,0,0);
+        lastLocation = newMatrix(50,40,20,90,0,0);
         // activate tracking of all of them
         skystoneTrackables.activate();
 
@@ -72,9 +72,26 @@ public class VuforiaTest  extends OpMode{
     public void loop(){
 
 
+        float[] b = lastLocation.getData();
+        String l = "[";
+        int count= 0;
+        for(float m: b){
+            if(count == 4){
+                count = 0;
+                l+="]  [";
+            }
+            l+=m+", ";
+            count++;
 
-
-
+        }
+        telemetry.addData("Location1:", l);
+        // important things:
+        // test this by getting the columns 4 columns of last location
+        // then get hte four rows
+        // see what the shape is, and what is where in actuallity
+        // then use that to understand what the pose is from the numbers given in
+        // in the mean time though, this is on hold.
+        telemetry.addData("Location2 ", lastLocation);
         //if Vuforia can't see any targets, this will be null
         OpenGLMatrix trackedLocation = null;
 

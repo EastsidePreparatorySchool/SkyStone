@@ -83,4 +83,24 @@ public class DriveTrain {
         return m;
 
     }
+
+    public String negativePositive(){
+        String nP = "";
+        DcMotor[] motors = asArray();
+        for (DcMotor m1: motors
+             ) {
+            if(m1.getPower() >0){
+                nP+=" +,";
+
+            }else if(m1.getPower() <0){
+                nP+= " -,";
+            }else{
+                nP+=" 0.0";
+
+            }
+
+        }
+        return nP;
+
+    }
 }

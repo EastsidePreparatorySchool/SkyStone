@@ -135,7 +135,7 @@ public class SkystoneRobot implements Robot {
 
         //trackedLocation = listener.getUpdatedRobotLocation();
         if(trackedLocation != null){
-            //pose = trackedLocation.;
+            //pose = (trackedLocation.getData[14], trackedLocation.getData[15], trackedLocation.getData[16]);
             telemetry.addData("Location:", "changed");
 
         }

@@ -16,7 +16,7 @@ public class SubiTeleOp extends OpMode {
     MotorPowers motorPowers;
 
     // a minimum joystick value before movement
-    double threshold = 0.1;
+    double threshold = 0.05;
     // a modifier to all movement
     int moves = 0;
 
@@ -64,18 +64,22 @@ public class SubiTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("hi", fLM);
-
+    updateTelemetry(telemetry);
         telemetry.addData("mode", mode);
         getInput();
+        telemetry.addData("speed", speed);
+
         telemetry.addData("loops", i);
         goMotor();
 
-        motorPowers.set(fLM, bLM, fRM, bRM);
+        motorPowers.set(fLM, bLM, -fRM, -bRM);
+        //motorPowers.set(0.25,0.25,0.25,0.25);
+        telemetry.addData("",motorPowers);
         robot.setMotors(motorPowers);
-        telemetry.addData("robot",robot.driveTrain);
+        //telemetry.addData("robot",robot.driveTrain);
         robot.moveMotors();
-        telemetry.addData("robot", robot.driveMotors);
+        //telemetry.addData("robot", robot.driveMotors);
+        telemetry.addData("robot", robot.driveTrain.negativePositive());
        /* if(clawOpen){
             robot.ungrab();
         }else{
@@ -88,7 +92,7 @@ public class SubiTeleOp extends OpMode {
             robot.pivotArm(pivotPower);
         }
         */
-
+        speed = 0.5;
        i++;
 
 
@@ -101,7 +105,7 @@ public class SubiTeleOp extends OpMode {
         g1LeftAnalogX = thresholdCheck(this.gamepad1.left_stick_x);
         g1LeftAnalogY = thresholdCheck(this.gamepad1.left_stick_y);
 
-
+        speed+= this.gamepad1.right_trigger/2;
         /*if(this.gamepad1.left_bumper){
             if(clawOpen){
                 clawOpen = false;
@@ -165,6 +169,7 @@ public class SubiTeleOp extends OpMode {
             mode = 3;
 
         }
+        turn = getTurn();
 
     }
 
@@ -179,6 +184,8 @@ public class SubiTeleOp extends OpMode {
                 turnWhileMoving();
             }case 1:{
                 turnInPlace();
+                telemetry.addData("turning in place", turn);
+
             }case 2:{
                 strafe();
             }case 3:{
@@ -245,17 +252,17 @@ public class SubiTeleOp extends OpMode {
 
         fLM = g1LeftAnalogX*speed;
         bLM = -g1LeftAnalogX*speed;
-        fRM = -g1LeftAnalogY*speed;
+        fRM = -g1LeftAnalogX*speed;
         bRM = g1LeftAnalogX*speed;
 
     }
 
     public void forwardStrafe(){
 
-        fLM = (-g1LeftAnalogY + g1LeftAnalogX)*speed;
-        bLM = (-g1LeftAnalogY + -g1LeftAnalogX)*speed;
-        fRM = (-g1LeftAnalogY + -g1LeftAnalogX)*speed;
-        bRM = (-g1LeftAnalogY + g1RightAnalogX)*speed;
+        fLM = (-g1LeftAnalogY + -g1LeftAnalogX)*speed;
+        bLM = (-g1LeftAnalogY + g1LeftAnalogX)*speed;
+        fRM = (-g1LeftAnalogY + g1LeftAnalogX)*speed;
+        bRM = (-g1LeftAnalogY + -g1RightAnalogX)*speed;
 
 
 
