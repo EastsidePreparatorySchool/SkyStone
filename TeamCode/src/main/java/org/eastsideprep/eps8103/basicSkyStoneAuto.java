@@ -20,28 +20,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name = "pushNpark", group = "Concept")
+@Autonomous(name = "leftpark", group = "Concept")
 public class basicSkyStoneAuto extends LinearOpMode {
 
     Hardware8103 robot = new Hardware8103();
 
     public static final String TAG = "Vuforia Navigation Sample";
 
-    OpenGLMatrix lastLocation = null;
-    VuforiaLocalizer vuforia;
-
     public void forwards(int l) {
         for(DcMotor m: robot.allMotors) {
-            m.setTargetPosition(l*2000);
-            m.setPower(0.75);
+            m.setTargetPosition(l);
+            m.setPower(0.1);
             //sleep(l * 48);
         }
     }
 
     public void backwards(int l) {
         for(DcMotor m: robot.allMotors) {
-            m.setTargetPosition(l*-2000);
-            m.setPower(0.75);
+            m.setTargetPosition(-1*l);
+            m.setPower(0.1);
             //sleep(l * 48);
         }
     }
@@ -97,12 +94,12 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void strafeleft(int l) {
-        robot.rightFrontMotor.setTargetPosition(200*l);
-        robot.rightBackMotor.setTargetPosition(-200*l);
-        robot.leftFrontMotor.setTargetPosition(-200*l);
-        robot.leftBackMotor.setTargetPosition(200*l);
+        robot.rightFrontMotor.setTargetPosition(l);
+        robot.rightBackMotor.setTargetPosition(-1*l);
+        robot.leftFrontMotor.setTargetPosition(-1*l);
+        robot.leftBackMotor.setTargetPosition(l);
         for(DcMotor m: robot.allMotors){
-            m.setPower(1);
+            m.setPower(0.01);
         }
     }
 
@@ -144,10 +141,18 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update(); //add stuff to telemetry
         waitForStart();
 
+        for(DcMotor m: robot.allMotors){
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
         while (opModeIsActive()) {
-            forwards(24);
-            backwards(24);
+            telemetry.addData("log", "starting");
+//            forwards(24);
+//            telemetry.addData("log", "went forwards");
+//            backwards(24);
+//            telemetry.addData("log", "went backwards");
             strafeleft(9);
+            telemetry.addData("log", "strafed");
         }
     }
 }
