@@ -128,13 +128,13 @@ public class Simple8103Teleop extends LinearOpMode {
 
             extendControl = gamepad2.left_stick_y;
 
-            robot.armExtender.setPower(-1 * gamepad2.left_stick_y);
+            robot.armExtender.setPower(0.5 * gamepad2.left_stick_y);
             telemetry.addData("extend encoder", robot.armExtender.getCurrentPosition());
 
 
 //            robot.armPivot.setTargetPosition((int) (100*pivotControl));//this needs extensive testing to figure out the coefficient
 //            robot.armPivot.setPower(1);
-            robot.armPivot.setPower(gamepad2.right_stick_y);
+            robot.armPivot.setPower(0.5 * gamepad2.right_stick_y);
 
             //telemetry.addData("pivot controller position", pivotControl);
             //telemetry.addData("pivot motor encoder", robot.armPivot.getCurrentPosition());
@@ -162,18 +162,18 @@ public class Simple8103Teleop extends LinearOpMode {
             } else if (gamepad2.dpad_down) {
                 robot.closer.setPosition(-0.2);
                 robot.wrist.setPosition(0.2);
-            } else if (gamepad2.x) {
-                robot.closer.setPosition(1);
             } else if (gamepad2.y) {
+                robot.closer.setPosition(1);
+            } else if (gamepad2.x) {
                 robot.closer.setPosition(0.2);
             }
 //closer not working
 //            }
 
 
-            if (gamepad2.a) {
+            if (gamepad2.b) {
                 robot.updown.setPosition(1);
-            } else if (gamepad2.b) {
+            } else if (gamepad2.a) {
                 robot.updown.setPosition(0);
             }
 //            robot.updown.setPosition(0.2);
