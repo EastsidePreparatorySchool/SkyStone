@@ -57,8 +57,8 @@ public class Hardware8103 {
         armExtender = hwMap.dcMotor.get("extend");
         armExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        updown = hwMap.servo.get("servo1");
-        closer = hwMap.servo.get("servo2");
+        closer = hwMap.servo.get("servo1");
+        updown = hwMap.servo.get("servo2");
         wrist = hwMap.servo.get("servo3");
 
 
