@@ -29,6 +29,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
     int fast_c = 1;
     int strafe_c = 1;
     int slow_strafe_c = 1;
+    int turn_c = 1;
     int ext_c = 1;
     int angle_c = 1;
 
@@ -48,27 +49,19 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
     }
 
-    public void turnright(int angle) {
-        robot.leftBackMotor.setPower(-0.25); //have some wheels turn different directions so it goes left
-        robot.leftFrontMotor.setPower(0.25);
-        robot.rightBackMotor.setPower(0.25);
-        robot.rightFrontMotor.setPower(-0.25);
+    public void turnright(int angle, double power) {
+        robot.leftBackMotor.setPower(-power); //have some wheels turn different directions so it goes left
+        robot.leftFrontMotor.setPower(power);
+        robot.rightBackMotor.setPower(power);
+        robot.rightFrontMotor.setPower(-power);
         sleep(turn_c * angle);
     }
 
-    public void turnrightslowly(int angle) {
-        robot.leftBackMotor.setPower(-0.05); //have low power so it goes very slow
-        robot.leftFrontMotor.setPower(0.05);
-        robot.rightFrontMotor.setPower(0.05);
-        robot.rightBackMotor.setPower(-0.05);
-        sleep(turn_c*angle*5)
-    }
-
-    public void turnleft(int angle) {
-        robot.leftFrontMotor.setPower(0.25);
-        robot.leftBackMotor.setPower(-0.25);
-        robot.rightBackMotor.setPower(-0.25);
-        robot.rightFrontMotor.setPower(0.25);
+    public void turnleft(int angle, double power) {
+        robot.leftFrontMotor.setPower(power);
+        robot.leftBackMotor.setPower(-power);
+        robot.rightBackMotor.setPower(-power);
+        robot.rightFrontMotor.setPower(power);
         sleep(turn_c * angle);
     }
 
@@ -78,7 +71,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
     }
 
-    public void strafeleftslowly() {
+    public void strafeleftslowly(int l) {
         robot.rightFrontMotor.setTargetPosition(slow_strafe_c * l);
         robot.rightBackMotor.setTargetPosition(-1*slow_strafe_c * l);
         robot.leftFrontMotor.setTargetPosition(-1*slow_strafe_c * l);
@@ -88,7 +81,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
     }
 
-    public void straferightslowly() {
+    public void straferightslowly(int l) {
         robot.rightFrontMotor.setTargetPosition(-1 * slow_strafe_c * l);
         robot.rightBackMotor.setTargetPosition(slow_strafe_c * l);
         robot.leftFrontMotor.setTargetPosition(slow_strafe_c * l);
@@ -142,7 +135,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        RobotLog.w(TAG, "runopmode");
         robot.init(hardwareMap); //load hardware from other program
 
         telemetry.addData(">", "Press Play to start tracking");
@@ -167,9 +159,8 @@ public class basicSkyStoneAuto extends LinearOpMode {
             strafeleft(12);
             telemetry.addData("R/L", "12, 12");
 
-            turnrightslowly(45);
-            turnright(45);
-            turnleft(90);
+            turnright(45, 0.25);
+            turnleft(90, 0.05);
             telemetry.addData("turning", "45R, 45R, 90L");
             
 
