@@ -17,8 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Autonomous(name = "dead reckoning", group = "Concept")
 public class basicSkyStoneAuto extends LinearOpMode {
@@ -26,26 +25,56 @@ public class basicSkyStoneAuto extends LinearOpMode {
     Hardware8103 robot = new Hardware8103();
 
     //these have to be found experimentally aka a lot of testing
-    int fast_c = 1;
-    int strafe_c = 1;
+    double fast_c = 2*robot.TICKS_PER_REV / robot.WHEEL_CIRC; //2 because the motors are geared up 2:1 to the wheels
+    int strafe_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC);
+
     int slow_strafe_c = 1;
     int turn_c = 1;
     int ext_c = 1;
     int angle_c = 1;
 
+    double[] drivetrainEncoders = new double[4];
+
+
     public void forwards(int l) {
-        for(DcMotor m: robot.allMotors) {
-            m.setTargetPosition(fast_c*l);
+        for (DcMotor m : robot.allMotors) {
+            m.setTargetPosition(m.getCurrentPosition() + (int) fast_c*l);
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(0.5);
-            //sleep(l * 48);
+        }
+        //once all motors are going i can start turning them off
+        for (DcMotor m:robot.allMotors) {
+            while (m.isBusy()) {
+                m.setPower(0.5);
+            }
+            if (!m.isBusy()) {
+                m.setPower(0);
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
     }
 
     public void backwards(int l) {
-        for(DcMotor m: robot.allMotors) {
-            m.setTargetPosition(fast_c*l);
+        for (DcMotor m : robot.allMotors) {
+            m.setTargetPosition(m.getCurrentPosition() - (int) fast_c*l);
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(0.5);
-            //sleep(l * 48);
+        }
+        //once all motors are going i can start turning them off
+        for (DcMotor m:robot.allMotors) {
+            while (m.isBusy()) {
+                m.setPower(0.5);
+            }
+            if (!m.isBusy()) {
+                m.setPower(0);
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
     }
 
@@ -66,17 +95,17 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void stopmotors() {
-        for (DcMotor m: robot.allMotors){
+        for (DcMotor m : robot.allMotors) {
             m.setPower(0);
         }
     }
 
     public void strafeleftslowly(int l) {
         robot.rightFrontMotor.setTargetPosition(slow_strafe_c * l);
-        robot.rightBackMotor.setTargetPosition(-1*slow_strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(-1*slow_strafe_c * l);
+        robot.rightBackMotor.setTargetPosition(-1 * slow_strafe_c * l);
+        robot.leftFrontMotor.setTargetPosition(-1 * slow_strafe_c * l);
         robot.leftBackMotor.setTargetPosition(slow_strafe_c * l);
-        for(DcMotor m: robot.allMotors){
+        for (DcMotor m : robot.allMotors) {
             m.setPower(0.1);
         }
     }
@@ -86,18 +115,30 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.rightBackMotor.setTargetPosition(slow_strafe_c * l);
         robot.leftFrontMotor.setTargetPosition(slow_strafe_c * l);
         robot.leftBackMotor.setTargetPosition(-1 * slow_strafe_c * l);
-        for(DcMotor m: robot.allMotors){
+        for (DcMotor m : robot.allMotors) {
             m.setPower(0.1);
         }
     }
 
     public void strafeleft(int l) {
         robot.rightFrontMotor.setTargetPosition(strafe_c * l);
-        robot.rightBackMotor.setTargetPosition(-1*strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(-1*strafe_c * l);
+        robot.rightBackMotor.setTargetPosition(-1 * strafe_c * l);
+        robot.leftFrontMotor.setTargetPosition(-1 * strafe_c * l);
         robot.leftBackMotor.setTargetPosition(strafe_c * l);
-        for(DcMotor m: robot.allMotors){
+        for (DcMotor m : robot.allMotors) {
             m.setPower(0.25);
+        }
+        for (DcMotor m:robot.allMotors) {
+            while (m.isBusy()) {
+                m.setPower(0.25);
+            }
+            if (!m.isBusy()) {
+                m.setPower(0);
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
     }
 
@@ -106,13 +147,25 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.rightBackMotor.setTargetPosition(strafe_c * l);
         robot.leftFrontMotor.setTargetPosition(strafe_c * l);
         robot.leftBackMotor.setTargetPosition(-1 * strafe_c * l);
-        for(DcMotor m: robot.allMotors){
+        for (DcMotor m : robot.allMotors) {
             m.setPower(0.25);
+        }
+        for (DcMotor m:robot.allMotors) {
+            while (m.isBusy()) {
+                m.setPower(0.25);
+            }
+            if (!m.isBusy()) {
+                m.setPower(0);
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
     }
 
     public void lowerarm(int angle) {
-        robot.armPivot.setTargetPosition(angle_c *angle);
+        robot.armPivot.setTargetPosition(angle_c * angle);
         robot.armPivot.setPower(1);
     }
 
@@ -131,6 +184,10 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.armExtender.setPower(1);
     }
 
+    public void print_encoders() {
+        telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
+        telemetry.update();
+    }
 
     @Override
     public void runOpMode() {
@@ -141,31 +198,36 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update(); //add stuff to telemetry
         waitForStart();
 
-        for(DcMotor m: robot.allMotors){
-            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+//        for(DcMotor m: robot.allMotors){
+//            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        }
 
-        while (opModeIsActive()) {
-            telemetry.addData("log", "starting");
+//        while (opModeIsActive()) {
+        telemetry.addData("log", "starting");
 //            forwards(24);
 //            telemetry.addData("log", "went forwards");
 //            backwards(24);
 //            telemetry.addData("log", "went backwards");
-            forwards(24);
-            backwards(24);
-            telemetry.addData("for/bac", "24, 24");
+        forwards(8);
+        print_encoders();
+        backwards(8);
+        strafeleft(8);
+        straferight(8);
+        print_encoders();
+//            backwards(24);
+//            telemetry.addData("for/bac", "24, 24");
+//
+//            straferight(12);
+//            strafeleft(12);
+//            telemetry.addData("R/L", "12, 12");
+//
+//            turnright(45, 0.25);
+//            turnleft(90, 0.05);
+//            telemetry.addData("turning", "45R, 45R, 90L");
+//
 
-            straferight(12);
-            strafeleft(12);
-            telemetry.addData("R/L", "12, 12");
 
-            turnright(45, 0.25);
-            turnleft(90, 0.05);
-            telemetry.addData("turning", "45R, 45R, 90L");
-            
-
-            telemetry.update();
-        }
+        //}
     }
 }
 
