@@ -25,11 +25,11 @@ public class basicSkyStoneAuto extends LinearOpMode {
     Hardware8103 robot = new Hardware8103();
 
     //these have to be found experimentally aka a lot of testing
-    double fast_c = 2*robot.TICKS_PER_REV / robot.WHEEL_CIRC; //2 because the motors are geared up 2:1 to the wheels
-    int strafe_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC);
+    int fast_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC *0.2); //2 because the motors are geared up 2:1 to the wheels
+    int strafe_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC *0.5);//last constants need tweaking
 
     int slow_strafe_c = 1;
-    int turn_c = 1;
+    int turn_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC *0.065);
     int ext_c = 1;
     int angle_c = 1;
 
@@ -78,20 +78,54 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
     }
 
-    public void turnright(int angle, double power) {
-        robot.leftBackMotor.setPower(-power); //have some wheels turn different directions so it goes left
-        robot.leftFrontMotor.setPower(power);
-        robot.rightBackMotor.setPower(power);
-        robot.rightFrontMotor.setPower(-power);
-        sleep(turn_c * angle);
+    public void turnright(int angle) {
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - (int) turn_c*angle);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + (int) turn_c*angle);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + (int) turn_c*angle);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - (int) turn_c*angle);
+        
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            m.setPower(0.2);
+        }
+        //once all motors are going i can start turning them off
+        for (DcMotor m:robot.allMotors) {
+            while (m.isBusy()) {
+                m.setPower(0.2);
+            }
+            if (!m.isBusy()) {
+                m.setPower(0);
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
     }
 
-    public void turnleft(int angle, double power) {
-        robot.leftFrontMotor.setPower(power);
-        robot.leftBackMotor.setPower(-power);
-        robot.rightBackMotor.setPower(-power);
-        robot.rightFrontMotor.setPower(power);
-        sleep(turn_c * angle);
+    public void turnleft(int angle) {
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + (int) turn_c*angle);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - (int) turn_c*angle);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - (int) turn_c*angle);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + (int) turn_c*angle);
+        
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            m.setPower(0.2);
+        }
+        //once all motors are going i can start turning them off
+        for (DcMotor m:robot.allMotors) {
+            while (m.isBusy()) {
+                m.setPower(0.2);
+            }
+            if (!m.isBusy()) {
+                m.setPower(0);
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
     }
 
     public void stopmotors() {
@@ -101,30 +135,30 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void strafeleftslowly(int l) {
-        robot.rightFrontMotor.setTargetPosition(slow_strafe_c * l);
-        robot.rightBackMotor.setTargetPosition(-1 * slow_strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(-1 * slow_strafe_c * l);
-        robot.leftBackMotor.setTargetPosition(slow_strafe_c * l);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + slow_strafe_c * l);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - slow_strafe_c * l);
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - slow_strafe_c * l);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + slow_strafe_c * l);
         for (DcMotor m : robot.allMotors) {
             m.setPower(0.1);
         }
     }
 
     public void straferightslowly(int l) {
-        robot.rightFrontMotor.setTargetPosition(-1 * slow_strafe_c * l);
-        robot.rightBackMotor.setTargetPosition(slow_strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(slow_strafe_c * l);
-        robot.leftBackMotor.setTargetPosition(-1 * slow_strafe_c * l);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - slow_strafe_c * l);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + slow_strafe_c * l);
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + slow_strafe_c * l);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - slow_strafe_c * l);
         for (DcMotor m : robot.allMotors) {
             m.setPower(0.1);
         }
     }
 
     public void strafeleft(int l) {
-        robot.rightFrontMotor.setTargetPosition(strafe_c * l);
-        robot.rightBackMotor.setTargetPosition(-1 * strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(-1 * strafe_c * l);
-        robot.leftBackMotor.setTargetPosition(strafe_c * l);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + strafe_c * l);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - strafe_c * l);
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - strafe_c * l);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + strafe_c * l);
         for (DcMotor m : robot.allMotors) {
             m.setPower(0.25);
         }
@@ -143,10 +177,10 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void straferight(int l) {
-        robot.rightFrontMotor.setTargetPosition(-1 * strafe_c * l);
-        robot.rightBackMotor.setTargetPosition(strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(strafe_c * l);
-        robot.leftBackMotor.setTargetPosition(-1 * strafe_c * l);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - strafe_c * l);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + strafe_c * l);
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + strafe_c * l);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - strafe_c * l);
         for (DcMotor m : robot.allMotors) {
             m.setPower(0.25);
         }
@@ -167,6 +201,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
     public void lowerarm(int angle) {
         robot.armPivot.setTargetPosition(angle_c * angle);
         robot.armPivot.setPower(1);
+        //dont set the power to 0, make sure to hold position!
     }
 
     public void raisearm(int angle) {
@@ -198,36 +233,16 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update(); //add stuff to telemetry
         waitForStart();
 
-//        for(DcMotor m: robot.allMotors){
-//            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        }
 
-//        while (opModeIsActive()) {
         telemetry.addData("log", "starting");
-//            forwards(24);
-//            telemetry.addData("log", "went forwards");
-//            backwards(24);
-//            telemetry.addData("log", "went backwards");
-        forwards(8);
-        print_encoders();
-        backwards(8);
-        strafeleft(8);
-        straferight(8);
-        print_encoders();
-//            backwards(24);
-//            telemetry.addData("for/bac", "24, 24");
-//
-//            straferight(12);
-//            strafeleft(12);
-//            telemetry.addData("R/L", "12, 12");
-//
-//            turnright(45, 0.25);
-//            turnleft(90, 0.05);
-//            telemetry.addData("turning", "45R, 45R, 90L");
-//
 
+        forwards(96);
+        strafeleft(4);
+        turnright(360);
+        straferight(4);
+        backwards(18);
 
-        //}
+        print_encoders();
     }
 }
 
