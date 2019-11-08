@@ -297,6 +297,7 @@ public class skyStoneAuto extends LinearOpMode {
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
                 }
+            }
                 driveForward();
                 sleep(7000);
 
@@ -342,7 +343,6 @@ public class skyStoneAuto extends LinearOpMode {
                     //sleep(2000);
                 //}
 
-            }
         }
 
 
