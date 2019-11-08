@@ -49,7 +49,6 @@ public class Simple8103Teleop extends LinearOpMode {
         wristpos = wristpos == 0 ? 1 : 0; //i like me my ternary bois
     }
 
-
     @Override
     public void runOpMode() {
 
@@ -79,6 +78,7 @@ public class Simple8103Teleop extends LinearOpMode {
         telemetry.addData("Say", "Ready");
         telemetry.update();
 
+        //make sure everything starts in the same position at the beginning of teleop every time
         robot.closer.setPosition(0);
         robot.wrist.setPosition(0);
         robot.updown.setPosition(0.6);
@@ -90,9 +90,6 @@ public class Simple8103Teleop extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            //make sure everything starts in the same position at the beginning of teleop every time
-
 
             float x = gamepad1.left_stick_x;
             float y = -gamepad1.left_stick_y; // Negate to get +y forward.
@@ -110,6 +107,8 @@ public class Simple8103Teleop extends LinearOpMode {
                 double pow = powers[i] * biggestControl + rotation * robot.rotationArray[i];
                 powers[i] = pow;
                 pow2 += pow * pow;
+
+                robot.allMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
             if (biggestWithRotation != 0.0) {
@@ -130,16 +129,16 @@ public class Simple8103Teleop extends LinearOpMode {
             robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
             robot.armPivot.setPower(0.6);
 
-
+            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
             //pivot encoder results:
             //90 deg - 1535
             //all down is -750
             //all back is 3200
 
-            if(robot.armPivot.getCurrentPosition()<-650 || robot.armPivot.getCurrentPosition()>3100){
+            if (robot.armPivot.getCurrentPosition() < -650 || robot.armPivot.getCurrentPosition() > 3100) {
                 robot.armPivot.setPower(0);//dont go too low or high!!!
             }
-            if(robot.armExtender.getCurrentPosition()<141 || robot.armExtender.getCurrentPosition()>1581){
+            if (robot.armExtender.getCurrentPosition() < 141 || robot.armExtender.getCurrentPosition() > 1581) {
                 robot.armExtender.setPower(0);
             }
 

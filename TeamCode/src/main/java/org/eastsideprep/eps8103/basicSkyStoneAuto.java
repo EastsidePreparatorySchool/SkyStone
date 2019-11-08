@@ -20,24 +20,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.*;
 
 @Autonomous(name = "dead reckoning", group = "Concept")
-public class basicSkyStoneAuto {
+public class basicSkyStoneAuto extends LinearOpMode {
 
     Hardware8103 robot = new Hardware8103();
 
-
     //these have to be found experimentally aka a lot of testing
-    int fast_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.26); //2 because the motors are geared up 2:1 to the wheels
+    int fast_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.24); //2 because the motors are geared up 2:1 to the wheels
     int strafe_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.5);//last constants need tweaking
 
     int slow_strafe_c = 1;
     int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
     int ext_c = 1;
 
-    
+    int angle_c = 360 / robot.TICKS_PER_REV;
 
-
-    
-    int angle_c = 360/robot.TICKS_PER_REV;
     double[] drivetrainEncoders = new double[4];
 
 
@@ -66,12 +62,12 @@ public class basicSkyStoneAuto {
         for (DcMotor m : robot.allMotors) {
             m.setTargetPosition(m.getCurrentPosition() - (int) fast_c * l);
             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            m.setPower(0.5);
+            m.setPower(0.4);
         }
         //once all motors are going i can start turning them off
         for (DcMotor m : robot.allMotors) {
             while (m.isBusy()) {
-                m.setPower(0.5);
+                m.setPower(0.4);
             }
             if (!m.isBusy()) {
                 m.setPower(0);
@@ -94,7 +90,7 @@ public class basicSkyStoneAuto {
         robot.leftFrontMotor.setPower(0.25);
         robot.rightBackMotor.setPower(0.25);
         robot.rightFrontMotor.setPower(-0.25);
-       // sleep(turn_c * angle);
+        // sleep(turn_c * angle);
     }
 
     public void turnrightslowly(int angle) {
@@ -103,38 +99,6 @@ public class basicSkyStoneAuto {
         robot.rightFrontMotor.setPower(0.05);
         robot.rightBackMotor.setPower(-0.05);
         //sleep(turn_c*angle*5)
-    }
-
-    public void turnleft(int angle) {
-        robot.leftFrontMotor.setPower(0.25);
-        robot.leftBackMotor.setPower(-0.25);
-        robot.rightBackMotor.setPower(-0.25);
-        robot.rightFrontMotor.setPower(0.25);
-        //sleep(turn_c * angle);
-
-        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + (int) turn_c*angle);
-        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - (int) turn_c*angle);
-        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - (int) turn_c*angle);
-        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + (int) turn_c*angle);
- 
- 
-        for (DcMotor m : robot.allMotors) {
-            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            m.setPower(0.25);
-        }
-        //once all motors are going i can start turning them off
-        for (DcMotor m : robot.allMotors) {
-            while (m.isBusy()) {
-                m.setPower(0.25);
-            }
-            if (!m.isBusy()) {
-                m.setPower(0);
-            }
-        }
-
-        for (int i = 0; i < 4; i++) {
-            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-        }
     }
 
     public void turnleft(int angle) {
@@ -167,13 +131,6 @@ public class basicSkyStoneAuto {
             m.setPower(0);
         }
     }
-
-    public void strafeleftslowly() {
-        robot.rightFrontMotor.setTargetPosition(slow_strafe_c );
-        robot.rightBackMotor.setTargetPosition(-1*slow_strafe_c );
-        robot.leftFrontMotor.setTargetPosition(-1*slow_strafe_c );
-        robot.leftBackMotor.setTargetPosition(slow_strafe_c );
-        for(DcMotor m: robot.allMotors){
 
     public void strafeleftslowly(int l) {
         robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + slow_strafe_c * l);
@@ -240,7 +197,7 @@ public class basicSkyStoneAuto {
     }
 
     public void lowerarm(int angle) {
-        robot.armPivot.setTargetPosition(angle_c * angle);
+        robot.armPivot.setTargetPosition(-650);
         robot.armPivot.setPower(1);
         //dont set the power to 0, make sure to hold position!
     }
@@ -251,12 +208,12 @@ public class basicSkyStoneAuto {
     }
 
     public void extendarm(int l) {
-        robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + ext_c * l);
+        robot.armExtender.setTargetPosition(1581);
         robot.armExtender.setPower(1);
     }
 
     public void reelarm(int l) {
-        robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() - ext_c * l);
+        robot.armExtender.setTargetPosition(141);//found this value using teleop
         robot.armExtender.setPower(1);
     }
 
@@ -269,8 +226,6 @@ public class basicSkyStoneAuto {
     @Override
     public void runOpMode() {
 
-        //RobotLog.w(TAG, "runopmode");
-
         robot.init(hardwareMap); //load hardware from other program
 
         telemetry.addData(">", "Press Play to start tracking");
@@ -280,6 +235,23 @@ public class basicSkyStoneAuto {
 
         telemetry.addData("log", "starting");
         //remember to start in the "legal" position
+        robot.armPivot.setTargetPosition(-500);
+        robot.armPivot.setPower(0.5);
+        robot.armExtender.setTargetPosition(141);
+        robot.armExtender.setPower(0.5);
+        while (robot.armPivot.isBusy()) {
+            robot.armPivot.setPower(0.5);
+        }
+        if (!robot.armPivot.isBusy()) {
+            robot.armPivot.setPower(0);
+        }
+        while (robot.armExtender.isBusy()) {
+            robot.armExtender.setPower(0.5);
+        }
+        if (!robot.armExtender.isBusy()) {
+            robot.armExtender.setPower(0);
+        }
+
         forwards(18, 0.6);
         turnright(90);
 
@@ -303,5 +275,5 @@ public class basicSkyStoneAuto {
     }
 }
 
-}   
+
 

@@ -41,9 +41,9 @@ public class Hardware8103 {
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    public void init(HardwareMap hwMap) {
         // Save reference to Hardware map
-        hwMap = ahwMap;
+//        hwMap = ahwMap;
         // hey bob
 
         // Define and Initialize Motors
@@ -65,7 +65,7 @@ public class Hardware8103 {
         closer = hwMap.servo.get("servo3");
 
 
-        allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, rightBackMotor, leftBackMotor};
+        allMotors = new DcMotor[]{ leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
         allServos = new Servo[] {wrist, updown, closer};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};
 
@@ -77,7 +77,7 @@ public class Hardware8103 {
          for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
 
