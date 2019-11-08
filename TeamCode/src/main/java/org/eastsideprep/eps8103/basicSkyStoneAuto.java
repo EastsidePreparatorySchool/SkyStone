@@ -25,25 +25,25 @@ public class basicSkyStoneAuto extends LinearOpMode {
     Hardware8103 robot = new Hardware8103();
 
     //these have to be found experimentally aka a lot of testing
-    int fast_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC *0.3); //2 because the motors are geared up 2:1 to the wheels
-    int strafe_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC *0.5);//last constants need tweaking
+    int fast_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.26); //2 because the motors are geared up 2:1 to the wheels
+    int strafe_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.5);//last constants need tweaking
 
     int slow_strafe_c = 1;
-    int turn_c = (int) (2*robot.TICKS_PER_REV / robot.WHEEL_CIRC *0.061);
+    int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
     int ext_c = 1;
-    int angle_c = 360/robot.TICKS_PER_REV;
+    int angle_c = 360 / robot.TICKS_PER_REV;
 
     double[] drivetrainEncoders = new double[4];
 
 
     public void forwards(int l, double speed) {
         for (DcMotor m : robot.allMotors) {
-            m.setTargetPosition(m.getCurrentPosition() + (int) fast_c*l);
+            m.setTargetPosition(m.getCurrentPosition() + (int) fast_c * l);
             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(speed);
         }
         //once all motors are going i can start turning them off
-        for (DcMotor m:robot.allMotors) {
+        for (DcMotor m : robot.allMotors) {
             while (m.isBusy()) {
                 m.setPower(speed);
             }
@@ -59,12 +59,12 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
     public void backwards(int l) {
         for (DcMotor m : robot.allMotors) {
-            m.setTargetPosition(m.getCurrentPosition() - (int) fast_c*l);
+            m.setTargetPosition(m.getCurrentPosition() - (int) fast_c * l);
             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(0.5);
         }
         //once all motors are going i can start turning them off
-        for (DcMotor m:robot.allMotors) {
+        for (DcMotor m : robot.allMotors) {
             while (m.isBusy()) {
                 m.setPower(0.5);
             }
@@ -79,17 +79,17 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void turnright(int angle) {
-        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + (int) turn_c*angle);
-        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - (int) turn_c*angle);
-        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - (int) turn_c*angle);
-        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + (int) turn_c*angle);
-        
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + (int) turn_c * angle);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - (int) turn_c * angle);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - (int) turn_c * angle);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + (int) turn_c * angle);
+
         for (DcMotor m : robot.allMotors) {
             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(0.25);
         }
         //once all motors are going i can start turning them off
-        for (DcMotor m:robot.allMotors) {
+        for (DcMotor m : robot.allMotors) {
             while (m.isBusy()) {
                 m.setPower(0.25);
             }
@@ -104,17 +104,17 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void turnleft(int angle) {
-        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - (int) turn_c*angle);
-        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + (int) turn_c*angle);
-        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + (int) turn_c*angle);
-        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - (int) turn_c*angle);
-        
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - (int) turn_c * angle);
+        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + (int) turn_c * angle);
+        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + (int) turn_c * angle);
+        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - (int) turn_c * angle);
+
         for (DcMotor m : robot.allMotors) {
             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(0.25);
         }
         //once all motors are going i can start turning them off
-        for (DcMotor m:robot.allMotors) {
+        for (DcMotor m : robot.allMotors) {
             while (m.isBusy()) {
                 m.setPower(0.25);
             }
@@ -162,7 +162,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         for (DcMotor m : robot.allMotors) {
             m.setPower(0.25);
         }
-        for (DcMotor m:robot.allMotors) {
+        for (DcMotor m : robot.allMotors) {
             while (m.isBusy()) {
                 m.setPower(0.25);
             }
@@ -184,7 +184,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         for (DcMotor m : robot.allMotors) {
             m.setPower(0.25);
         }
-        for (DcMotor m:robot.allMotors) {
+        for (DcMotor m : robot.allMotors) {
             while (m.isBusy()) {
                 m.setPower(0.25);
             }
@@ -210,12 +210,12 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void extendarm(int l) {
-        robot.armExtender.setTargetPosition(ext_c * l);
+        robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + ext_c * l);
         robot.armExtender.setPower(1);
     }
 
     public void reelarm(int l) {
-        robot.armExtender.setTargetPosition(-1 * ext_c * l);
+        robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() - ext_c * l);
         robot.armExtender.setPower(1);
     }
 
@@ -223,7 +223,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();
     }
-
 
 
     @Override
@@ -237,23 +236,27 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
 
         telemetry.addData("log", "starting");
+        //remember to start in the "legal" position
+        forwards(18, 0.6);
+        turnright(90);
 
-        straferight(20);
-//        forwards(18, 0.6);
-//        turnright(90);
-//
-//        forwards(30, 0.1);//check using camera!!
-//        turnleft(90);
-//        robot.updown.setPosition(1);
-//        robot.closer.setPosition(0.2);
-//
-//
-//        //pickup block
-//        sleep(3000);
-//        turnleft(90);
-//        forwards(96, 0.5);
+
+        forwards(30, 0.1);//check using camera!!
+        if (true) {
+            turnleft(90);
+            extendarm(8);
+            robot.updown.setPosition(1);
+            robot.closer.setPosition(0.5);
+            reelarm(8);
+        }//pickup block
+
+        turnleft(90);
+        forwards(80, 0.6);
+        turnleft(90);
+        backwards(24);
 
         print_encoders();
+
     }
 }
 

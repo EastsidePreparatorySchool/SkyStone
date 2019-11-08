@@ -124,38 +124,30 @@ public class Simple8103Teleop extends LinearOpMode {
                     drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
                 }
             }
+            robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + 2 * Math.round(gamepad2.right_trigger));
+            robot.armExtender.setPower(0.6);
 
+            robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
+            robot.armPivot.setPower(0.6);
 
-            extendControl = gamepad2.left_stick_y;
-
-            robot.armExtender.setPower(0.5 * gamepad2.left_stick_y);
-            telemetry.addData("extend encoder", robot.armExtender.getCurrentPosition());
-
-
-//            robot.armPivot.setTargetPosition((int) (100*pivotControl));//this needs extensive testing to figure out the coefficient
-//            robot.armPivot.setPower(1);
-            robot.armPivot.setPower(0.5 * gamepad2.right_stick_y);
-
-            //telemetry.addData("pivot controller position", pivotControl);
-            //telemetry.addData("pivot motor encoder", robot.armPivot.getCurrentPosition());
             //pivot encoder results:
             //90 deg - 1535
             //all down is -750
             //all back is 3200
 
-//            if(robot.armPivot.getCurrentPosition()<-650 || robot.armPivot.getCurrentPosition()>3100){
-//                robot.armPivot.setPower(0);//dont go too low or high!!!
-//            }
-//            if(robot.armExtender.getCurrentPosition()<141 || robot.armExtender.getCurrentPosition()>1581){
-//                robot.armExtender.setPower(0);
-//            }
+            if(robot.armPivot.getCurrentPosition()<-650 || robot.armPivot.getCurrentPosition()>3100){
+                robot.armPivot.setPower(0);//dont go too low or high!!!
+            }
+            if(robot.armExtender.getCurrentPosition()<141 || robot.armExtender.getCurrentPosition()>1581){
+                robot.armExtender.setPower(0);
+            }
 
             //extend encoder results
             //extend:141 all extended:1581
 
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
 
-            int whereswrist = 0;
+
             // A toggles the wrist
             if (gamepad2.dpad_up) {
                 robot.closer.setPosition(-0.4);
@@ -176,16 +168,6 @@ public class Simple8103Teleop extends LinearOpMode {
             } else if (gamepad2.a) {
                 robot.updown.setPosition(0);
             }
-//            robot.updown.setPosition(0.2);
-
-           // if (gamepad2.dpad_up) {
-               // robot.updown.setPosition(0.2);
-            //} else if (gamepad2.dpad_down) {
-           //     robot.updown.setPosition(0.1);
-            //}
-
-
-            telemetry.addData("pad data:", Arrays.toString(new boolean[]{gamepad2.dpad_up, gamepad2.dpad_right, gamepad2.dpad_down, gamepad2.dpad_left}));
 
             for (int i = 0; i < robot.allServos.length; i++) {
                 servoPositions[i] = robot.allServos[i].getPosition();
@@ -197,7 +179,6 @@ public class Simple8103Teleop extends LinearOpMode {
 
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);
-
         }
     }
 }
