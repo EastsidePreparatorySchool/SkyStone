@@ -27,6 +27,9 @@ public class Hardware8103 {
     double xpos;
     double ypos;
 
+    int TICKS_PER_REV = 1120;
+    double WHEEL_RADIUS = 2;
+    double WHEEL_CIRC = WHEEL_RADIUS*2*Math.PI;
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -62,7 +65,7 @@ public class Hardware8103 {
         closer = hwMap.servo.get("servo3");
 
 
-        allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
+        allMotors = new DcMotor[]{ leftFrontMotor, rightFrontMotor, rightBackMotor, leftBackMotor};
         allServos = new Servo[] {wrist, updown, closer};
         rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};
 
@@ -74,6 +77,7 @@ public class Hardware8103 {
          for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
 
