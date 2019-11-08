@@ -130,6 +130,7 @@ public class Simple8103Teleop extends LinearOpMode {
             robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
             robot.armPivot.setPower(0.6);
 
+
             //pivot encoder results:
             //90 deg - 1535
             //all down is -750
