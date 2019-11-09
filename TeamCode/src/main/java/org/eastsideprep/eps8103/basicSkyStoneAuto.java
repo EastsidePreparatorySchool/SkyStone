@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -36,6 +38,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
     double[] drivetrainEncoders = new double[4];
 
+    ColorSensor color_sensor;
 
     public void forwards(int l, double speed) {
         for (DcMotor m : robot.allMotors) {
@@ -232,6 +235,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update(); //add stuff to telemetry
         waitForStart();
 
+        telemetry.addData("color sensor", new float[] {color_sensor.red(), color_sensor.green(), color_sensor.blue()});
 
         telemetry.addData("log", "starting");
         //remember to start in the "legal" position

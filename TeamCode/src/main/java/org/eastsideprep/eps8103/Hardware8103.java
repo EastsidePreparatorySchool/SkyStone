@@ -3,8 +3,11 @@ package org.eastsideprep.eps8103;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 /**
  * Hardware definitions for 8103
@@ -22,14 +25,16 @@ public class Hardware8103 {
     public Servo closer = null;
     public DcMotor[] allMotors;
     public Servo[] allServos;
-    double [] rotationArray;
+    double[] rotationArray;
+
+    ColorSensor color_sensor;
 
     double xpos;
     double ypos;
 
     int TICKS_PER_REV = 1120;
     double WHEEL_RADIUS = 2;
-    double WHEEL_CIRC = WHEEL_RADIUS*2*Math.PI;
+    double WHEEL_CIRC = WHEEL_RADIUS * 2 * Math.PI;
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -65,27 +70,25 @@ public class Hardware8103 {
         closer = hwMap.servo.get("servo3");
 
 
-        allMotors = new DcMotor[]{ leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
-        allServos = new Servo[] {wrist, updown, closer};
-        rotationArray= new double[]{-1.0, 1.0, -1.0, 1.0};
+        allMotors = new DcMotor[]{leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
+        allServos = new Servo[]{wrist, updown, closer};
+        rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
-         for (DcMotor m : allMotors) {
+        color_sensor = hwMap.colorSensor.get("color");
+
+        for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
-
-//        for (Servo s: allServos){
-//            s.setDirection(Servo.Direction.FORWARD);
-//        }
-
     }
+
     public double[] getDrivePowersFromAngle(double angle) {
         double[] unscaledPowers = new double[4];
         unscaledPowers[0] = Math.sin(angle + Math.PI / 4);
