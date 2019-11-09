@@ -235,11 +235,15 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update(); //add stuff to telemetry
         waitForStart();
 
-        telemetry.addData("color sensor", new float[] {color_sensor.red(), color_sensor.green(), color_sensor.blue()});
+//        robot.color_sensor.enableLed(true);
+//        sleep(100);
+//        robot.color_sensor.enableLed(false);
+//        sleep(100);
+//        robot.color_sensor.enableLed(true);
 
         telemetry.addData("log", "starting");
         //remember to start in the "legal" position
-        robot.armPivot.setTargetPosition(-500);
+        robot.armPivot.setTargetPosition(-400);
         robot.armPivot.setPower(0.5);
         robot.armExtender.setTargetPosition(141);
         robot.armExtender.setPower(0.5);
