@@ -17,12 +17,28 @@ public class Pose extends Point implements Cloneable {
         this.angle=angle;
     }
 
+    Pose(Pose po){
+        this(po.x, po.y, po.angle);
+    }
+
     Pose(Point p, double angle){
         this.x=p.x;
         this.y=p.y;
         this.angle = angle;
 
     }
+
+    public double heading(){
+
+        return angle;
+    }
+
+
+    @Override
+    public Pose scale(double val){
+        return new Pose(x*val, y*val, angle*val);
+    }
+
     @Override
     public Pose clone(){
         Pose newClone = new Pose(this.x, this.y, this.angle);

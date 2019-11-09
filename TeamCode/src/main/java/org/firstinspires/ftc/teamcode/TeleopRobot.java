@@ -43,6 +43,7 @@ public class TeleopRobot implements Robot  {
         backLeftMotor =hardwareMap.dcMotor.get("BackLeftMotor");
         backRightMotor =hardwareMap.dcMotor.get("BackRightMotor");
         driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+        driveTrain.runWithoutEncoders();
         driveMotors = new MotorPowers(0,0,0,0);
 
        // pivotMotor = hardwareMap.dcMotor.get("PivotMotor");

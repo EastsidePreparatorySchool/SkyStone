@@ -72,7 +72,8 @@ public class SubiTeleOp extends OpMode {
         telemetry.addData("loops", i);
         goMotor();
 
-        motorPowers.set(fLM, bLM, -fRM, -bRM);
+
+        motorPowers.set(thresholdCheck2(fLM), thresholdCheck2(bLM), thresholdCheck2(-fRM), thresholdCheck2(-bRM));
         //motorPowers.set(0.25,0.25,0.25,0.25);
         telemetry.addData("",motorPowers);
         robot.setMotors(motorPowers);
@@ -128,7 +129,7 @@ public class SubiTeleOp extends OpMode {
         * */
 
         // switch between normal, sprint, and precise slow speeds
-        if(this.gamepad1.right_bumper){
+        /*if(this.gamepad1.right_bumper){
             switch (moves){
                 // normal speed --> sprint
                 case 0:{
@@ -147,6 +148,8 @@ public class SubiTeleOp extends OpMode {
             }
 
         }
+        */
+
 
 //        linkageMove = thresholdCheck(this.gamepad1.left_trigger - this.gamepad1.right_trigger);
 
@@ -215,6 +218,14 @@ public class SubiTeleOp extends OpMode {
 
         return g1RightAnalogX;
 
+    }
+
+    public double thresholdCheck2(double motor){
+        if(-0.05<motor && motor<0.05){
+            motor=0.0;
+
+        }
+        return motor;
     }
     //motor actions below
 

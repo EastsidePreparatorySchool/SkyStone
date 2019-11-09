@@ -1,18 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-public class MotorPowers {
+public class MotorDistances {
     public double fL;
     public double bL;
     public double fR;
     public double bR;
-    MotorPowers(double all){
+
+    MotorDistances(double all){
         this.fL = all;
         this.bL = all;
         this.fR = all;
         this.bR = all;
 
     }
-    MotorPowers(double frontLeft, double backLeft, double frontRight, double backRight){
+
+    MotorDistances(double frontLeft, double backLeft, double frontRight, double backRight){
         this.fL = frontLeft;
         this.bL = backLeft;
         this.fR = frontRight;
@@ -20,7 +22,7 @@ public class MotorPowers {
 
     }
 
-    MotorPowers(double[] motors){
+    MotorDistances(double[] motors){
         fL = motors[0];
         bL = motors[1];
         fR = motors[2];
@@ -41,6 +43,7 @@ public class MotorPowers {
         this.bL = all;
         this.fR = all;
         this.bR = all;
+
     }
 
     public double[] asArray(){
@@ -51,30 +54,14 @@ public class MotorPowers {
         motors[3] = bR;
         return motors;
     }
-
-    public void scale(){
-        for (double motor: this.asArray()) {
-            if(motor > 1){
-                for(double m: this.asArray()){
-                    m /=1;
-
-                }
-                break;
-
-            }
-        }
-
-
-    }
     @Override
     public String toString(){
         String m = "";
         for (double a:
-             asArray()) {
+                asArray()) {
             m+= " "+a;
         }
         return m;
 
     }
-
 }

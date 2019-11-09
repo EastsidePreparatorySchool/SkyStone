@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Path;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,7 +29,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import javax.crypto.spec.OAEPParameterSpec;
 
 @Autonomous(name = "SubiAuto1", group = "autos")
-public class SubiAuto1 extends OpMode {
+public class SubiAuto1 extends LinearOpMode {
 
     VuforiaLocalizer vuforia;
     VuforiaTrackables skystoneTrackables;
@@ -95,17 +96,12 @@ public class SubiAuto1 extends OpMode {
     OpenGLMatrix webcamLocation;
     OpenGLMatrix lastLocation;
     OpenGLMatrix targetLocation;
-    @Override
-    public void init() {
 
+    @Override
+    public void runOpMode() throws InterruptedException {
         setVuforia();
 
         telemetry.addData("Status", "Initialized");
-    }
-
-
-    @Override
-    public void start() {
         //last known location of the robot
         lastLocation = newMatrix(len1,0,0,0,0,0);
         // activate tracking of all of them
@@ -118,17 +114,9 @@ public class SubiAuto1 extends OpMode {
         while(!inRange()){
 
         }
-
-
-
-    }
-
-    @Override
-    public void loop() {
-
         int i =0;
-
     }
+
 
     public void targetToWheels(OpenGLMatrix targetLocation, int mode){
 

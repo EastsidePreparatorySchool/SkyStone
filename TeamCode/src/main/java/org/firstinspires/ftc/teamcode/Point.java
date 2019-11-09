@@ -13,12 +13,24 @@ public class Point implements Cloneable{
 
     }
 
+    Point(Point p){
+        this(p.x, p.y);
+    }
+
     public Point subtract(Point p){
         return new Point(this.x-p.x, this.y-p.y);
 
 
     }
 
+    public double invTan(){
+        return Math.atan(this.x/this.y);
+
+    }
+
+    public Point scale(double val){
+        return new Point(x*val, y*val);
+    }
 
 
     @Override
