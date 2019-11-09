@@ -108,7 +108,7 @@ public class Simple8103Teleop extends LinearOpMode {
                 powers[i] = pow;
                 pow2 += pow * pow;
 
-                robot.allMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.allMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
 
             if (biggestWithRotation != 0.0) {
