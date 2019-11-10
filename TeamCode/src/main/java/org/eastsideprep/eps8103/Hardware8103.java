@@ -69,11 +69,11 @@ public class Hardware8103 {
         updown = hwMap.servo.get("servo2");
         closer = hwMap.servo.get("servo3");
 
-//        color_sensor = hwMap.colorSensor.get("color");
+        color_sensor = hwMap.colorSensor.get("color_sensor");
 
         allMotors = new DcMotor[]{leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
         allServos = new Servo[]{wrist, updown, closer};
-        rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
+        rotationArray = new double[]{-1.0, -1.0, 1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);

@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.*;
 
-@Autonomous(name = "dead reckoning", group = "Concept")
+@Autonomous(name = "Trajan's auto", group = "Concept")
 public class basicSkyStoneAuto extends LinearOpMode {
 
     Hardware8103 robot = new Hardware8103();
@@ -32,7 +32,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
     int slow_strafe_c = 1;
     int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
-    int ext_c = 1;
+    int pivot_c = 1;
 
     int angle_c = 360 / robot.TICKS_PER_REV;
 
@@ -42,7 +42,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
     public void forwards(int l, double speed) {
         for (DcMotor m : robot.allMotors) {
-            m.setTargetPosition(m.getCurrentPosition() + (int) fast_c * l);
+            m.setTargetPosition(m.getCurrentPosition() + fast_c * l);
             m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(speed);
         }
@@ -200,13 +200,13 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void lowerarm(int angle) {
-        robot.armPivot.setTargetPosition(-650);
+        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() - pivot_c*angle);
         robot.armPivot.setPower(1);
         //dont set the power to 0, make sure to hold position!
     }
 
     public void raisearm(int angle) {
-        robot.armPivot.setTargetPosition(-1 * angle_c * angle);
+        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + pivot_c*angle);
         robot.armPivot.setPower(1);
     }
 

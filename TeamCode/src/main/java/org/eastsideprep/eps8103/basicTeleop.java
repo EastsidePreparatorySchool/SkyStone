@@ -37,59 +37,25 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.eastsideprep.eps8103.Hardware8103;
 
-@TeleOp(name = "Kalie Teleop", group = "8103")
+@TeleOp(name = "Trajan Teleop", group = "8103")
 
-public class Simple8103Teleop extends LinearOpMode {
+public class basicTeleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware8103 robot = new Hardware8103();
-//
-//    public void toggleWrist(int wristpos) {
-//        robot.wrist.setPosition(wristpos == 0 ? 180 : 0);
-//        wristpos = wristpos == 0 ? 1 : 0; //i like me my ternary bois
-//    }
 
     @Override
     public void runOpMode() {
 
         robot.init(hardwareMap);
 
-        double left;
-        double right;
-        float extendControl;
-        float pivotControl;
-
-        double globalX = robot.xpos;
-        double globalY = robot.ypos;
-
         double[] drivetrainEncoders = new double[4];
         double[] servoPositions = new double[3];
 
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-
-
-//        for (DcMotor m : robot.allMotors) {
-//            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); //better for driver control
-//        }
-
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Ready");
-        telemetry.update();
-
-        //make sure everything starts in the same position at the beginning of teleop every time
-        robot.closer.setPosition(0);
-        robot.wrist.setPosition(0);
-        robot.updown.setPosition(0.6);
-
-        // Wait for the game to start (driver presses PLAY)
-        //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        for(DcMotor m: robot.allMotors){
+        for (DcMotor m : robot.allMotors) {
             m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-
+telemetry.addData("", "ready");
         waitForStart();
 
 
