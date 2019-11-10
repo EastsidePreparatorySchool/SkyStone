@@ -27,7 +27,7 @@ public class Hardware8103 {
     public Servo[] allServos;
     double[] rotationArray;
 
-    ColorSensor color_sensor = null;
+   ColorSensor color_sensor = null;
 
     double xpos;
     double ypos;
@@ -79,6 +79,8 @@ public class Hardware8103 {
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        
+       color_sensor = hwMap.colorSensor.get("color");
 
         for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

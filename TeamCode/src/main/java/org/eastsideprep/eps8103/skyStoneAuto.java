@@ -135,6 +135,8 @@ public class skyStoneAuto extends LinearOpMode {
         RobotLog.w(TAG, "runopmode");
         robot.init(hardwareMap); //load hardware from other program
 
+
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId); //load and show camera (doesn't have to show on set up but this makes it show)
 
@@ -298,6 +300,12 @@ public class skyStoneAuto extends LinearOpMode {
                     lastLocation = robotLocationTransform;
                 }
             }
+            if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
+                stopmotors();
+                sleep(2000);
+            }
+
+            if(!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
                 driveForward();
                 sleep(7000);
 
@@ -337,11 +345,7 @@ public class skyStoneAuto extends LinearOpMode {
 
                 backwards();
                 sleep(3000);
-
-                //if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
-                  //  stopmotors();
-                    //sleep(2000);
-                //}
+            }
 
         }
 
