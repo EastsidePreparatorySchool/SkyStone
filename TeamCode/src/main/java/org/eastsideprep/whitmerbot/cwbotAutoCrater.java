@@ -29,28 +29,12 @@
 
 package org.eastsideprep.whitmerbot;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
+//import com.disnodeteam.dogecv.CameraViewDisplay;
+//import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-/**
- * This OpMode uses the common HardwareK9bot class to define the devices on the robot.
- * All device access is managed through the HardwareK9bot class. (See this class for device names)
- * The code is structured as a LinearOpMode
- *
- * This particular OpMode executes a basic Tank Drive Teleop for the K9 bot
- * It raises and lowers the arm using the Gampad Y and A buttons respectively.
- * It also opens and closes the claw slowly using the X and B buttons.
- *
- * Note: the configuration of the servos is such that
- * as the arm servo approaches 0, the arm position moves up (away from the floor).
- * Also, as the claw servo approaches 0, the claw opens up (drops the game element).
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
+//import static java.lang.Boolean.FALSE;
 @Autonomous(name="Crater Side Auto", group="cwbot")
 public class cwbotAutoCrater extends LinearOpMode
 {
@@ -58,7 +42,7 @@ public class cwbotAutoCrater extends LinearOpMode
     cwRobot robot = new cwRobot();
 
     // Detector object
-    private MyGoldDetector detector;
+    //private MyGoldDetector detector;
 
     @Override
     public void runOpMode() {
@@ -74,35 +58,35 @@ public class cwbotAutoCrater extends LinearOpMode
         robot.phoneServo.setPosition(robot.PHONE_AT_45);
 
         // Set up detector
-        detector = new MyGoldDetector(); // Create detector
-        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Initialize it with the app context and camera
-        detector.useDefaults(); // Set detector to use default settings
-
-        // Optional tuning
-        detector.downscale = 0.4; // How much to downscale the input frames
-
-        detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        detector.maxAreaScorer.weight = 0.005; //
-
-        detector.ratioScorer.weight = 5; //
-        detector.ratioScorer.perfectRatio = 1.0; // Ratio adjustment
-
-        detector.enable(); // Start the detector!
+//        detector = new MyGoldDetector(); // Create detector
+//        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); // Initialize it with the app context and camera
+//        detector.useDefaults(); // Set detector to use default settings
+//
+//        // Optional tuning
+//        detector.downscale = 0.4; // How much to downscale the input frames
+//
+//        detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+//        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
+//        detector.maxAreaScorer.weight = 0.005; //
+//
+//        detector.ratioScorer.weight = 5; //
+//        detector.ratioScorer.perfectRatio = 1.0; // Ratio adjustment
+//
+//        detector.enable(); // Start the detector!
 
         while (!isStarted())
         {
-            if (detector.isFound())
-            {
-                String location = String.format("%5d , %5d / %5d x %5d / %5d x %5d",
-                        detector.X, detector.Y, detector.Width, detector.Height, detector.ScreenWidth, detector.ScreenHeight );
-                telemetry.addData("Gold", location);
-            }
-            else
-            {
-                telemetry.addData("Gold", "not found");
-            }
-            telemetry.update();
+//            if (detector.isFound())
+//            {
+//                String location = String.format("%5d , %5d / %5d x %5d / %5d x %5d",
+//                        detector.X, detector.Y, detector.Width, detector.Height, detector.ScreenWidth, detector.ScreenHeight );
+//                telemetry.addData("Gold", location);
+//            }
+//            else
+//            {
+//                telemetry.addData("Gold", "not found");
+//            }
+//            telemetry.update();
 
             robot.waitForTick(50);
         }
@@ -112,22 +96,22 @@ public class cwbotAutoCrater extends LinearOpMode
 
         int[] programToRun = AutoPath.programCraterRightGold;
 
-        if (detector.isFound())
-        {
-            if (detector.X < detector.ScreenWidth/2)
-            {
-                programToRun = AutoPath.programCraterLeftGold;
-            }
-            else
-            {
-                programToRun = AutoPath.programCraterCenterGold;
-            }
-        }
+//        if (detector.isFound())
+//        {
+//            if (detector.X < detector.ScreenWidth/2)
+//            {
+//                programToRun = AutoPath.programCraterLeftGold;
+//            }
+//            else
+//            {
+//                programToRun = AutoPath.programCraterCenterGold;
+//            }
+//        }
 
-        robot.phoneServo.setPosition(robot.PHONE_VERTICAL);
+        robot.phoneServo.setPosition(robot.PHONE_HORIZONTAL);
         robot.resetTickPeriod();
         robot.RunProgram(programToRun, this);
 
-        detector.disable();
+//        detector.disable();
     }
 }

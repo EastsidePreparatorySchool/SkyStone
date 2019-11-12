@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="cwbot: Teleop Drive", group="cwbot")
@@ -71,10 +72,6 @@ public class cwTeleop_Linear extends LinearOpMode
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            //robot.backRight.setPower(gamepad1.right_bumper ? 1.0 : 0.0);
-            //robot.backLeft.setPower(gamepad1.left_bumper ? 1.0 : 0.0);
-
-
             float x = gamepad1.left_stick_x;
             float y = -gamepad1.left_stick_y; // Negate to get +y forward.
             float rotation = gamepad1.right_stick_x;
@@ -93,11 +90,12 @@ public class cwTeleop_Linear extends LinearOpMode
                 pow2 += pow*pow;
             }
 
+            double[] setPower = new double[4];
             if (biggestWithRotation != 0.0) {
-                double scale = Math.sqrt(pow2);
+                double scale = Math.sqrt(pow2)/2.0;
                 for (int i = 0; i < robot.allMotors.length; i++) {
-                    robot.allMotors[i].setPower(
-                            powers[i]/scale*biggestWithRotation*speedControl);
+                    setPower[i] = powers[i]/scale*biggestWithRotation*speedControl;
+                    robot.allMotors[i].setPower(setPower[i]);
                 }
             }
             else
@@ -105,6 +103,7 @@ public class cwTeleop_Linear extends LinearOpMode
                 for (int i = 0; i < robot.allMotors.length; i++)
                     robot.allMotors[i].setPower(0.0);
             }
+
 
 //            if (gamepad1.right_bumper)
 //                TestAutoR();
@@ -120,20 +119,19 @@ public class cwTeleop_Linear extends LinearOpMode
             xPressed = gamepad1.x && !xLastState;
             xLastState = gamepad1.x;
 
-            // YBA = PID
             if (yPressed)
             {
-                ExerciseDistanceSensors();
+                RunArmUpTo(100);
             }
 
             if (bPressed)
             {
-                ApproachAndLogSensors();
+                //ApproachAndLogSensors();
             }
 
             if (xPressed)
             {
-                RetreatAndLogSensors();
+                RunArmDownToStop();
             }
 
             int encoderA = robot.frontLeft.getCurrentPosition();
@@ -143,18 +141,18 @@ public class cwTeleop_Linear extends LinearOpMode
 
             //Quaternion q = robot.imu.getQuaternionOrientation();
             //telemetry.addData("Q", "%.5f %.5f %.5f %.5f",q.w,q.x,q.y,q.z);
-            telemetry.addData("heading", "%.1f",robot.getHeading());
+            //telemetry.addData("heading", "%.1f",robot.getHeading());
             telemetry.addData("Encoders","%6d %6d %6d %6d", encoderA,encoderB,encoderC,encoderD);
-//            telemetry.addData("PID", "%.5f %.5f %.5f",robot.runWithHeadingKp,robot.runWithHeadingKi,robot.runWithHeadingKd);
+            telemetry.addData("Power","%6.2f %6.2f %6.2f %6.2f",
+                    setPower[0],setPower[1],setPower[2],setPower[3]);
             // The sonar only refreshes at 6.7 Hz.
             // We will average over 1 second to reduce noise.
-            double dLeft = robot.getFrontDistance();
-            double dRight = robot.rev2M.getDistance(DistanceUnit.CM);
-            telemetry.addData("ds",  "%.2f %.2f", dLeft, dRight);
+            //double dLeft = robot.getFrontDistance();
+            //double dRight = robot.rev2M.getDistance(DistanceUnit.CM);
+            //telemetry.addData("ds",  "%.2f %.2f", dLeft, dRight);
+            ReportOnArm();
             telemetry.update();
 
-            // Pause for 40 mS each cycle = update 25 times a second.
-            //sleep(40);
             robot.waitForTick(40);
         }
     }
@@ -177,6 +175,54 @@ public class cwTeleop_Linear extends LinearOpMode
 //                ultraSoundSensor, laserSensor, ultraSoundSensor2, laserSensor2));
 //    }
 //
+    void ReportOnArm()
+    {
+        boolean switchIsHit = robot.armLimitSwitch.getState();
+        int armPosition = robot.arm.getCurrentPosition();
+        telemetry.addData("arm", "%6d %s", armPosition, switchIsHit ? "At limit" : "Not at limit");
+        telemetry.update();
+    }
+
+    void RunArmDownToStop()
+    {
+        boolean atLimit = robot.armLimitSwitch.getState();
+        boolean weDidRun = false;
+
+        if (!atLimit)
+        {
+            robot.arm.setPower(-0.1);
+            weDidRun = true;
+            while (opModeIsActive() && !atLimit)
+            {
+                ReportOnArm();
+                robot.waitForTick(40);
+                atLimit = robot.armLimitSwitch.getState();
+            }
+        }
+        robot.arm.setPower(0.0);
+        if (weDidRun)
+        {
+            robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            // We need to remind him to RUN_USING_ENCODER, or it won't start
+            // the next time we set power non-zero.
+            robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        sleep(250);
+        ReportOnArm();
+    }
+
+    void RunArmUpTo(int target)
+    {
+        robot.arm.setTargetPosition(target);
+        robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.arm.setPower(0.1);
+        while (robot.arm.isBusy() && opModeIsActive())
+        {}
+        robot.arm.setPower(0.0);
+        robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
     void TestAutoR()
     {
         robot.RunProgram(AutoPath.programOrbit,this);
@@ -192,23 +238,23 @@ public class cwTeleop_Linear extends LinearOpMode
 
     int[] programTestDrive = new int[]
             {
-                    cwRobot.DRIVE, HardwareCwBot.inches(12.0),
-                    HardwareCwBot.DRIVE, HardwareCwBot.inches(12.0),
-                    HardwareCwBot.DRIVE, HardwareCwBot.inches(12.0)
+                    cwRobot.DRIVE, cwRobot.inches(12.0),
+                    cwRobot.DRIVE, cwRobot.inches(12.0),
+                    cwRobot.DRIVE, cwRobot.inches(12.0)
             };
     int[] programTestStrafe = new int[]
             {
-                    HardwareCwBot.STRAFE, HardwareCwBot.inches(12.0),
-                    HardwareCwBot.STRAFE, HardwareCwBot.inches(12.0),
-                    HardwareCwBot.STRAFE, HardwareCwBot.inches(12.0)
+                    cwRobot.STRAFE, cwRobot.inches(12.0),
+                    cwRobot.STRAFE, cwRobot.inches(12.0),
+                    cwRobot.STRAFE, cwRobot.inches(12.0)
             };
 
     int[] programTestTurns = new int[]
             {
-                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0),
-                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0),
-                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0),
-                    HardwareCwBot.TURN, HardwareCwBot.degrees(90.0)
+                    cwRobot.TURN, cwRobot.degrees(90.0),
+                    cwRobot.TURN, cwRobot.degrees(90.0),
+                    cwRobot.TURN, cwRobot.degrees(90.0),
+                    cwRobot.TURN, cwRobot.degrees(90.0)
             };
 
 }

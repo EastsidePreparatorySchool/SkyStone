@@ -8,7 +8,9 @@ import com.qualcomm.hardware.stmicroelectronics.VL53L0X;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
@@ -26,11 +28,13 @@ public class cwRobot
     public DcMotor backLeft = null;
     public DcMotor frontRight = null;
     public DcMotor frontLeft = null;
+    public DcMotor arm = null;
     public Servo phoneServo = null;
-    DeviceInterfaceModule dim;
+    public DigitalChannel armLimitSwitch = null;
 
     public static final double PHONE_VERTICAL =  0.4 ;
     public static final double PHONE_AT_45 =  0.2 ;
+    public static final double PHONE_HORIZONTAL =  0.0 ;
 
     // The IMU sensor object
 //    BNO055IMU imu;
@@ -86,6 +90,9 @@ public class cwRobot
         backLeft = hwMap.dcMotor.get("backLeft");
         frontRight = hwMap.dcMotor.get("frontRight");
         frontLeft = hwMap.dcMotor.get("frontLeft");
+        arm = hwMap.dcMotor.get("arm");
+
+
 
 //        I2cDeviceSynch i2c = hwMap.get(I2cDeviceSynch.class, "TwoMeter");
 //        rev2M = new MyVL53L0X(i2c);
@@ -101,6 +108,8 @@ public class cwRobot
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
+        arm.setDirection(DcMotor.Direction.REVERSE);
+
         for (DcMotor m : allMotors)
         {
             m.setPower(0.0);
@@ -108,12 +117,21 @@ public class cwRobot
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
+        arm.setPower(0.0);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Define and initialize ALL installed servos.
         phoneServo = hwMap.servo.get("phoneServo");
-        phoneServo.setPosition(PHONE_VERTICAL);
+        phoneServo.setPosition(PHONE_HORIZONTAL);
+        phoneServo.close();
 
-//        imuParameters = new BNO055IMU.Parameters();
+        armLimitSwitch = hwMap.digitalChannel.get("limitSwitch");
+        armLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
+
+
+        //        imuParameters = new BNO055IMU.Parameters();
 //        imuParameters.accelRange = BNO055IMU.AccelRange.G16;
 //        imuParameters.gyroRange = BNO055IMU.GyroRange.DPS500;
 
@@ -173,81 +191,6 @@ public class cwRobot
         return sum/4;
     }
 
-    void TestRun2(double runTime, double power, LinearOpMode caller)
-    {
-        Log.i("foo",String.format("%.2f %.2f", runTime,power));
-        Log.i("foo", "TestRun2: Time and power");
-
-        long timeStep = 50;  // 50 msec cycles
-        double deltaT = timeStep / 1000.0;
-        double remainingIntegral = runTime * power;
-        int powerTicks = (int)Math.floor(runTime/deltaT-0.5)-1;
-        if (powerTicks < 0) powerTicks = 0;
-        resetTickPeriod();
-        double lastTime = driveTimer.time();
-        double startTime = lastTime;
-
-        double startupPower = 0.33 * power;
-        for (int i=0; i<allMotors.length; i++)
-            allMotors[i].setPower(startupPower);
-        logEncoders(lastTime-startTime, startupPower);
-        waitForTick(timeStep);
-        double t0 = driveTimer.time();
-        remainingIntegral -= (t0 - lastTime)*startupPower;
-        lastTime = t0;
-
-        startupPower = 0.67 * power;
-        for (int i=0; i<allMotors.length; i++)
-            allMotors[i].setPower(startupPower);
-        logEncoders(lastTime-startTime, startupPower);
-        waitForTick(timeStep);
-        t0 = driveTimer.time();
-        remainingIntegral -= (t0 - lastTime)*startupPower;
-        lastTime = t0;
-
-        if (powerTicks > 0)
-        {
-            for (int i=0; i<allMotors.length; i++)
-                allMotors[i].setPower(power);
-            for (int p=0; caller.opModeIsActive() && p<powerTicks; p++)
-            {
-                logEncoders(lastTime-startTime, power);
-                waitForTick(timeStep);
-                double newTime = driveTimer.time();
-                remainingIntegral -= (newTime - lastTime)*power;
-                lastTime = newTime;
-                if (remainingIntegral <= 0.0) break;
-            }
-        }
-        for (int p=0; caller.opModeIsActive() && p<5 && remainingIntegral > 0.0; p++)
-        {
-            double reducedPower = 0.8*remainingIntegral/deltaT;
-            for (int i=0; i<allMotors.length; i++)
-                allMotors[i].setPower(reducedPower);
-            logEncoders(lastTime-startTime, reducedPower);
-            waitForTick(timeStep);
-            double newTime = driveTimer.time();
-            remainingIntegral -= (newTime - lastTime)*reducedPower;
-            lastTime = newTime;
-        }
-        if (remainingIntegral > 0.0)
-        {
-            double reducedPower = remainingIntegral/deltaT;
-            for (int i=0; i<allMotors.length; i++)
-                allMotors[i].setPower(reducedPower);
-            logEncoders(driveTimer.time()-startTime, reducedPower);
-            waitForTick(timeStep);
-        }
-        for (int i=0; i<allMotors.length; i++)
-            allMotors[i].setPower(0.0);
-        logEncoders(driveTimer.time()-startTime,0.0);
-        for (int p=0; p<(int) (0.4/deltaT); p++)
-        {
-            waitForTick(timeStep);
-            logEncoders(driveTimer.time()-startTime,0.0);
-        }
-    }
-
     double runPower = 0.5;
 
     void Drive(int fullPowerMs, LinearOpMode caller)
@@ -272,31 +215,31 @@ public class cwRobot
         AllRun(Math.abs(time/runPower),runPower*Math.signum(time),strafeFactors,caller);
     }
 
-    void TurnToHeading(int heading, LinearOpMode caller)
-    {
-        double diff = normalizeAngle(heading - getHeadingWithLog());
-        String msg = String.format("TurnToHeading: %d diff: %.2f", heading, diff);
-        Log.i("foo",msg);
-        Turn(degrees(diff), caller);
+//    void TurnToHeading(int heading, LinearOpMode caller)
+//    {
+//        double diff = normalizeAngle(heading - getHeadingWithLog());
+//        String msg = String.format("TurnToHeading: %d diff: %.2f", heading, diff);
+//        Log.i("foo",msg);
+//        Turn(degrees(diff), caller);
+//
+//        diff = normalizeAngle(heading - getHeadingWithLog());
+//        if (Math.abs(diff) > 2.0) {
+//            msg = String.format("TurnToHeading2: %d diff: %.2f", heading, diff);
+//            Log.i("foo", msg);
+//            Turn(degrees(diff), caller);
+//        }
+//    }
 
-        diff = normalizeAngle(heading - getHeadingWithLog());
-        if (Math.abs(diff) > 2.0) {
-            msg = String.format("TurnToHeading2: %d diff: %.2f", heading, diff);
-            Log.i("foo", msg);
-            Turn(degrees(diff), caller);
-        }
-    }
-
-    void ApproachTo(int desiredDistanceInCm, LinearOpMode caller)
-    {
-//        double presentDistance = getFrontDistance();
-        double presentDistance = rev2M.readRangeContinuousMillimeters()/10.0;
-        double driveDistance = presentDistance-desiredDistanceInCm;
-        String msg = String.format("ApproachTo: %d drive: %.2f", desiredDistanceInCm, driveDistance);
-        Log.i("foo", msg);
-        if (Math.abs(driveDistance)<40.0)
-            Drive(cms(driveDistance), caller);
-    }
+//    void ApproachTo(int desiredDistanceInCm, LinearOpMode caller)
+//    {
+////        double presentDistance = getFrontDistance();
+//        double presentDistance = rev2M.readRangeContinuousMillimeters()/10.0;
+//        double driveDistance = presentDistance-desiredDistanceInCm;
+//        String msg = String.format("ApproachTo: %d drive: %.2f", desiredDistanceInCm, driveDistance);
+//        Log.i("foo", msg);
+//        if (Math.abs(driveDistance)<40.0)
+//            Drive(cms(driveDistance), caller);
+//    }
 
     // AllRun - Handles all programed movement, including driving, strafing, and turning.
 
@@ -363,140 +306,12 @@ public class cwRobot
     }
 
 
-    void Rotate(double runTime, double power, LinearOpMode caller)
-    {
-        long timeStepMsec = 50;  // 50 msec cycles
-        double deltaT = timeStepMsec / 1000.0;
-        double remainingIntegral = runTime * Math.abs(power);
-
-        // If there is so little movement that there is no time for
-        // ramps, then adjust the power down and time up.
-        if (runTime/deltaT < 3.0)
-        {
-            runTime = 3.000001 * deltaT;
-            power = remainingIntegral / runTime;
-        }
-        int powerTicks = (int)Math.floor(runTime/deltaT-3.0);
-        resetTickPeriod();
-        double lastTime = driveTimer.time();
-        double startTime = lastTime;
-
-        // Ramp up
-        for (int p=1; caller.opModeIsActive() && p<4; p++) {
-            double rampPower = (p * power)/4.0;
-            SetRotationPower(rampPower);
-            waitForTick(timeStepMsec);
-            double t0 = driveTimer.time();
-            remainingIntegral -= (t0 - lastTime) * Math.abs(rampPower);
-            lastTime = t0;
-        }
-
-        if (powerTicks > 0)
-        {
-            SetRotationPower(power);
-            for (int p=0; caller.opModeIsActive() && p<powerTicks; p++)
-            {
-                waitForTick(timeStepMsec);
-                double newTime = driveTimer.time();
-                remainingIntegral -= (newTime - lastTime)*Math.abs(power);
-                lastTime = newTime;
-                if (remainingIntegral <= 0.0) break;
-            }
-        }
-        // Ramp down
-        for (int p=3; caller.opModeIsActive() && p>0; p--) {
-            double rampPower = (p * power)/4.0;
-            SetRotationPower(rampPower);
-            long step = (long)((2.0/(p+1))*remainingIntegral/Math.abs(rampPower)*1000.0);
-            waitForTick(step);
-            double t0 = driveTimer.time();
-            remainingIntegral -= (t0 - lastTime) * Math.abs(rampPower);
-            lastTime = t0;
-            if (remainingIntegral <= 0.0) break;
-        }
-
-        for (int i=0; i<allMotors.length; i++)
-            allMotors[i].setPower(0.0);
-        waitForTick(400);
-    }
-
     void SetRotationPower(double power)
     {
         allMotors[FRONTRIGHT].setPower(power);
         allMotors[FRONTLEFT].setPower(-power);
         allMotors[BACKRIGHT].setPower(power);
         allMotors[BACKLEFT].setPower(-power);
-    }
-
-    void TestRun3(double runTime, double power, LinearOpMode caller)
-    {
-        Log.i("foo",String.format("%.2f %.2f", runTime,power));
-        Log.i("foo", "TestRun3: Time and power");
-
-        long timeStepMsec = 50;  // 50 msec cycles
-        double deltaT = timeStepMsec / 1000.0;
-        double remainingIntegral = runTime * power;
-
-        // If there is so little movement that there is no time for
-        // ramps, then adjust the power down and time up.
-        if (runTime/deltaT < 3.0)
-        {
-            runTime = 3.000001 * deltaT;
-            power = remainingIntegral / runTime;
-        }
-        int powerTicks = (int)Math.floor(runTime/deltaT-3.0);
-        resetTickPeriod();
-        double lastTime = driveTimer.time();
-        double startTime = lastTime;
-
-        // Ramp up
-        for (int p=1; caller.opModeIsActive() && p<4; p++) {
-            double rampPower = (p * power)/4.0;
-            for (int i = 0; i < allMotors.length; i++)
-                allMotors[i].setPower(rampPower);
-            logEncoders(lastTime - startTime, rampPower);
-            waitForTick(timeStepMsec);
-            double t0 = driveTimer.time();
-            remainingIntegral -= (t0 - lastTime) * rampPower;
-            lastTime = t0;
-        }
-
-        if (powerTicks > 0)
-        {
-            for (int i=0; i<allMotors.length; i++)
-                allMotors[i].setPower(power);
-            for (int p=0; caller.opModeIsActive() && p<powerTicks; p++)
-            {
-                logEncoders(lastTime-startTime, power);
-                waitForTick(timeStepMsec);
-                double newTime = driveTimer.time();
-                remainingIntegral -= (newTime - lastTime)*power;
-                lastTime = newTime;
-                if (remainingIntegral <= 0.0) break;
-            }
-        }
-        // Ramp down
-        for (int p=3; caller.opModeIsActive() && p>0; p--) {
-            double rampPower = (p * power)/4.0;
-            for (int i = 0; i < allMotors.length; i++)
-                allMotors[i].setPower(rampPower);
-            logEncoders(lastTime - startTime, rampPower);
-            long step = (long)((2.0/(p+1))*remainingIntegral/rampPower*1000.0);
-            waitForTick(step);
-            double t0 = driveTimer.time();
-            remainingIntegral -= (t0 - lastTime) * rampPower;
-            lastTime = t0;
-            if (remainingIntegral <= 0.0) break;
-        }
-
-        for (int i=0; i<allMotors.length; i++)
-            allMotors[i].setPower(0.0);
-        logEncoders(driveTimer.time()-startTime,0.0);
-        for (int p=0; p<(int) (0.4/deltaT); p++)
-        {
-            waitForTick(timeStepMsec);
-            logEncoders(driveTimer.time()-startTime,0.0);
-        }
     }
 
     void setDifferentialPowers(double power, double r)
@@ -539,7 +354,7 @@ public class cwRobot
                 allMotors[2].getCurrentPosition(),
                 allMotors[3].getCurrentPosition(),
                 power,
-                getHeading()
+                0 //getHeading()
         );
         Log.i("foo",msg);
     }
@@ -553,7 +368,7 @@ public class cwRobot
                 allMotors[2].getCurrentPosition(),
                 allMotors[3].getCurrentPosition(),
                 power,
-                getHeading(),
+                0, //getHeading(),
                 r,
                 dy
         );
@@ -589,130 +404,130 @@ public class cwRobot
                 case TURN:
                     Turn(data, caller);
                     break;
-                case TURNTOHEADING:
-                    //waitForTick(100);
-                    TurnToHeading(data, caller);
-                    break;
-                case SETHEADING:
-                    //waitForTick(100);
-                    setHeading(data);
-                    break;
+//                case TURNTOHEADING:
+//                    //waitForTick(100);
+//                    TurnToHeading(data, caller);
+//                    break;
+//                case SETHEADING:
+//                    //waitForTick(100);
+//                    setHeading(data);
+//                    break;
                 case SETPOWER:
                     runPower = data / 100.0;
                     break;
                 case WAIT:
                     waitForTick((long)data);
                     break;
-                case DISPLAY:
-                    waitForTick(1000);
-                    double dLeft = getFrontDistance();
-                    double dRight = 0.0;// rev2M.getDistance(DistanceUnit.CM);
-                    caller.telemetry.addData("heading", "%.1f",getHeading());
-                    caller.telemetry.addData("ds",  "%.2f %.2f", dLeft, dRight);
-                    caller.telemetry.update();
-                    waitForTick(1000);
-                    break;
-                case APPROACHTO:
-                    //waitForTick(1000);
-                    ApproachTo(data, caller);
-                    break;
-                case CHECKIMU:
-                    Quaternion q = imu.getQuaternionOrientation();
-                    if (q.magnitude() < 0.9)
-                    {
-                        caller.telemetry.addData("Say","IMU died!!!");
-                        caller.telemetry.update();
-                        imu.initialize(imuParameters);
-                        setRedLED(true);
-                        waitForTick(2000);
-                    }
+//                case DISPLAY:
+//                    waitForTick(1000);
+//                    double dLeft = getFrontDistance();
+//                    double dRight = 0.0;// rev2M.getDistance(DistanceUnit.CM);
+//                    caller.telemetry.addData("heading", "%.1f",getHeading());
+//                    caller.telemetry.addData("ds",  "%.2f %.2f", dLeft, dRight);
+//                    caller.telemetry.update();
+//                    waitForTick(1000);
+//                    break;
+//                case APPROACHTO:
+//                    //waitForTick(1000);
+//                    ApproachTo(data, caller);
+//                    break;
+//                case CHECKIMU:
+//                    Quaternion q = imu.getQuaternionOrientation();
+//                    if (q.magnitude() < 0.9)
+//                    {
+//                        caller.telemetry.addData("Say","IMU died!!!");
+//                        caller.telemetry.update();
+//                        imu.initialize(imuParameters);
+//                        setRedLED(true);
+//                        waitForTick(2000);
+//                    }
             }
-            caller.telemetry.addData("heading", "%.1f",getHeading());
+//            caller.telemetry.addData("heading", "%.1f",getHeading());
             caller.telemetry.update();
         }
     }
 
-    public void setHeading(double h)
-    {
-        Log.i("foo",String.format("setHeading: %.2f",h));
-        checkAndResetIMU();
-        headingOffset = 0.0;
-        headingOffset = h - getHeadingWithLog();
-    }
+//    public void setHeading(double h)
+//    {
+//        Log.i("foo",String.format("setHeading: %.2f",h));
+////        checkAndResetIMU();
+//        headingOffset = 0.0;
+//        headingOffset = h - getHeadingWithLog();
+//    }
 
-    public boolean checkAndResetIMU()
-    {
-        Quaternion q = imu.getQuaternionOrientation();
-        double c = q.w;
-        double s = q.z;
-        double norm = Math.sqrt(c*c+s*s);
-        if (norm < 0.5)
-        {
-            imu.initialize(imuParameters);
-            Log.i("foo","IMU Reset!");
-            waitForTick(500);
-            return false;
-        }
-        return true;  // It was fine.
-    }
-
+//    public boolean checkAndResetIMU()
+//    {
+//        Quaternion q = imu.getQuaternionOrientation();
+//        double c = q.w;
+//        double s = q.z;
+//        double norm = Math.sqrt(c*c+s*s);
+//        if (norm < 0.5)
+//        {
+//            imu.initialize(imuParameters);
+//            Log.i("foo","IMU Reset!");
+//            waitForTick(500);
+//            return false;
+//        }
+//        return true;  // It was fine.
+//    }
+//
     private double headingOffset = 0.0;
 
     // The heading is defined to be a clockwise angle measure from 'north'.
     // This is the negative of the intrinsic quaternion system.
-    double getHeading()
-    {
-        Quaternion q = imu.getQuaternionOrientation();
-        double c = q.w;
-        double s = q.z;
-        double norm = Math.sqrt(c*c+s*s);
-        if (norm < 0.5)
-        {
-            //telemetry.addData("Say", "IMU died!");
-            //telemetry.update();
-            return 0.0;
-        }
-        // The atan2 returns the half-angle, so double it and convert to degrees.
-        double angle = -Math.atan2(s,c) * 360.0 / Math.PI; // The atan gives us the half-angle.
-        // Put the angle in the range from -180 to 180.
-        return normalizeAngle(angle + headingOffset);
-    }
-
-    double getHeadingWithLog()
-    {
-        Quaternion q = imu.getQuaternionOrientation();
-        String msg = String.format("q: %.3f %.3f %.3f %.3f",q.w,q.x,q.y,q.z);
-        Log.i("foo",msg);
-        double c = q.w;
-        double s = q.z;
-        double norm = Math.sqrt(c*c+s*s);
-        if (norm < 0.5)
-        {
-            Log.i("foo","IMU died");
-            //telemetry.addData("Say", "IMU died!");
-            //telemetry.update();
-            return 0.0;
-        }
-        // The atan2 returns the half-angle, so double it and convert to degrees.
-        double angle = -Math.atan2(s,c) * 360.0 / Math.PI; // The atan gives us the half-angle.
-        // Put the angle in the range from -180 to 180.
-        return normalizeAngle(angle + headingOffset);
-    }
-
+//    double getHeading()
+//    {
+//        Quaternion q = imu.getQuaternionOrientation();
+//        double c = q.w;
+//        double s = q.z;
+//        double norm = Math.sqrt(c*c+s*s);
+//        if (norm < 0.5)
+//        {
+//            //telemetry.addData("Say", "IMU died!");
+//            //telemetry.update();
+//            return 0.0;
+//        }
+//        // The atan2 returns the half-angle, so double it and convert to degrees.
+//        double angle = -Math.atan2(s,c) * 360.0 / Math.PI; // The atan gives us the half-angle.
+//        // Put the angle in the range from -180 to 180.
+//        return normalizeAngle(angle + headingOffset);
+//    }
+//
+//    double getHeadingWithLog()
+//    {
+//        Quaternion q = imu.getQuaternionOrientation();
+//        String msg = String.format("q: %.3f %.3f %.3f %.3f",q.w,q.x,q.y,q.z);
+//        Log.i("foo",msg);
+//        double c = q.w;
+//        double s = q.z;
+//        double norm = Math.sqrt(c*c+s*s);
+//        if (norm < 0.5)
+//        {
+//            Log.i("foo","IMU died");
+//            //telemetry.addData("Say", "IMU died!");
+//            //telemetry.update();
+//            return 0.0;
+//        }
+//        // The atan2 returns the half-angle, so double it and convert to degrees.
+//        double angle = -Math.atan2(s,c) * 360.0 / Math.PI; // The atan gives us the half-angle.
+//        // Put the angle in the range from -180 to 180.
+//        return normalizeAngle(angle + headingOffset);
+//    }
+//
     // Return an equivalent angle from -180 to 180.
     double normalizeAngle(double d)
     {
         return d-Math.floor((d + 180.0)/360.0)*360.0;
     }
 
-    double diffHeading(double target)
-    {
-        double diff = target - getHeading();
-        return normalizeAngle(diff);
-//        diff = (diff + 720.0) % 360.0;
-//        if (diff > 180.0) diff -= 360;
-//        return diff;
-    }
+//    double diffHeading(double target)
+//    {
+//        double diff = target - getHeading();
+//        return normalizeAngle(diff);
+////        diff = (diff + 720.0) % 360.0;
+////        if (diff > 180.0) diff -= 360;
+////        return diff;
+//    }
 
     private long lastPeriodTime = 0;
     public void resetTickPeriod()
