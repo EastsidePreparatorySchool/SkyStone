@@ -26,8 +26,7 @@ public class Hardware8103 {
     public DcMotor[] allMotors;
     public Servo[] allServos;
     double[] rotationArray;
-
-   ColorSensor color_sensor = null;
+   ColorSensor color_range_sensor = null;
 
     double xpos;
     double ypos;
@@ -69,18 +68,16 @@ public class Hardware8103 {
         updown = hwMap.servo.get("servo2");
         closer = hwMap.servo.get("servo3");
 
-        color_sensor = hwMap.colorSensor.get("color_sensor");
+        color_range_sensor = hwMap.colorSensor.get("color_range_sensor");
 
         allMotors = new DcMotor[]{leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
         allServos = new Servo[]{wrist, updown, closer};
-        rotationArray = new double[]{-1.0, -1.0, 1.0, 1.0};
+        rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-        
-       color_sensor = hwMap.colorSensor.get("color");
 
         for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
