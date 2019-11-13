@@ -86,13 +86,15 @@ public class SubiTeleOp extends OpMode {
         }else{
             robot.grab();
         }
+        */
+
         if(linkageMove != 0.0){
-            //robot.moveArm(linkageMove);
+            robot.moveArm(linkageMove);
         }
         if(pivotPower != 0.0){
             robot.pivotArm(pivotPower);
         }
-        */
+
         speed = 0.5;
        i++;
 
@@ -106,8 +108,9 @@ public class SubiTeleOp extends OpMode {
         g1LeftAnalogX = thresholdCheck(this.gamepad1.left_stick_x);
         g1LeftAnalogY = thresholdCheck(this.gamepad1.left_stick_y);
 
-        speed+= this.gamepad1.right_trigger/2;
-        /*if(this.gamepad1.left_bumper){
+        // I HAVE COMMENTED OUT SPEED FOR NOW
+        //speed+= this.gamepad1.right_trigger/2;
+        /*if(this.gamepad2.left_bumper){
             if(clawOpen){
                 clawOpen = false;
             }else{
@@ -115,18 +118,18 @@ public class SubiTeleOp extends OpMode {
 
             }
         }
+        */
 
-         */
-        /*
 
-        if(this.gamepad1.x){
+
+        if(this.gamepad2.x){
             pivotPower = 1;
-        }else if(this.gamepad1.y){
+        }else if(this.gamepad2.y){
             pivotPower = -1;
         }else{
             pivotPower = 0;
         }
-        * */
+
 
         // switch between normal, sprint, and precise slow speeds
         /*if(this.gamepad1.right_bumper){
@@ -151,7 +154,7 @@ public class SubiTeleOp extends OpMode {
         */
 
 
-//        linkageMove = thresholdCheck(this.gamepad1.left_trigger - this.gamepad1.right_trigger);
+        linkageMove = thresholdCheck(this.gamepad2.left_trigger - this.gamepad2.right_trigger);
 
 
 

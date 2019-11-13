@@ -16,10 +16,10 @@ public class TeleopRobot implements Robot  {
     DcMotor frontRightMotor;
     DcMotor backRightMotor;
     Telemetry telemetry;
-    //DcMotor pivotMotor;
-    //DcMotor armMotor;
+    DcMotor pivotMotor;
+    DcMotor armMotor;
     DriveTrain driveTrain;
-    //Servo clawServo;
+    Servo clawServo;
 
     // this may need to be changed, depending on what we want the default for this servo to be
     double clawInit = 0.0;
@@ -33,8 +33,10 @@ public class TeleopRobot implements Robot  {
     }
 
     public TeleopRobot(HardwareMap hardwareMap, Telemetry telemetry){
+
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
+
     }
 
     public void init(){
@@ -46,12 +48,12 @@ public class TeleopRobot implements Robot  {
         driveTrain.runWithoutEncoders();
         driveMotors = new MotorPowers(0,0,0,0);
 
-       // pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
-       // armMotor = hardwareMap.dcMotor.get("ArmMotor");
+        pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
+        armMotor = hardwareMap.dcMotor.get("ArmMotor");
 
-       // clawServo = hardwareMap.servo.get("ClawServo");
+        //clawServo = hardwareMap.servo.get("ClawServo");
 
-//        grabbing = false;
+        //grabbing = false;
 
     }
 
@@ -81,18 +83,18 @@ public class TeleopRobot implements Robot  {
         return driveMotors;
     }
 
-    /*public void moveArm(double m){
+    public void moveArm(double m){
         armMotor.setPower(m);
 
 
-    }*/
-    /*
+    }
+
     public void pivotArm(double m){
         pivotMotor.setPower(m);
 
     }
-    */
-   /* public void grab(){
+    /*
+    public void grab(){
 
         clawServo.setPosition(clawGrab);
         grabbing = true;
@@ -106,5 +108,7 @@ public class TeleopRobot implements Robot  {
         grabbing = false;
     }
 
-*/
+     */
+
+
 }

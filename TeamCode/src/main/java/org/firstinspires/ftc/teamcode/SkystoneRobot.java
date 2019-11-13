@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
-public class SkystoneRobot implements Robot {
+public class SkystoneRobot implements AutoRobot {
 
     Pose pose;
     MotorPowers driveMotors;
