@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 public class MecanumPurePursuitController implements Controller {
 
     @Override
-    public MotorPowers motorPowers(Waypoint waypoint, Pose robotPose, double speed) {
+    public MotorPowers motorPowers(Point point, Pose robotPose, double speed) {
 
         // this is how far away the object is
 
-        double totalDist = Math.sqrt(Math.pow(waypoint.x-robotPose.x,2)+Math.pow(waypoint.y-robotPose.y,2));
+        double totalDist = Math.sqrt(Math.pow(point.x-robotPose.x,2)+Math.pow(point.y-robotPose.y,2));
         // this is the angle from the direction the bot is heading to the way-point
         // or, more accurately, how much the bot needs to turn to point at the way-point
         // that's the reason why i subtract the heading (direction of the robot)
@@ -20,7 +20,7 @@ public class MecanumPurePursuitController implements Controller {
         // 2.16
         //  -2.88
         //
-        double botPointAngle = robotPose.subtract(waypoint).invTan()-robotPose.heading();
+        double botPointAngle = robotPose.subtract(point).invTan()-robotPose.heading();
         // this is the
         double botPointX = totalDist*Math.cos(botPointAngle);
         double botPointY = totalDist*Math.sin(botPointAngle);
@@ -32,8 +32,8 @@ public class MecanumPurePursuitController implements Controller {
         // negating it because the vectors point in the opposite direction of the target
         double headingDesire;
 
-        if(waypoint instanceof AngledWaypoint){
-            headingDesire = ((AngledWaypoint) waypoint).angle;
+        if(point instanceof AngledPoint){
+            headingDesire = ((AngledPoint) point).getAngle();
         }else{
 
 
@@ -42,7 +42,7 @@ public class MecanumPurePursuitController implements Controller {
             // we don't do this for angled waypoints because they already have
             // an angle they want us to come from
 
-            double frontWayAngle = waypoint.subtract(robotPose).invTan();
+            double frontWayAngle = point.subtract(robotPose).invTan();
             double backWayAngle = frontWayAngle+Math.PI;
             // 306.87
             // 36.86989
