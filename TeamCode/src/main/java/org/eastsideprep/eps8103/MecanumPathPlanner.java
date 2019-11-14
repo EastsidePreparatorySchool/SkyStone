@@ -1,7 +1,5 @@
-package usfirst.frc.team1736.robot;
+package org.eastsideprep.eps8103;
 
-import java.awt.Color;
-import java.awt.GraphicsEnvironment;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -748,42 +746,42 @@ public class MecanumPathPlanner {
 
         System.out.println("Time in ms: " + (System.currentTimeMillis() - start));
 
-        if (!GraphicsEnvironment.isHeadless()) {
-
-            FalconLinePlot fig2 = new FalconLinePlot(path.smoothCenterVelocity, null, Color.blue);
-            fig2.yGridOn();
-            fig2.xGridOn();
-            fig2.setYLabel("Velocity (ft/sec)");
-            fig2.setXLabel("time (seconds)");
-            fig2.setTitle("Velocity Profile for Left and Right Wheels \n LF = Cyan, RF = Magenta, LR = Green, RR = Orange");
-            fig2.addData(path.smoothRightFrontVelocity, Color.magenta);
-            fig2.addData(path.smoothLeftFrontVelocity, Color.cyan);
-            fig2.addData(path.smoothRightRearVelocity, Color.orange);
-            fig2.addData(path.smoothLeftRearVelocity, Color.green);
-
-            FalconLinePlot fig1 = new FalconLinePlot(path.nodeOnlyPath, Color.blue, Color.green);
-            fig1.yGridOn();
-            fig1.xGridOn();
-            fig1.setYLabel("Y (feet)");
-            fig1.setXLabel("X (feet)");
-            fig1.setTitle("Top Down View of FRC Field (24ft x 27ft) \n shows global position of robot path, along with leftFront, leftRear, rightFront, and rightRear wheel trajectories");
-
-            //force graph to show 1/2 field dimensions of 24ft x 27 feet
-            fig1.setXTic(0, 27, 1);
-            fig1.setYTic(0, 24, 1);
-            fig1.addData(path.smoothPath, Color.red, Color.blue);
-
-
-            fig1.addData(path.leftFrontPath, Color.cyan);
-            fig1.addData(path.leftRearPath, Color.green);
-            fig1.addData(path.rightFrontPath, Color.magenta);
-            fig1.addData(path.rightRearPath, Color.orange);
-
-
-            //generate figure 8 path
-            path.figure8Example();
-
-        }
+//        if (!GraphicsEnvironment.isHeadless()) {
+//
+//            FalconLinePlot fig2 = new FalconLinePlot(path.smoothCenterVelocity, null, Color.blue);
+//            fig2.yGridOn();
+//            fig2.xGridOn();
+//            fig2.setYLabel("Velocity (ft/sec)");
+//            fig2.setXLabel("time (seconds)");
+//            fig2.setTitle("Velocity Profile for Left and Right Wheels \n LF = Cyan, RF = Magenta, LR = Green, RR = Orange");
+//            fig2.addData(path.smoothRightFrontVelocity, Color.magenta);
+//            fig2.addData(path.smoothLeftFrontVelocity, Color.cyan);
+//            fig2.addData(path.smoothRightRearVelocity, Color.orange);
+//            fig2.addData(path.smoothLeftRearVelocity, Color.green);
+//
+//            FalconLinePlot fig1 = new FalconLinePlot(path.nodeOnlyPath, Color.blue, Color.green);
+//            fig1.yGridOn();
+//            fig1.xGridOn();
+//            fig1.setYLabel("Y (feet)");
+//            fig1.setXLabel("X (feet)");
+//            fig1.setTitle("Top Down View of FRC Field (24ft x 27ft) \n shows global position of robot path, along with leftFront, leftRear, rightFront, and rightRear wheel trajectories");
+//
+//            //force graph to show 1/2 field dimensions of 24ft x 27 feet
+//            fig1.setXTic(0, 27, 1);
+//            fig1.setYTic(0, 24, 1);
+//            fig1.addData(path.smoothPath, Color.red, Color.blue);
+//
+//
+//            fig1.addData(path.leftFrontPath, Color.cyan);
+//            fig1.addData(path.leftRearPath, Color.green);
+//            fig1.addData(path.rightFrontPath, Color.magenta);
+//            fig1.addData(path.rightRearPath, Color.orange);
+//
+//
+//            //generate figure 8 path
+//            path.figure8Example();
+//
+//        }
         //example on printing useful path information
         //System.out.println(path.numFinalPoints);
         //System.out.println(path.pathAlpha);
@@ -815,37 +813,37 @@ public class MecanumPathPlanner {
         path.setPathBeta(0.5);
         path.calculate(totalTime, timeStep, robotTrackWidth, robotTrackLength);
 
-        if (!GraphicsEnvironment.isHeadless()) {
-
-            FalconLinePlot fig3 = new FalconLinePlot(path.smoothCenterVelocity, null, Color.blue);
-            fig3.yGridOn();
-            fig3.xGridOn();
-            fig3.setYLabel("Velocity (ft/sec)");
-            fig3.setXLabel("time (seconds)");
-            fig3.setTitle("Velocity Profile for Left and Right Wheels \n LF = Cyan, RF = Magenta, LR = Green, RR = Orange");
-            fig3.addData(path.smoothRightFrontVelocity, Color.magenta);
-            fig3.addData(path.smoothLeftFrontVelocity, Color.cyan);
-            fig3.addData(path.smoothRightRearVelocity, Color.orange);
-            fig3.addData(path.smoothLeftRearVelocity, Color.green);
-
-            FalconLinePlot fig4 = new FalconLinePlot(path.nodeOnlyPath, Color.blue, Color.green);
-            fig4.yGridOn();
-            fig4.xGridOn();
-            fig4.setYLabel("Y (feet)");
-            fig4.setXLabel("X (feet)");
-            fig4.setTitle("Top Down View of FRC Field (24ft x 27ft) \n shows global position of robot path, along with leftFront, leftRear, rightFront, and rightRear wheel trajectories");
-
-            //force graph to show 1/2 field dimensions of 24ft x 27 feet
-            fig4.setXTic(0, 27, 1);
-            fig4.setYTic(0, 24, 1);
-            fig4.addData(path.smoothPath, Color.red, Color.blue);
-
-
-            fig4.addData(path.leftFrontPath, Color.cyan);
-            fig4.addData(path.leftRearPath, Color.green);
-            fig4.addData(path.rightFrontPath, Color.magenta);
-            fig4.addData(path.rightRearPath, Color.orange);
-        }
+//        if (!GraphicsEnvironment.isHeadless()) {
+//
+//            FalconLinePlot fig3 = new FalconLinePlot(path.smoothCenterVelocity, null, Color.blue);
+//            fig3.yGridOn();
+//            fig3.xGridOn();
+//            fig3.setYLabel("Velocity (ft/sec)");
+//            fig3.setXLabel("time (seconds)");
+//            fig3.setTitle("Velocity Profile for Left and Right Wheels \n LF = Cyan, RF = Magenta, LR = Green, RR = Orange");
+//            fig3.addData(path.smoothRightFrontVelocity, Color.magenta);
+//            fig3.addData(path.smoothLeftFrontVelocity, Color.cyan);
+//            fig3.addData(path.smoothRightRearVelocity, Color.orange);
+//            fig3.addData(path.smoothLeftRearVelocity, Color.green);
+//
+//            FalconLinePlot fig4 = new FalconLinePlot(path.nodeOnlyPath, Color.blue, Color.green);
+//            fig4.yGridOn();
+//            fig4.xGridOn();
+//            fig4.setYLabel("Y (feet)");
+//            fig4.setXLabel("X (feet)");
+//            fig4.setTitle("Top Down View of FRC Field (24ft x 27ft) \n shows global position of robot path, along with leftFront, leftRear, rightFront, and rightRear wheel trajectories");
+//
+//            //force graph to show 1/2 field dimensions of 24ft x 27 feet
+//            fig4.setXTic(0, 27, 1);
+//            fig4.setYTic(0, 24, 1);
+//            fig4.addData(path.smoothPath, Color.red, Color.blue);
+//
+//
+//            fig4.addData(path.leftFrontPath, Color.cyan);
+//            fig4.addData(path.leftRearPath, Color.green);
+//            fig4.addData(path.rightFrontPath, Color.magenta);
+//            fig4.addData(path.rightRearPath, Color.orange);
+//        }
     }
 }	
 
