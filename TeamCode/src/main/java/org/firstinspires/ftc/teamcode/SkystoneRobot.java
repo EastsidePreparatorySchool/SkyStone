@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.vuforia.Vuforia;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraManager;
@@ -19,8 +21,8 @@ public class SkystoneRobot implements AutoRobot {
     MotorPowers driveMotors;
     HardwareMap hardwareMap;
     Telemetry telemetry;
-
-
+    BNO055IMU imu;
+    SensorBNO055IMU sensorBNO055IMU;
     DcMotor frontLeftMotor;
     DcMotor backLeftMotor;
     DcMotor frontRightMotor;
@@ -49,6 +51,7 @@ public class SkystoneRobot implements AutoRobot {
     }
 
     public void init(){
+        imu = hardwareMap.i
         frontLeftMotor =hardwareMap.dcMotor.get("FrontLeftMotor");
         frontRightMotor =hardwareMap.dcMotor.get("FrontRightMotor");
         backLeftMotor =hardwareMap.dcMotor.get("BackLeftMotor");
@@ -117,6 +120,10 @@ public class SkystoneRobot implements AutoRobot {
         armMotor.setPower(m);
 
 
+    }
+
+    public void turnToHeading(double speed){
+        imu.
     }
 
     public void trackRobot(){

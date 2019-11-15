@@ -61,7 +61,7 @@ public class Path {
      * @param waypointList the LinkedList of Waypoints the robot should visit
      * @return the line as an ArrayList of segments
      */
-    public ArrayList<Segment> genLine(LinkedList<Waypoint> waypointList){
+    public ArrayList<Segment> genLine(List<Waypoint> waypointList){
 
         ArrayList<Segment> line = new ArrayList<>();
         int index = 0;
@@ -76,7 +76,7 @@ public class Path {
 
     public Waypoint furthestPoint(Pose robotPose){
 
-        robotPose.
+        return null;
     }
 
     public void update(){

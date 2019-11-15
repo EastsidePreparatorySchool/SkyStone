@@ -55,7 +55,7 @@ public class MecanumPurePursuitController implements Controller {
 
 
 
-            }
+        }
         // 2.16
         // -2.88
         // 36.898989
