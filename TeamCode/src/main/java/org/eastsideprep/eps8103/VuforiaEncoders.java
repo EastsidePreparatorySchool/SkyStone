@@ -2,63 +2,24 @@ package org.eastsideprep.eps8103;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import android.graphics.Color;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.RobotLog;
-
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import com.qualcomm.robotcore.hardware.ColorSensor;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-import java.util.*;
-
 import java.util.Arrays;
 
-import java.util.Arrays;
 
-@Autonomous(name = "Vuforia Encoders", group = "Concept")
+@Autonomous(name = "2 Vuforia Encoders", group = "Concept")
 public class VuforiaEncoders extends LinearOpMode {
 
             Hardware8103 robot = new Hardware8103();
@@ -81,7 +42,7 @@ public class VuforiaEncoders extends LinearOpMode {
 
         double[] drivetrainEncoders = new double[4];
 
-        ColorSensor color_sensor;
+        //ColorSensor color_sensor;
 
         public void forwards(int l, double speed) {
             for (DcMotor m : robot.allMotors) {
@@ -139,10 +100,10 @@ public class VuforiaEncoders extends LinearOpMode {
             robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + (int) turn_c * angle);
             robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - (int) turn_c * angle);
 
-            //for (DcMotor m : robot.allMotors) {
-            //  m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //m.setPower(0.25);
-            //}
+            for (DcMotor m : robot.allMotors) {
+              m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            m.setPower(0.25);
+            }
             //once all motors are going i can start turning them off
             for (DcMotor m : robot.allMotors) {
                 while (m.isBusy()) {
@@ -223,9 +184,9 @@ public class VuforiaEncoders extends LinearOpMode {
                 }
             }
 
-            for (int i = 0; i < 4; i++) {
-                drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-            }
+           // for (int i = 0; i < 4; i++) {
+             //   drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+            //}
         }
 
         public void lowerarm(int angle) {
@@ -448,20 +409,30 @@ public class VuforiaEncoders extends LinearOpMode {
                     }
                 }
                 if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
+                    telemetry.addData("Visible", "we see it!");
+                    telemetry.update();
                     stopmotors();
                     sleep(2000);
-                }
+                } 
+
 
                 if(!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
                     forwards(18, 0.6);
                     straferight(18);
+                    if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
+                        telemetry.addData("Visible", "we see it!");
+                        telemetry.update();
+                        stopmotors();
+                        sleep(2000);
+                    }
                     strafeleft(24);
                     forwards(6,0.2);
                     backwards(6);
                     straferight(18);
                     backwards(2);
                     straferight(18);
-                    strafeleft(24);
+                    stopmotors();
+                    sleep(200);
                     forwards(6,0.2);
                     backwards(6);
 

@@ -3,7 +3,7 @@ package org.eastsideprep.eps8103;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+//import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -27,7 +27,7 @@ public class Hardware8103 {
     public Servo[] allServos;
     double[] rotationArray;
 
-   ColorSensor color_sensor = null;
+  // ColorSensor color_sensor = null;
 
     double xpos;
     double ypos;
@@ -79,13 +79,12 @@ public class Hardware8103 {
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-        
-       color_sensor = hwMap.colorSensor.get("color");
+
+       //color_sensor = hwMap.colorSensor.get("color_sensor");
 
         for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
     }
