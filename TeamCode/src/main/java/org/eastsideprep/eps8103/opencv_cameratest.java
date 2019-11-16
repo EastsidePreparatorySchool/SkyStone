@@ -30,7 +30,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.*;
 
-@TeleOp
+@TeleOp(name = "open cv test", group = "Concept")
 public class opencv_cameratest extends LinearOpMode {
     OpenCvCamera phoneCam;
 

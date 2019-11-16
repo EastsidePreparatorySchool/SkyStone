@@ -161,6 +161,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + strafe_c * l);
         robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - strafe_c * l);
         for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(0.25);
         }
         for (DcMotor m : robot.allMotors) {
@@ -173,16 +174,19 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
 
         for (int i = 0; i < 4; i++) {
+            robot.allMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
     }
 
     public void strafeleft(int l) {
+        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - strafe_c * l);
         robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + strafe_c * l);
         robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - strafe_c * l);
         robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + strafe_c * l);
+
         for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setPower(0.25);
         }
         for (DcMotor m : robot.allMotors) {
@@ -195,6 +199,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
 
         for (int i = 0; i < 4; i++) {
+            robot.allMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
     }
@@ -254,35 +259,38 @@ public class basicSkyStoneAuto extends LinearOpMode {
             robot.armExtender.setPower(0);
         }
 
-        forwards(18, 0.6);
-        straferight(20);
-        backwards(20);
-        strafeleft(20);
-        forwards(20, 0.6);
+//        forwards(18, 0.6);
+//        straferight(20);
+//        backwards(20);
+//        strafeleft(20);
+//        forwards(20, 0.6);
+
+        strafeleft(10);
+        straferight(10);
 
         telemetry.update();
 
-        robot.color_range_sensor.enableLed(false);
-        sleep(1000);
-        robot.color_range_sensor.enableLed(true);
-
-
-        while (robot.color_range_sensor.red() > 30) {
-
-            telemetry.update();
-            straferightslowly(40);
-            ///extendarm(8);
-            robot.updown.setPosition(1);
-            robot.closer.setPosition(0.5);
-            //reelarm(8);
-        }//pickup block
-        telemetry.addData("log", "found skytone");
-        turnleft(90);
-        forwards(80, 0.6);
-        turnleft(90);
-        backwards(24);
-
-        print_encoders();
+//        robot.color_range_sensor.enableLed(false);
+//        sleep(1000);
+//        robot.color_range_sensor.enableLed(true);
+//
+//
+//        while (robot.color_range_sensor.red() > 30) {
+//
+//            telemetry.update();
+//            straferightslowly(40);
+//            ///extendarm(8);
+//            robot.updown.setPosition(1);
+//            robot.closer.setPosition(0.5);
+//            //reelarm(8);
+//        }//pickup block
+//        telemetry.addData("log", "found skytone");
+//        turnleft(90);
+//        forwards(80, 0.6);
+//        turnleft(90);
+//        backwards(24);
+//
+//        print_encoders();
         sleep(4000);
     }
 }

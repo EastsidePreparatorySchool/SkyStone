@@ -63,6 +63,7 @@ public class Simple8103Teleop extends LinearOpMode {
         double globalY = robot.ypos;
 
         double[] drivetrainEncoders = new double[4];
+        double[] drivetrainEncodersPrevious = new double[4];
         double[] servoPositions = new double[3];
 
         /* Initialize the hardware variables.
@@ -95,6 +96,9 @@ public class Simple8103Teleop extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            for (int i = 0; i < drivetrainEncoders.length; i++) {
+                drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+            }
 
             float x = gamepad1.left_stick_x;
             float y = -gamepad1.left_stick_y; // Negate to get +y forward.
@@ -154,7 +158,6 @@ public class Simple8103Teleop extends LinearOpMode {
             //extend encoder results
             //extend:141 all extended:1581
 
-            telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
 
 
             if (gamepad2.dpad_up) {
@@ -184,6 +187,15 @@ public class Simple8103Teleop extends LinearOpMode {
                 servoPositions[i] = robot.allServos[i].getPosition();
             }
             telemetry.addData("servo positions", Arrays.toString(servoPositions));
+
+
+
+            telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
+            for (int i = 0; i < drivetrainEncoders.length; i++) {
+                telemetry.addData("motor"+i+" speed",(drivetrainEncoders[i]-drivetrainEncodersPrevious[i])/40);
+            }
+
+
 
             telemetry.addLine();
             telemetry.update();

@@ -70,7 +70,7 @@ public class Hardware8103 {
 
         color_range_sensor = hwMap.colorSensor.get("color_range_sensor");
 
-        allMotors = new DcMotor[]{leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
+        allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, rightBackMotor, leftBackMotor};
         allServos = new Servo[]{wrist, updown, closer};
         rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
 
@@ -82,7 +82,6 @@ public class Hardware8103 {
         for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
     }

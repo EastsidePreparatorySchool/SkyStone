@@ -1,27 +1,35 @@
 package org.eastsideprep.eps8103;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Arrays;
 
 /**
- * This Class provides many useful algorithms for Robot Path Planning. It uses optimization techniques and knowledge
- * of Robot Motion in order to calculate smooth path trajectories, if given only discrete waypoints. The Benefit of these optimization
- * algorithms are very efficient path planning that can be used to Navigate in Real-time.
+ * This Class provides many useful algorithms for Robot Path Planning. It uses
+ * optimization techniques and knowledge of Robot Motion in order to calculate
+ * smooth path trajectories, if given only discrete waypoints. The Benefit of
+ * these optimization algorithms are very efficient path planning that can be
+ * used to Navigate in Real-time.
  * <p>
- * This Class uses a method of Gradient Decent, and other optimization techniques to produce smooth Velocity profiles
- * for the four wheels of a mecanum drive robot.
+ * This Class uses a method of Gradient Decent, and other optimization
+ * techniques to produce smooth Velocity profiles for the four wheels of a
+ * mecanum drive robot.
  * <p>
- * This Class does not attempt to calculate quintic or cubic splines for best fitting a curve. It is for this reason, the algorithm can be ran
- * on embedded devices with very quick computation times.
+ * This Class does not attempt to calculate quintic or cubic splines for best
+ * fitting a curve. It is for this reason, the algorithm can be ran on embedded
+ * devices with very quick computation times.
  * <p>
- * The output of this function are independent velocity profiles for the four wheels of a mecanum drive chassis. The velocity
- * profiles start and end with 0 velocity and maintain smooth transitions throughout the path.
+ * The output of this function are independent velocity profiles for the four
+ * wheels of a mecanum drive chassis. The velocity profiles start and end with 0
+ * velocity and maintain smooth transitions throughout the path.
  * <p>
- * This algorithm is a port from a similar algorithm running on a Robot used for my PhD thesis. I have not fully optimized
- * these functions, so there is room for some improvement.
+ * This algorithm is a port from a similar algorithm running on a Robot used for
+ * my PhD thesis. I have not fully optimized these functions, so there is room
+ * for some improvement.
  * <p>
- * Initial tests on the 2015 FRC NI RoboRio, the complete algorithm finishes in under 15ms using the Java System Timer for paths with less than 50 nodes.
+ * Initial tests on the 2015 FRC NI RoboRio, the complete algorithm finishes in
+ * under 15ms using the Java System Timer for paths with less than 50 nodes.
  *
  * @author Kevin Harrilal
  * @version 1.0
@@ -31,8 +39,8 @@ import java.util.List;
 public class MecanumPathPlanner {
 
     /**
-     * The location of a motor on the robot for the purpose of determining velocity.
-     * The kNone "motor" denotes the center of the robot
+     * The location of a motor on the robot for the purpose of determining
+     * velocity. The kNone "motor" denotes the center of the robot
      */
     public enum MotorType {
         kFrontLeft(0), kFrontRight(1), kRearLeft(2), kRearRight(3), kNone(4);
@@ -43,6 +51,8 @@ public class MecanumPathPlanner {
             this.value = value;
         }
     }
+
+    public static List<MotorPosition> motorTargetPositions = new ArrayList<MotorPosition>();
 
     //Path Variables
     public double[][] origPath;
@@ -82,29 +92,27 @@ public class MecanumPathPlanner {
     double velocityBeta;
     double velocityTolerance;
 
-
     /**
-     * Constructor, takes a Path of Way Points defined as a double array of column vectors representing the global
-     * cartesian points of the path in {x,y} coordinates and a third heading coordinate (in degrees). The waypoints
-     * are traveled from one point to the next in sequence. This is an expansion on the original SmoothPathPlanner
-     * for use with a mecanum drive robot.
+     * Constructor, takes a Path of Way Points defined as a double array of
+     * column vectors representing the global cartesian points of the path in
+     * {x,y} coordinates and a third heading coordinate (in degrees). The
+     * waypoints are traveled from one point to the next in sequence. This is an
+     * expansion on the original SmoothPathPlanner for use with a mecanum drive
+     * robot.
      * <p>
      * For example: here is a properly formated waypoint array
      * <p>
-     * double[][][] waypointPath = new double[][][]{
-     * {1, 1, 0},
-     * {5, 1, 0},
-     * {9, 12, 90},
-     * {12, 9, 90},
-     * {15, 6, 135},
-     * {15, 4, 135}
-     * };
+     * double[][][] waypointPath = new double[][][]{ {1, 1, 0}, {5, 1, 0}, {9,
+     * 12, 90}, {12, 9, 90}, {15, 6, 135}, {15, 4, 135} };
      * <p>
-     * This path goes from {1,1} -> {5,1} -> {9,12} -> {12, 9} -> {15,6} -> {15,4}
-     * During the transition from {5,1} to {9,12} the robot rotates from a straight heading (relative to its start)
-     * to a 90 degree heading.  Between position {12,9} and {15,6} the robot rotates to a heading of 135 degrees.
+     * This path goes from {1,1} -> {5,1} -> {9,12} -> {12, 9} -> {15,6} ->
+     * {15,4} During the transition from {5,1} to {9,12} the robot rotates from
+     * a straight heading (relative to its start) to a 90 degree heading.
+     * Between position {12,9} and {15,6} the robot rotates to a heading of 135
+     * degrees.
      * <p>
-     * The units of these coordinates are position units assumed by the user (i.e inch, foot, meters)
+     * The units of these coordinates are position units assumed by the user
+     * (i.e inch, foot, meters)
      *
      * @param path
      */
@@ -124,25 +132,28 @@ public class MecanumPathPlanner {
     public static void print(double[] path) {
         System.out.println("X: \t Y:");
 
-        for (double u : path)
+        for (double u : path) {
             System.out.println(u);
+        }
     }
 
-
     /**
-     * Prints Cartesian Coordinates to the System Output as Column Vectors in the Form X	Y	Z
+     * Prints Cartesian Coordinates to the System Output as Column Vectors in
+     * the Form X	Y	Z
      *
      * @param path
      */
     public static void print(double[][] path) {
         System.out.println("X: \t Y: \t Z: ");
 
-        for (double[] u : path)
+        for (double[] u : path) {
             System.out.println(u[0] + "\t" + u[1] + "\t" + u[2]);
+        }
     }
 
     /**
-     * Performs a deep copy of a 2 Dimensional Array looping thorough each element in the 2D array
+     * Performs a deep copy of a 2 Dimensional Array looping thorough each
+     * element in the 2D array
      * <p>
      * BigO: Order N x M
      *
@@ -159,8 +170,9 @@ public class MecanumPathPlanner {
             temp[i] = new double[arr[i].length];
 
             //Copy Contents
-            for (int j = 0; j < arr[i].length; j++)
+            for (int j = 0; j < arr[i].length; j++) {
                 temp[i][j] = arr[i][j];
+            }
         }
 
         return temp;
@@ -168,7 +180,8 @@ public class MecanumPathPlanner {
     }
 
     /**
-     * Method upsamples the Path by linear injection. The result providing more waypoints along the path.
+     * Method upsamples the Path by linear injection. The result providing more
+     * waypoints along the path.
      * <p>
      * BigO: Order N * injection#
      *
@@ -215,13 +228,14 @@ public class MecanumPathPlanner {
         return morePoints;
     }
 
-
     /**
-     * Optimization algorithm, which optimizes the data points in path to create a smooth trajectory.
-     * This optimization uses gradient descent. While unlikely, it is possible for this algorithm to never
-     * converge. If this happens, try increasing the tolerance level.
+     * Optimization algorithm, which optimizes the data points in path to create
+     * a smooth trajectory. This optimization uses gradient descent. While
+     * unlikely, it is possible for this algorithm to never converge. If this
+     * happens, try increasing the tolerance level.
      * <p>
-     * BigO: N^x, where X is the number of of times the while loop iterates before tolerance is met.
+     * BigO: N^x, where X is the number of of times the while loop iterates
+     * before tolerance is met.
      *
      * @param path
      * @param weight_data
@@ -237,12 +251,13 @@ public class MecanumPathPlanner {
         double change = tolerance;
         while (change >= tolerance) {
             change = 0.0;
-            for (int i = 1; i < path.length - 1; i++)
+            for (int i = 1; i < path.length - 1; i++) {
                 for (int j = 0; j < path[i].length; j++) {
                     double aux = newPath[i][j];
                     newPath[i][j] += weight_data * (path[i][j] - newPath[i][j]) + weight_smooth * (newPath[i - 1][j] + newPath[i + 1][j] - (2.0 * newPath[i][j]));
                     change += Math.abs(aux - newPath[i][j]);
                 }
+            }
         }
 
         return newPath;
@@ -250,11 +265,13 @@ public class MecanumPathPlanner {
     }
 
     /**
-     * reduces the path into only nodes which change direction. This allows the algorithm to know at what points
-     * the original WayPoint vector changes. The direction change can come through either directional or rotational
+     * reduces the path into only nodes which change direction. This allows the
+     * algorithm to know at what points the original WayPoint vector changes.
+     * The direction change can come through either directional or rotational
      * changes of the mecanum drive.
      * <p>
-     * BigO: Order N + Order M, Where N is length of original Path, and M is length of Nodes found in Path
+     * BigO: Order N + Order M, Where N is length of original Path, and M is
+     * length of Nodes found in Path
      *
      * @param path
      * @return
@@ -273,8 +290,9 @@ public class MecanumPathPlanner {
             double vector2 = Math.atan2((path[i + 1][1] - path[i][1]), path[i + 1][0] - path[i][0]);
 
             //determine if both vectors or heading have a change in direction
-            if (Math.abs(vector2 - vector1) >= 0.01 || Math.abs(path[i + 1][2] - path[i][2]) > 0)
+            if (Math.abs(vector2 - vector1) >= 0.01 || Math.abs(path[i + 1][2] - path[i][2]) > 0) {
                 li.add(path[i]);
+            }
         }
 
         //save last
@@ -292,13 +310,13 @@ public class MecanumPathPlanner {
         return temp;
     }
 
-
     /**
-     * Returns Velocity as a double array. The First Column vector is time, based on the time step, the second vector
-     * is the velocity magnitude.
+     * Returns Velocity as a double array. The First Column vector is time,
+     * based on the time step, the second vector is the velocity magnitude.
      * <p>
-     * Notes:
-     * Velocity magnitude is now going to have to be able to go negative with mecanum, as the wheels will need to reverse in a case of non-forward movement
+     * Notes: Velocity magnitude is now going to have to be able to go negative
+     * with mecanum, as the wheels will need to reverse in a case of non-forward
+     * movement
      * <p>
      * <p>
      * <p>
@@ -332,12 +350,13 @@ public class MecanumPathPlanner {
             //calculate velocity - if calculating center velocity do it the old way,
             //otherwise multiply by [1,1] or [-1,1] force vector
             //(multiplication by one specified for clarity)
-            if (motor == MotorType.kNone)
+            if (motor == MotorType.kNone) {
                 velocity[i][1] = Math.sqrt(Math.pow(dxdt[i], 2) + Math.pow(dydt[i], 2));
-            else if (motor == MotorType.kFrontLeft || motor == MotorType.kRearRight)
+            } else if (motor == MotorType.kFrontLeft || motor == MotorType.kRearRight) {
                 velocity[i][1] = dxdt[i] * 1 + dydt[i] * 1;
-            else
+            } else {
                 velocity[i][1] = dxdt[i] * -1 + dydt[i] * 1;
+            }
         }
 
         return velocity;
@@ -345,9 +364,9 @@ public class MecanumPathPlanner {
 
     /**
      * optimize velocity by minimizing the error distance at the end of travel
-     * when this function converges, the fixed velocity vector will be smooth, start
-     * and end with 0 velocity, and travel the same final distance as the original
-     * un-smoothed velocity profile
+     * when this function converges, the fixed velocity vector will be smooth,
+     * start and end with 0 velocity, and travel the same final distance as the
+     * original un-smoothed velocity profile
      * <p>
      * This Algorithm may never converge. If this happens, reduce tolerance.
      *
@@ -364,10 +383,8 @@ public class MecanumPathPlanner {
          * 3. Recalculate the difference, stop if threshold is met or repeat step 2 until the final threshold is met.
          * 3. Return the updated smoothVelocity
          */
-
         //calculate error difference
         double[] difference = errorSum(origVelocity, smoothVelocity);
-
 
         //copy smooth velocity into new Vector
         double[][] fixVel = new double[smoothVelocity.length][2];
@@ -385,8 +402,9 @@ public class MecanumPathPlanner {
         while (Math.abs(difference[difference.length - 1]) > tolerance) {
             increase = difference[difference.length - 1] / 1 / 50;
 
-            for (int i = 1; i < fixVel.length - 1; i++)
+            for (int i = 1; i < fixVel.length - 1; i++) {
                 fixVel[i][1] = fixVel[i][1] - increase;
+            }
 
             difference = errorSum(origVelocity, fixVel);
         }
@@ -396,12 +414,13 @@ public class MecanumPathPlanner {
 
     }
 
-
     /**
-     * This method calculates the integral of the Smooth Velocity term and compares it to the Integral of the
-     * original velocity term. In essence we are comparing the total distance by the original velocity path and
-     * the smooth velocity path to ensure that as we modify the smooth Velocity it still covers the same distance
-     * as was intended by the original velocity path.
+     * This method calculates the integral of the Smooth Velocity term and
+     * compares it to the Integral of the original velocity term. In essence we
+     * are comparing the total distance by the original velocity path and the
+     * smooth velocity path to ensure that as we modify the smooth Velocity it
+     * still covers the same distance as was intended by the original velocity
+     * path.
      * <p>
      * BigO: Order N
      *
@@ -415,13 +434,11 @@ public class MecanumPathPlanner {
         double[] tempSmoothDist = new double[smoothVelocity.length];
         double[] difference = new double[smoothVelocity.length];
 
-
         double timeStep = origVelocity[1][0] - origVelocity[0][0];
 
         //copy first elements
         tempOrigDist[0] = origVelocity[0][1];
         tempSmoothDist[0] = smoothVelocity[0][1];
-
 
         //calculate difference
         for (int i = 1; i < origVelocity.length; i++) {
@@ -436,9 +453,10 @@ public class MecanumPathPlanner {
     }
 
     /**
-     * This method calculates the optimal parameters for determining what amount of nodes to inject into the path
-     * to meet the time restraint. This approach uses an iterative process to inject and smooth, yielding more desirable
-     * results for the final smooth path.
+     * This method calculates the optimal parameters for determining what amount
+     * of nodes to inject into the path to meet the time restraint. This
+     * approach uses an iterative process to inject and smooth, yielding more
+     * desirable results for the final smooth path.
      * <p>
      * Big O: Constant Time
      *
@@ -463,8 +481,7 @@ public class MecanumPathPlanner {
             double pointsFirst = 0;
             double pointsTotal = 0;
 
-
-            for (int i = 4; i <= 6; i++)
+            for (int i = 4; i <= 6; i++) {
                 for (int j = 1; j <= 8; j++) {
                     pointsFirst = i * (numNodeOnlyPoints - 1) + numNodeOnlyPoints;
                     pointsTotal = (j * (pointsFirst - 1) + pointsFirst);
@@ -476,6 +493,7 @@ public class MecanumPathPlanner {
                         oldPointsTotal = pointsTotal;
                     }
                 }
+            }
 
             ret = new int[]{first, second, third};
         } else {
@@ -484,8 +502,8 @@ public class MecanumPathPlanner {
             double pointsSecond = 0;
             double pointsTotal = 0;
 
-            for (int i = 1; i <= 5; i++)
-                for (int j = 1; j <= 8; j++)
+            for (int i = 1; i <= 5; i++) {
+                for (int j = 1; j <= 8; j++) {
                     for (int k = 1; k < 8; k++) {
                         pointsFirst = i * (numNodeOnlyPoints - 1) + numNodeOnlyPoints;
                         pointsSecond = (j * (pointsFirst - 1) + pointsFirst);
@@ -498,10 +516,11 @@ public class MecanumPathPlanner {
                             numFinalPoints = pointsTotal;
                         }
                     }
+                }
+            }
 
             ret = new int[]{first, second, third};
         }
-
 
         return ret;
     }
@@ -512,8 +531,10 @@ public class MecanumPathPlanner {
      * Big O: 2N
      *
      * @param smoothPath       - center smooth path of robot
-     * @param robotTrackWidth  - width between left and right wheels of robot of mecanum chassis.
-     * @param robotTrackLength - length from front to back of robot mecanum chassis.
+     * @param robotTrackWidth  - width between left and right wheels of robot of
+     *                         mecanum chassis.
+     * @param robotTrackLength - length from front to back of robot mecanum
+     *                         chassis.
      */
     public void calcWheelPaths(double[][] smoothPath, double robotTrackWidth, double robotTrackLength) {
         double[][] leftFrontPath = new double[smoothPath.length][2];
@@ -523,11 +544,11 @@ public class MecanumPathPlanner {
 
         double[][] gradient = new double[smoothPath.length][2];
 
-        for (int i = 0; i < smoothPath.length - 1; i++)
+        for (int i = 0; i < smoothPath.length - 1; i++) {
             gradient[i][1] = Math.atan2(smoothPath[i + 1][1] - smoothPath[i][1], smoothPath[i + 1][0] - smoothPath[i][0]);
+        }
 
         gradient[gradient.length - 1][1] = gradient[gradient.length - 2][1];
-
 
         for (int i = 0; i < gradient.length; i++) {
             double headingRad = Math.toRadians(smoothPath[i][2]);
@@ -552,11 +573,13 @@ public class MecanumPathPlanner {
             gradient[i][1] = smoothPath[i][2] + 90;
 
             if (i > 0) {
-                if ((deg - gradient[i - 1][1]) > 180)
+                if ((deg - gradient[i - 1][1]) > 180) {
                     gradient[i][1] = -360 + deg;
+                }
 
-                if ((deg - gradient[i - 1][1]) < -180)
+                if ((deg - gradient[i - 1][1]) < -180) {
                     gradient[i][1] = 360 + deg;
+                }
             }
         }
 
@@ -571,14 +594,15 @@ public class MecanumPathPlanner {
      * Returns the first column of a 2D array of doubles
      *
      * @param arr 2D array of doubles
-     * @return array of doubles representing the 1st column of the initial parameter
+     * @return array of doubles representing the 1st column of the initial
+     * parameter
      */
-
     public static double[] getXVector(double[][] arr) {
         double[] temp = new double[arr.length];
 
-        for (int i = 0; i < temp.length; i++)
+        for (int i = 0; i < temp.length; i++) {
             temp[i] = arr[i][0];
+        }
 
         return temp;
     }
@@ -587,13 +611,15 @@ public class MecanumPathPlanner {
      * Returns the second column of a 2D array of doubles
      *
      * @param arr 2D array of doubles
-     * @return array of doubles representing the 1st column of the initial parameter
+     * @return array of doubles representing the 1st column of the initial
+     * parameter
      */
     public static double[] getYVector(double[][] arr) {
         double[] temp = new double[arr.length];
 
-        for (int i = 0; i < temp.length; i++)
+        for (int i = 0; i < temp.length; i++) {
             temp[i] = arr[i][1];
+        }
 
         return temp;
     }
@@ -602,13 +628,15 @@ public class MecanumPathPlanner {
      * Returns the third column of a 2D array of doubles
      *
      * @param arr 2D array of doubles
-     * @return array of doubles representing the 1st column of the initial parameter
+     * @return array of doubles representing the 1st column of the initial
+     * parameter
      */
     public static double[] getZVector(double[][] arr) {
         double[] temp = new double[arr.length];
 
-        for (int i = 0; i < temp.length; i++)
+        for (int i = 0; i < temp.length; i++) {
             temp[i] = arr[i][2];
+        }
 
         return temp;
     }
@@ -616,9 +644,11 @@ public class MecanumPathPlanner {
     public static double[][] transposeVector(double[][] arr) {
         double[][] temp = new double[arr[0].length][arr.length];
 
-        for (int i = 0; i < temp.length; i++)
-            for (int j = 0; j < temp[i].length; j++)
+        for (int i = 0; i < temp.length; i++) {
+            for (int j = 0; j < temp[i].length; j++) {
                 temp[i][j] = arr[j][i];
+            }
+        }
 
         return temp;
     }
@@ -644,29 +674,42 @@ public class MecanumPathPlanner {
     }
 
     /**
-     * This code will calculate a smooth path based on the program parameters. If the user doesn't set any parameters, the will use the defaults optimized for most cases. The results will be saved into the corresponding
-     * class members. The user can then access .smoothPath, .leftFrontPath, .leftRearPath, .rightFrontPath, .rightRearPath, .smoothCenterVelocity, .smoothRightFrontVelocity, .smoothLeftFrontVelocity,
-     * .smoothRightRearVelocity, .smoothLeftRearVelocity as needed.
+     * This code will calculate a smooth path based on the program parameters.
+     * If the user doesn't set any parameters, the will use the defaults
+     * optimized for most cases. The results will be saved into the
+     * corresponding class members. The user can then access .smoothPath,
+     * .leftFrontPath, .leftRearPath, .rightFrontPath, .rightRearPath,
+     * .smoothCenterVelocity, .smoothRightFrontVelocity,
+     * .smoothLeftFrontVelocity, .smoothRightRearVelocity,
+     * .smoothLeftRearVelocity as needed.
      * <p>
-     * After calling this method, the user only needs to pass .smoothRightFrontVelocity[1], .smoothRightRearVelocity[1], .smoothLeftFrontVelocity[1], and .smoothLeftRearVelocity[1]
-     * to the corresponding speed controllers on the Robot, and step through each setPoint.
+     * After calling this method, the user only needs to pass
+     * .smoothRightFrontVelocity[1], .smoothRightRearVelocity[1],
+     * .smoothLeftFrontVelocity[1], and .smoothLeftRearVelocity[1] to the
+     * corresponding speed controllers on the Robot, and step through each
+     * setPoint.
      *
-     * @param totalTime        - time the user wishes to complete the path in seconds. (this is the maximum amount of time the robot is allowed to take to traverse the path.)
-     * @param timeStep         - the frequency at which the robot controller is running on the robot.
-     * @param robotTrackWidth  - distance between left and right side wheels of a mecanum drive chassis. Known as the track width.
-     * @param robotTrackLength - distance between front and rear wheels of a mecanum drive chassis. Known as track length.
+     * @param totalTime        - time the user wishes to complete the path in seconds.
+     *                         (this is the maximum amount of time the robot is allowed to take to
+     *                         traverse the path.)
+     * @param timeStep         - the frequency at which the robot controller is running
+     *                         on the robot.
+     * @param robotTrackWidth  - distance between left and right side wheels of a
+     *                         mecanum drive chassis. Known as the track width.
+     * @param robotTrackLength - distance between front and rear wheels of a
+     *                         mecanum drive chassis. Known as track length.
      */
     public void calculate(double totalTime, double timeStep, double robotTrackWidth, double robotTrackLength) {
         /**
          * pseudo code
          *
-         * 1. Reduce input waypoints to only essential (direction changing) node points
-         * 2. Calculate how many total datapoints we need to satisfy the controller for "playback"
-         * 3. Simultaneously inject and smooth the path until we end up with a smooth path with required number
-         *    of datapoints, and which follows the waypoint path.
-         * 4. Calculate all wheel paths by calculating four points at each datapoint
+         * 1. Reduce input waypoints to only essential (direction changing) node
+         * points 2. Calculate how many total datapoints we need to satisfy the
+         * controller for "playback" 3. Simultaneously inject and smooth the
+         * path until we end up with a smooth path with required number of
+         * datapoints, and which follows the waypoint path. 4. Calculate all
+         * wheel paths by calculating four points at each datapoint
          */
-
 
         //first find only direction changing nodes
         nodeOnlyPath = nodeOnlyWayPoints(origPath);
@@ -723,6 +766,14 @@ public class MecanumPathPlanner {
         smoothRightRearVelocity = velocityFix(smoothRightRearVelocity, origRightRearVelocity, 0.0000001);
     }
 
+    public static void formatVelocities(double[][] lf, double[][] rf, double[][] rb, double[][] lb) {
+
+        for (int i = 0; i < lf.length; i++) {
+            MotorPosition powers = new MotorPosition((int) Math.round(lf[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(rf[i][1] * 1000.0) / 1000.0 * 3360 / Math.PI / 1120, (int) Math.round(rb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(lb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI);
+            motorTargetPositions.add(i, powers);
+        }
+    }
+
     //main program
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
@@ -745,50 +796,29 @@ public class MecanumPathPlanner {
         path.calculate(totalTime, timeStep, robotTrackWidth, robotTrackLength);
 
         System.out.println("Time in ms: " + (System.currentTimeMillis() - start));
+//
+//        public double[][] smoothLeftFrontVelocity;
+//        public double[][] smoothLeftRearVelocity;
+//        public double[][] smoothRightFrontVelocity;
+//        public double[][] smoothRightRearVelocity;
+        System.out.println("velocities: ");
 
-//        if (!GraphicsEnvironment.isHeadless()) {
-//
-//            FalconLinePlot fig2 = new FalconLinePlot(path.smoothCenterVelocity, null, Color.blue);
-//            fig2.yGridOn();
-//            fig2.xGridOn();
-//            fig2.setYLabel("Velocity (ft/sec)");
-//            fig2.setXLabel("time (seconds)");
-//            fig2.setTitle("Velocity Profile for Left and Right Wheels \n LF = Cyan, RF = Magenta, LR = Green, RR = Orange");
-//            fig2.addData(path.smoothRightFrontVelocity, Color.magenta);
-//            fig2.addData(path.smoothLeftFrontVelocity, Color.cyan);
-//            fig2.addData(path.smoothRightRearVelocity, Color.orange);
-//            fig2.addData(path.smoothLeftRearVelocity, Color.green);
-//
-//            FalconLinePlot fig1 = new FalconLinePlot(path.nodeOnlyPath, Color.blue, Color.green);
-//            fig1.yGridOn();
-//            fig1.xGridOn();
-//            fig1.setYLabel("Y (feet)");
-//            fig1.setXLabel("X (feet)");
-//            fig1.setTitle("Top Down View of FRC Field (24ft x 27ft) \n shows global position of robot path, along with leftFront, leftRear, rightFront, and rightRear wheel trajectories");
-//
-//            //force graph to show 1/2 field dimensions of 24ft x 27 feet
-//            fig1.setXTic(0, 27, 1);
-//            fig1.setYTic(0, 24, 1);
-//            fig1.addData(path.smoothPath, Color.red, Color.blue);
-//
-//
-//            fig1.addData(path.leftFrontPath, Color.cyan);
-//            fig1.addData(path.leftRearPath, Color.green);
-//            fig1.addData(path.rightFrontPath, Color.magenta);
-//            fig1.addData(path.rightRearPath, Color.orange);
-//
-//
-//            //generate figure 8 path
-//            path.figure8Example();
-//
-//        }
+        formatVelocities(path.smoothLeftFrontVelocity, path.smoothRightFrontVelocity, path.smoothRightRearVelocity, path.smoothLeftRearVelocity);
+
+        for (int i = 0; i < motorTargetPositions.size(); i++) {
+            //System.out.println(motorTargetPositions.get(i).toString());
+
+        }
+
         //example on printing useful path information
-        //System.out.println(path.numFinalPoints);
-        //System.out.println(path.pathAlpha);
+        System.out.println(path.numFinalPoints);
+        System.out.println(path.pathAlpha);
     }
 
     public void figure8Example() {
-        /***Sweet Figure 8 with rotation example (not practical at all)***/
+        /**
+         * *Sweet Figure 8 with rotation example (not practical at all)**
+         */
         //Normally you would use a 0 heading and drive in +y for forward, but this fits on the field plot better
 
         double[][] waypoints = new double[][]{
@@ -845,8 +875,4 @@ public class MecanumPathPlanner {
 //            fig4.addData(path.rightRearPath, Color.orange);
 //        }
     }
-}	
-
-
-
-
+}
