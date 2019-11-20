@@ -8,14 +8,14 @@ package org.eastsideprep.eps8103;
 /**
  * @author tespelien
  */
-public class MotorPosition {
+public class MotorVelocity {
 
     int leftfront;
     int rightfront;
     int rightback;
     int leftback;
 
-    MotorPosition(double lf, double rf, double rb, double lb) {
+    MotorVelocity(double lf, double rf, double rb, double lb) {
         this.leftfront = (int) lf;
         this.rightfront = (int) rf;
         this.rightback = (int) rb;

@@ -1,6 +1,7 @@
 package org.eastsideprep.eps8103;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class MecanumPathPlanner {
         }
     }
 
-    public static List<MotorPosition> motorTargetPositions = new ArrayList<MotorPosition>();
+    public static List<MotorVelocity> motorScaledVelocities = new ArrayList<MotorVelocity>();
 
     //Path Variables
     public double[][] origPath;
@@ -764,13 +765,17 @@ public class MecanumPathPlanner {
         smoothLeftRearVelocity = velocityFix(smoothLeftRearVelocity, origLeftRearVelocity, 0.0000001);
         smoothRightFrontVelocity = velocityFix(smoothRightFrontVelocity, origRightFrontVelocity, 0.0000001);
         smoothRightRearVelocity = velocityFix(smoothRightRearVelocity, origRightRearVelocity, 0.0000001);
-    }
 
-    public static void formatVelocities(double[][] lf, double[][] rf, double[][] rb, double[][] lb) {
+//formatting the velocities to [-1,1] range
+        double scalar = smoothRightRearVelocity[0][1];//the first element of each entry is the time
+        for (int i = 0; i < smoothLeftFrontVelocity.length; i++) {
+            //hehe
+        }
+        for (int i = 0; i < smoothLeftFrontVelocity.length; i++) {
+            //MotorVelocity powers = new MotorVelocity((int) Math.round(lf[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(rf[i][1] * 1000.0) / 1000.0 * 3360 / Math.PI / 1120, (int) Math.round(rb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(lb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI);
 
-        for (int i = 0; i < lf.length; i++) {
-            MotorPosition powers = new MotorPosition((int) Math.round(lf[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(rf[i][1] * 1000.0) / 1000.0 * 3360 / Math.PI / 1120, (int) Math.round(rb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(lb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI);
-            motorTargetPositions.add(i, powers);
+            MotorVelocity vels = new MotorVelocity(smoothLeftFrontVelocity[i][1] / scalar, smoothRightFrontVelocity[i][1] / scalar, smoothRightRearVelocity[i][1] / scalar, smoothLeftRearVelocity[i][1] / scalar);
+            motorScaledVelocities.add(i, vels);
         }
     }
 
@@ -803,12 +808,6 @@ public class MecanumPathPlanner {
 //        public double[][] smoothRightRearVelocity;
         System.out.println("velocities: ");
 
-        formatVelocities(path.smoothLeftFrontVelocity, path.smoothRightFrontVelocity, path.smoothRightRearVelocity, path.smoothLeftRearVelocity);
-
-        for (int i = 0; i < motorTargetPositions.size(); i++) {
-            //System.out.println(motorTargetPositions.get(i).toString());
-
-        }
 
         //example on printing useful path information
         System.out.println(path.numFinalPoints);

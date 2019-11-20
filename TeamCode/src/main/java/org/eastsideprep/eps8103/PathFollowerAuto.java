@@ -23,6 +23,7 @@ public class PathFollowerAuto extends LinearOpMode {
     int angle_c = 360 / robot.TICKS_PER_REV;
 
     double[] drivetrainEncoders = new double[4];
+    double[] drivetrainEncodersPrevious = new double[4];
 
     ColorSensor color_sensor;
 
@@ -239,26 +240,31 @@ public class PathFollowerAuto extends LinearOpMode {
 
         telemetry.addData(">", "Press Play to start tracking");
         telemetry.update(); //add stuff to telemetry
-        waitForStart();
+
 
         telemetry.addData("status", "starting");
 
-        List<MotorPosition> mtp = path.motorTargetPositions;
+        List<MotorVelocity> mtp = path.motorScaledVelocities;
+        telemetry.addData("log", "reading " + mtp.size() + " velocities");
+        waitForStart();
         for (int i = 0; i < mtp.size(); i++) {
-            robot.leftFrontMotor.setTargetPosition(mtp.get(i).leftfront);
-            robot.rightFrontMotor.setTargetPosition(mtp.get(i).rightfront);
-            robot.rightBackMotor.setTargetPosition(mtp.get(i).rightback);
-            robot.leftBackMotor.setTargetPosition(mtp.get(i).leftback);
-            for (DcMotor m : robot.allMotors) {
-                m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                m.setPower(0.5);
-            }
 
-            for (int j = 0; j < 4; i++) {
+            robot.leftFrontMotor.setPower(mtp.get(i).leftfront);
+            robot.rightFrontMotor.setPower(mtp.get(i).rightfront);
+            robot.leftBackMotor.setPower(mtp.get(i).rightback);
+            robot.leftBackMotor.setPower(mtp.get(i).leftback);
+
+
+            for (int j = 0; j < drivetrainEncoders.length; i++) {
                 drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
             }
-telemetry.addData("status", "running");
-            sleep(40);
+            telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
+            for (int k = 0; k < drivetrainEncoders.length; k++) {
+                telemetry.addData("motor"+i+" speed",(drivetrainEncoders[i]-drivetrainEncodersPrevious[i])/40);
+            }
+            telemetry.addData("status", "running");
+            telemetry.update();
+            sleep(100);
         }
 
         telemetry.update();

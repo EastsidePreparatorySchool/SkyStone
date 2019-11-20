@@ -37,8 +37,9 @@ public class basicSkyStoneAuto extends LinearOpMode {
     int angle_c = 360 / robot.TICKS_PER_REV;
 
     double[] drivetrainEncoders = new double[4];
+    double[] drivetrainEncodersPrevious = new double[4];
 
-    ColorSensor color_sensor;
+//    ColorSensor color_sensor;
 
     public void forwards(int l, double speed) {
         for (DcMotor m : robot.allMotors) {
@@ -59,6 +60,12 @@ public class basicSkyStoneAuto extends LinearOpMode {
         for (int i = 0; i < 4; i++) {
             drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
     }
 
     public void backwards(int l) {
@@ -177,6 +184,12 @@ public class basicSkyStoneAuto extends LinearOpMode {
             robot.allMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
     }
 
     public void strafeleft(int l) {
@@ -202,6 +215,11 @@ public class basicSkyStoneAuto extends LinearOpMode {
             robot.allMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
     }
 
     public void lowerarm(int angle) {
@@ -265,8 +283,17 @@ public class basicSkyStoneAuto extends LinearOpMode {
 //        strafeleft(20);
 //        forwards(20, 0.6);
 
-        strafeleft(10);
-        straferight(10);
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+
+        telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
+        telemetry.update();
+        forwards(24, 0.6);
+        strafeleft(24);
+        straferight(24);
+
 
         telemetry.update();
 
@@ -290,8 +317,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
 //        turnleft(90);
 //        backwards(24);
 //
-//        print_encoders();
-        sleep(4000);
     }
 }
 
