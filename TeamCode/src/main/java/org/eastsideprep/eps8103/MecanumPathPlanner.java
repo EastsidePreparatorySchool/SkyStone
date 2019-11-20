@@ -767,10 +767,16 @@ public class MecanumPathPlanner {
         smoothRightRearVelocity = velocityFix(smoothRightRearVelocity, origRightRearVelocity, 0.0000001);
 
 //formatting the velocities to [-1,1] range
-        double scalar = smoothRightRearVelocity[0][1];//the first element of each entry is the time
+        double scalar = 1.0;//the first element of each entry is the time
+        //then divide each velocity by the maxmimum
         for (int i = 0; i < smoothLeftFrontVelocity.length; i++) {
-            //hehe
+            scalar = Math.max(Math.max(smoothLeftFrontVelocity[i][1], smoothLeftRearVelocity[i][1]),
+                    Math.max(smoothRightFrontVelocity[i][1], smoothRightRearVelocity[i][1]));
+
         }
+        scalar=1.0;
+        System.out.println("scalar is"+scalar);
+
         for (int i = 0; i < smoothLeftFrontVelocity.length; i++) {
             //MotorVelocity powers = new MotorVelocity((int) Math.round(lf[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(rf[i][1] * 1000.0) / 1000.0 * 3360 / Math.PI / 1120, (int) Math.round(rb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(lb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI);
 

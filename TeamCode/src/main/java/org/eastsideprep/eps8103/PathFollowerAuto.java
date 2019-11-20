@@ -246,6 +246,8 @@ public class PathFollowerAuto extends LinearOpMode {
 
         List<MotorVelocity> mtp = path.motorScaledVelocities;
         telemetry.addData("log", "reading " + mtp.size() + " velocities");
+        telemetry.addData("log", mtp.get(3).leftfront);
+        telemetry.update();
         waitForStart();
         for (int i = 0; i < mtp.size(); i++) {
 
@@ -254,14 +256,19 @@ public class PathFollowerAuto extends LinearOpMode {
             robot.leftBackMotor.setPower(mtp.get(i).rightback);
             robot.leftBackMotor.setPower(mtp.get(i).leftback);
 
+            telemetry.addData("left front", mtp.get(i).leftfront);
+            telemetry.addData("right front", mtp.get(i).rightfront);
+            telemetry.addData("right back", mtp.get(i).rightback);
+            telemetry.addData("left back", mtp.get(i).leftback);
 
-            for (int j = 0; j < drivetrainEncoders.length; i++) {
-                drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+            for (int j = 0; j < drivetrainEncoders.length; j++) {
+                drivetrainEncoders[j] = robot.allMotors[j].getCurrentPosition();
             }
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
             for (int k = 0; k < drivetrainEncoders.length; k++) {
-                telemetry.addData("motor"+i+" speed",(drivetrainEncoders[i]-drivetrainEncodersPrevious[i])/40);
+                telemetry.addData("motor" + k + " speed", (drivetrainEncoders[k] - drivetrainEncodersPrevious[k]) / 40);
             }
+            telemetry.addData("left front", mtp.get(i).leftfront);
             telemetry.addData("status", "running");
             telemetry.update();
             sleep(100);
