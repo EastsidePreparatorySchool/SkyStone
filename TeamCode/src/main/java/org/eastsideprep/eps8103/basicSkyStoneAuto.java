@@ -41,20 +41,24 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
 //    ColorSensor color_sensor;
 
-    public void forwards(int l, double speed) {
+    public void forwards(double speed, double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
-            m.setTargetPosition(m.getCurrentPosition() + fast_c * l);
-            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             m.setPower(speed);
         }
-        //once all motors are going i can start turning them off
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
         for (DcMotor m : robot.allMotors) {
-            while (m.isBusy()) {
-                m.setPower(speed);
-            }
-            if (!m.isBusy()) {
-                m.setPower(0);
-            }
+            m.setPower(speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
         for (int i = 0; i < 4; i++) {
@@ -162,26 +166,31 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
     }
 
-    public void straferight(int l) {
-        robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - strafe_c * l);
-        robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + strafe_c * l);
-        robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + strafe_c * l);
-        robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - strafe_c * l);
+    public void straferight(double speed, double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
-            m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            m.setPower(0.25);
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.rightFrontMotor.setPower(-speed);
+        robot.rightBackMotor.setPower(speed);
+        robot.leftFrontMotor.setPower(speed);
+        robot.leftBackMotor.setPower(-speed);
+
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
         }
         for (DcMotor m : robot.allMotors) {
-            while (m.isBusy()) {
-                m.setPower(0.25);
-            }
-            if (!m.isBusy()) {
-                m.setPower(0);
-            }
+            m.setPower(speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
         for (int i = 0; i < 4; i++) {
-            robot.allMotors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
 
@@ -290,9 +299,8 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
         telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();
-        forwards(24, 0.6);
-        strafeleft(24);
-        straferight(24);
+        forwards(0.5, 2000);
+        straferight(0.5, 2000);
 
 
         telemetry.update();

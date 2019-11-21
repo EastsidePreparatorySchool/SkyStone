@@ -1,25 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.eastsideprep.eps8103;
+
 
 /**
  * @author tespelien
  */
 public class MotorVelocity {
 
-    int leftfront;
-    int rightfront;
-    int rightback;
-    int leftback;
+    double leftfront;
+    double rightfront;
+    double rightback;
+    double leftback;
 
     MotorVelocity(double lf, double rf, double rb, double lb) {
-        this.leftfront = (int) lf;
-        this.rightfront = (int) rf;
-        this.rightback = (int) rb;
-        this.leftback = (int) lb;
+        this.leftfront =(double) Math.round(lf*1000) / 1000;
+        this.rightfront = (double) Math.round(rf*1000) / 1000;
+        this.rightback = (double) Math.round(rb*1000) / 1000;
+        this.leftback = (double) Math.round(lb*1000) / 1000;
     }
 
     public String toString() {

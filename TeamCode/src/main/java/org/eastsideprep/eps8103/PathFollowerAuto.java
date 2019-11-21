@@ -218,23 +218,25 @@ public class PathFollowerAuto extends LinearOpMode {
 
         double[][] waypoints = new double[][]{
                 {2, 0, 90},
-                {0.5, 0.5, 45},
-                {0, 2, 0},
-                {0.5, 3.5, 315},
+                {0.5, 0.5, 135},
+                {0, 2, 180},
+                {0.5, 3.5, 225},
                 {2, 4, 270},
-                {3.5, 3.5, 225},
-                {4, 2, 180},
-                {3.5, 0.5, 135},
-                {2, 0, 90}
+                {3.5, 3.5, 215},
+                {4, 2, 360},
+                {3.5, 0.5, 405},
+                {2, 0, 450}
         };
 
         double totalTime = 16; //max seconds we want to drive the path
-        double timeStep = 0.04; //period of control loop on Rio, seconds
-        double robotTrackWidth = 1.4; //distance between left and right wheels, feet
-        double robotTrackLength = 1.4; //distance between front and rear wheels, feet
+        double timeStep = 0.1; //period of control loop on Rio, seconds
+        double robotTrackWidth = 1.16; //distance between left and right wheels = 14 in (1.16 ft)
+        double robotTrackLength = 1; //distance between front and rear wheels = 12 in (1ft)
 
         MecanumPathPlanner path = new MecanumPathPlanner(waypoints);
         path.calculate(totalTime, timeStep, robotTrackWidth, robotTrackLength);
+        path.formatVelocities();
+
 
         robot.init(hardwareMap); //load hardware from other program
 
@@ -246,7 +248,8 @@ public class PathFollowerAuto extends LinearOpMode {
 
         List<MotorVelocity> mtp = path.motorScaledVelocities;
         telemetry.addData("log", "reading " + mtp.size() + " velocities");
-        telemetry.addData("log", mtp.get(3).leftfront);
+        sleep(2000);
+        telemetry.addData("log", "max velocity: " + path.max);
         telemetry.update();
         waitForStart();
         for (int i = 0; i < mtp.size(); i++) {

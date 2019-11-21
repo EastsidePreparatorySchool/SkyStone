@@ -1,42 +1,13 @@
 package org.eastsideprep.eps8103;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Arrays;
-
-/**
- * This Class provides many useful algorithms for Robot Path Planning. It uses
- * optimization techniques and knowledge of Robot Motion in order to calculate
- * smooth path trajectories, if given only discrete waypoints. The Benefit of
- * these optimization algorithms are very efficient path planning that can be
- * used to Navigate in Real-time.
- * <p>
- * This Class uses a method of Gradient Decent, and other optimization
- * techniques to produce smooth Velocity profiles for the four wheels of a
- * mecanum drive robot.
- * <p>
- * This Class does not attempt to calculate quintic or cubic splines for best
- * fitting a curve. It is for this reason, the algorithm can be ran on embedded
- * devices with very quick computation times.
- * <p>
- * The output of this function are independent velocity profiles for the four
- * wheels of a mecanum drive chassis. The velocity profiles start and end with 0
- * velocity and maintain smooth transitions throughout the path.
- * <p>
- * This algorithm is a port from a similar algorithm running on a Robot used for
- * my PhD thesis. I have not fully optimized these functions, so there is room
- * for some improvement.
- * <p>
- * Initial tests on the 2015 FRC NI RoboRio, the complete algorithm finishes in
- * under 15ms using the Java System Timer for paths with less than 50 nodes.
- *
- * @author Kevin Harrilal
- * @version 1.0
- * @email kevin@team2168.org
- * @date 2014-Aug-11
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
+
+import java.util.*;
+import java.lang.*;
+
 public class MecanumPathPlanner {
 
     /**
@@ -53,7 +24,7 @@ public class MecanumPathPlanner {
         }
     }
 
-    public static List<MotorVelocity> motorScaledVelocities = new ArrayList<MotorVelocity>();
+    public static List<MotorVelocity> motorScaledVelocities;
 
     //Path Variables
     public double[][] origPath;
@@ -765,119 +736,27 @@ public class MecanumPathPlanner {
         smoothLeftRearVelocity = velocityFix(smoothLeftRearVelocity, origLeftRearVelocity, 0.0000001);
         smoothRightFrontVelocity = velocityFix(smoothRightFrontVelocity, origRightFrontVelocity, 0.0000001);
         smoothRightRearVelocity = velocityFix(smoothRightRearVelocity, origRightRearVelocity, 0.0000001);
+    }
 
+    static double max = 0.0;
+
+    public void formatVelocities() {
 //formatting the velocities to [-1,1] range
         double scalar = 1.0;//the first element of each entry is the time
         //then divide each velocity by the maxmimum
         for (int i = 0; i < smoothLeftFrontVelocity.length; i++) {
-            scalar = Math.max(Math.max(smoothLeftFrontVelocity[i][1], smoothLeftRearVelocity[i][1]),
-                    Math.max(smoothRightFrontVelocity[i][1], smoothRightRearVelocity[i][1]));
-
+            if (smoothLeftFrontVelocity[i][1] > scalar) scalar = smoothLeftFrontVelocity[i][1];
+            if (smoothLeftRearVelocity[i][1] > scalar) scalar = smoothLeftRearVelocity[i][1];
+            if (smoothRightFrontVelocity[i][1] > scalar) scalar = smoothRightFrontVelocity[i][1];
+            if (smoothRightRearVelocity[i][1] > scalar) scalar = smoothRightRearVelocity[i][1];
         }
-        scalar=1.0;
-        System.out.println("scalar is"+scalar);
-
+        max = scalar;
+        motorScaledVelocities = new ArrayList<MotorVelocity>();
         for (int i = 0; i < smoothLeftFrontVelocity.length; i++) {
             //MotorVelocity powers = new MotorVelocity((int) Math.round(lf[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(rf[i][1] * 1000.0) / 1000.0 * 3360 / Math.PI / 1120, (int) Math.round(rb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(lb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI);
 
             MotorVelocity vels = new MotorVelocity(smoothLeftFrontVelocity[i][1] / scalar, smoothRightFrontVelocity[i][1] / scalar, smoothRightRearVelocity[i][1] / scalar, smoothLeftRearVelocity[i][1] / scalar);
             motorScaledVelocities.add(i, vels);
         }
-    }
-
-    //main program
-    public static void main(String[] args) {
-        long start = System.currentTimeMillis();
-        //System.setProperty("java.awt.headless", "true"); //enable this to true to emulate roboRio environment
-
-        //create waypoint path of a fairly practical example
-        double[][] waypoints = new double[][]{
-                {1, 1, 90},
-                {4, 2, 90},
-                {4, 8, 90},
-                {2, 22, 315}
-        };
-
-        double totalTime = 8; //seconds
-        double timeStep = 0.1; //period of control loop on Rio, seconds
-        double robotTrackWidth = 2; //distance between left and right wheels, feet
-        double robotTrackLength = 2.5; //distance between front and rear wheels, feet
-
-        final MecanumPathPlanner path = new MecanumPathPlanner(waypoints);
-        path.calculate(totalTime, timeStep, robotTrackWidth, robotTrackLength);
-
-        System.out.println("Time in ms: " + (System.currentTimeMillis() - start));
-//
-//        public double[][] smoothLeftFrontVelocity;
-//        public double[][] smoothLeftRearVelocity;
-//        public double[][] smoothRightFrontVelocity;
-//        public double[][] smoothRightRearVelocity;
-        System.out.println("velocities: ");
-
-
-        //example on printing useful path information
-        System.out.println(path.numFinalPoints);
-        System.out.println(path.pathAlpha);
-    }
-
-    public void figure8Example() {
-        /**
-         * *Sweet Figure 8 with rotation example (not practical at all)**
-         */
-        //Normally you would use a 0 heading and drive in +y for forward, but this fits on the field plot better
-
-        double[][] waypoints = new double[][]{
-                {2, 8, 90},
-                {7, 2, 135},
-                {12, 8, 180},
-                {17, 14, 225},
-                {22, 8, 270},
-                {17, 2, 315},
-                {12, 8, 360},
-                {7, 14, 405},
-                {2, 8, 450}
-        };
-
-        double totalTime = 8; //seconds
-        double timeStep = 0.05; //period of control loop on Rio, seconds
-        double robotTrackWidth = 2; //distance between left and right wheels, feet
-        double robotTrackLength = 2.5; //distance between front and rear wheels, feet
-
-        final MecanumPathPlanner path = new MecanumPathPlanner(waypoints);
-        path.setPathAlpha(0.9);
-        path.setPathBeta(0.5);
-        path.calculate(totalTime, timeStep, robotTrackWidth, robotTrackLength);
-
-//        if (!GraphicsEnvironment.isHeadless()) {
-//
-//            FalconLinePlot fig3 = new FalconLinePlot(path.smoothCenterVelocity, null, Color.blue);
-//            fig3.yGridOn();
-//            fig3.xGridOn();
-//            fig3.setYLabel("Velocity (ft/sec)");
-//            fig3.setXLabel("time (seconds)");
-//            fig3.setTitle("Velocity Profile for Left and Right Wheels \n LF = Cyan, RF = Magenta, LR = Green, RR = Orange");
-//            fig3.addData(path.smoothRightFrontVelocity, Color.magenta);
-//            fig3.addData(path.smoothLeftFrontVelocity, Color.cyan);
-//            fig3.addData(path.smoothRightRearVelocity, Color.orange);
-//            fig3.addData(path.smoothLeftRearVelocity, Color.green);
-//
-//            FalconLinePlot fig4 = new FalconLinePlot(path.nodeOnlyPath, Color.blue, Color.green);
-//            fig4.yGridOn();
-//            fig4.xGridOn();
-//            fig4.setYLabel("Y (feet)");
-//            fig4.setXLabel("X (feet)");
-//            fig4.setTitle("Top Down View of FRC Field (24ft x 27ft) \n shows global position of robot path, along with leftFront, leftRear, rightFront, and rightRear wheel trajectories");
-//
-//            //force graph to show 1/2 field dimensions of 24ft x 27 feet
-//            fig4.setXTic(0, 27, 1);
-//            fig4.setYTic(0, 24, 1);
-//            fig4.addData(path.smoothPath, Color.red, Color.blue);
-//
-//
-//            fig4.addData(path.leftFrontPath, Color.cyan);
-//            fig4.addData(path.leftRearPath, Color.green);
-//            fig4.addData(path.rightFrontPath, Color.magenta);
-//            fig4.addData(path.rightRearPath, Color.orange);
-//        }
     }
 }
