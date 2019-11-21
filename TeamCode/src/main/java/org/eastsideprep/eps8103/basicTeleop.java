@@ -37,59 +37,25 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.eastsideprep.eps8103.Hardware8103;
 
-@TeleOp(name = "Kalie Teleop", group = "8103")
+@TeleOp(name = "Trajan Teleop", group = "8103")
 
-public class Simple8103Teleop extends LinearOpMode {
+public class basicTeleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware8103 robot = new Hardware8103();
-//
-//    public void toggleWrist(int wristpos) {
-//        robot.wrist.setPosition(wristpos == 0 ? 180 : 0);
-//        wristpos = wristpos == 0 ? 1 : 0; //i like me my ternary bois
-//    }
 
     @Override
     public void runOpMode() {
 
         robot.init(hardwareMap);
 
-        double left;
-        double right;
-        float extendControl;
-        float pivotControl;
-
-        double globalX = robot.xpos;
-        double globalY = robot.ypos;
-
         double[] drivetrainEncoders = new double[4];
         double[] servoPositions = new double[3];
-
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-
-
-//        for (DcMotor m : robot.allMotors) {
-//            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); //better for driver control
-//        }
-
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Ready");
-        telemetry.update();
-
-        //make sure everything starts in the same position at the beginning of teleop every time
-        robot.closer.setPosition(0);
-        robot.wrist.setPosition(0);
-        robot.updown.setPosition(0.6);
-
-        // Wait for the game to start (driver presses PLAY)
-        //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         for (DcMotor m : robot.allMotors) {
             m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-
+telemetry.addData("", "ready");
         waitForStart();
 
 
@@ -130,14 +96,11 @@ public class Simple8103Teleop extends LinearOpMode {
                 }
             }
 
-            robot.armExtender.setPower(gamepad2.left_stick_y);
-            robot.armPivot.setPower(gamepad2.right_stick_y);
+            robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + 2 * Math.round(gamepad2.right_trigger));
+            robot.armExtender.setPower(0.6);
 
-//            robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + 2 * Math.round(gamepad2.right_trigger));
-//            robot.armExtender.setPower(0.6);
-//
-//            robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
-//            robot.armPivot.setPower(0.6);
+            robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
+            robot.armPivot.setPower(0.6);
 
             telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
             //pivot encoder results:
@@ -145,12 +108,12 @@ public class Simple8103Teleop extends LinearOpMode {
             //all down is -750
             //all back is 3200
 
-//            if (robot.armPivot.getCurrentPosition() < -650 || robot.armPivot.getCurrentPosition() > 3100) {
-//                robot.armPivot.setPower(0);//dont go too low or high!!!
-//            }
-//            if (robot.armExtender.getCurrentPosition() < 141 || robot.armExtender.getCurrentPosition() > 1581) {
-//                robot.armExtender.setPower(0);
-//            }
+            if (robot.armPivot.getCurrentPosition() < -650 || robot.armPivot.getCurrentPosition() > 3100) {
+                robot.armPivot.setPower(0);//dont go too low or high!!!
+            }
+            if (robot.armExtender.getCurrentPosition() < 141 || robot.armExtender.getCurrentPosition() > 1581) {
+                robot.armExtender.setPower(0);
+            }
             //extend encoder results
             //extend:141 all extended:1581
 
@@ -172,12 +135,6 @@ public class Simple8103Teleop extends LinearOpMode {
                 robot.updown.setPosition(1);
             } else if (gamepad2.a) {
                 robot.updown.setPosition(0);
-            }
-
-            if (gamepad2.dpad_down) {
-                robot.color_range_sensor.enableLed(false);
-            } else if (gamepad2.dpad_up) {
-                robot.color_range_sensor.enableLed(true);
             }
 
             for (int i = 0; i < robot.allServos.length; i++) {

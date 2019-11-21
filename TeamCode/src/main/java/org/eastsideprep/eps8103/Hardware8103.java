@@ -3,11 +3,8 @@ package org.eastsideprep.eps8103;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-//import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-import com.qualcomm.robotcore.hardware.ColorSensor;
 
 /**
  * Hardware definitions for 8103
@@ -26,8 +23,6 @@ public class Hardware8103 {
     public DcMotor[] allMotors;
     public Servo[] allServos;
     double[] rotationArray;
-
-  // ColorSensor color_sensor = null;
 
     double xpos;
     double ypos;
@@ -69,8 +64,6 @@ public class Hardware8103 {
         updown = hwMap.servo.get("servo2");
         closer = hwMap.servo.get("servo3");
 
-//        color_sensor = hwMap.colorSensor.get("color");
-
         allMotors = new DcMotor[]{leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
         allServos = new Servo[]{wrist, updown, closer};
         rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
@@ -80,7 +73,6 @@ public class Hardware8103 {
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
-       //color_sensor = hwMap.colorSensor.get("color_sensor");
 
         for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
