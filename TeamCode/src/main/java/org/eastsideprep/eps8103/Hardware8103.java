@@ -72,7 +72,7 @@ public class Hardware8103 {
 
         allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, rightBackMotor, leftBackMotor};
         allServos = new Servo[]{wrist, updown, closer};
-        rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
+        rotationArray = new double[]{-1.0, -1.0, 1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
