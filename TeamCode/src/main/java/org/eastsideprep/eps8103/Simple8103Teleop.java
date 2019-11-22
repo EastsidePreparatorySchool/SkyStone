@@ -174,11 +174,6 @@ public class Simple8103Teleop extends LinearOpMode {
                 robot.updown.setPosition(0);
             }
 
-            if (gamepad2.dpad_down) {
-                robot.color_range_sensor.enableLed(false);
-            } else if (gamepad2.dpad_up) {
-                robot.color_range_sensor.enableLed(true);
-            }
 
             for (int i = 0; i < robot.allServos.length; i++) {
                 servoPositions[i] = robot.allServos[i].getPosition();

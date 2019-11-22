@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -37,8 +36,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
     int angle_c = 360 / robot.TICKS_PER_REV;
 
     double[] drivetrainEncoders = new double[4];
-
-    ColorSensor color_sensor;
 
     public void forwards(int l, double speed) {
         for (DcMotor m : robot.allMotors) {
@@ -262,20 +259,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
         telemetry.update();
 
-        robot.color_range_sensor.enableLed(false);
-        sleep(1000);
-        robot.color_range_sensor.enableLed(true);
-
-
-        while (robot.color_range_sensor.red() > 30) {
-
-            telemetry.update();
-            straferightslowly(40);
-            ///extendarm(8);
-            robot.updown.setPosition(1);
-            robot.closer.setPosition(0.5);
-            //reelarm(8);
-        }//pickup block
         telemetry.addData("log", "found skytone");
         turnleft(90);
         forwards(80, 0.6);

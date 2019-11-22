@@ -32,191 +32,261 @@ public class VuforiaEncoders extends LinearOpMode {
 
         //these have to be found experimentally aka a lot of testing
         int fast_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.24); //2 because the motors are geared up 2:1 to the wheels
-        int strafe_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.5);//last constants need tweaking
+        int strafe_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.5);  //last constants need tweaking
 
         int slow_strafe_c = 1;
         int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
         int ext_c = 1;
+        int pivot_c = 1;
 
         int angle_c = 360 / robot.TICKS_PER_REV;
 
         double[] drivetrainEncoders = new double[4];
 
+    double[] drivetrainEncodersPrevious = new double[4];
+
         //ColorSensor color_sensor;
 
-        public void forwards(int l, double speed) {
-            for (DcMotor m : robot.allMotors) {
-                m.setTargetPosition(m.getCurrentPosition() + (int) fast_c * l);
-                m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                m.setPower(speed);
-            }
-            //once all motors are going i can start turning them off
-            for (DcMotor m : robot.allMotors) {
-                while (m.isBusy()) {
-                    m.setPower(speed);
-                }
-                if (!m.isBusy()) {
-                    m.setPower(0);
-                }
-            }
-
-            for (int i = 0; i < 4; i++) {
-                drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-            }
+    public void forwards(double speed, double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            m.setPower(speed);
+        }
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
-        public void backwards(int l) {
-            for (DcMotor m : robot.allMotors) {
-                m.setTargetPosition(m.getCurrentPosition() - (int) fast_c * l);
-                m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                m.setPower(0.4);
-            }
-            //once all motors are going i can start turning them off
-            for (DcMotor m : robot.allMotors) {
-                while (m.isBusy()) {
-                    m.setPower(0.4);
-                }
-                if (!m.isBusy()) {
-                    m.setPower(0);
-                }
-            }
-
-            for (int i = 0; i < 4; i++) {
-                drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-            }
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
 
-        public void turnright(int angle) {
-            robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + (int) turn_c * angle);
-            robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - (int) turn_c * angle);
-            robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - (int) turn_c * angle);
-            robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + (int) turn_c * angle);
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
 
+    public void backwards(double speed, double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            m.setPower(-speed);
+        }
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(-speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
-        public void turnleft(int angle) {
-            robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - (int) turn_c * angle);
-            robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + (int) turn_c * angle);
-            robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + (int) turn_c * angle);
-            robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - (int) turn_c * angle);
-
-            for (DcMotor m : robot.allMotors) {
-              m.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            m.setPower(0.25);
-            }
-            //once all motors are going i can start turning them off
-            for (DcMotor m : robot.allMotors) {
-                while (m.isBusy()) {
-                    m.setPower(0.25);
-                }
-                if (!m.isBusy()) {
-                    m.setPower(0);
-                }
-            }
-
-            for (int i = 0; i < 4; i++) {
-                drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-            }
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
 
-        public void stopmotors() {
-            for (DcMotor m : robot.allMotors) {
-                m.setPower(0);
-            }
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void turnright(double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.leftFrontMotor.setPower(0.3);
+        robot.leftBackMotor.setPower(0.3);
+        robot.rightFrontMotor.setPower(-0.3);
+        robot.rightBackMotor.setPower(-0.3);
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        robot.leftFrontMotor.setPower(0.15);
+        robot.leftBackMotor.setPower(0.15);
+        robot.rightFrontMotor.setPower(-0.15);
+        robot.rightBackMotor.setPower(-0.15);
+
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
-        public void strafeleftslowly(int l) {
-            robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + slow_strafe_c * l);
-            robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - slow_strafe_c * l);
-            robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - slow_strafe_c * l);
-            robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + slow_strafe_c * l);
-            for (DcMotor m : robot.allMotors) {
-                m.setPower(0.1);
-            }
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
 
-        public void straferightslowly(int l) {
-            robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - slow_strafe_c * l);
-            robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + slow_strafe_c * l);
-            robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + slow_strafe_c * l);
-            robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - slow_strafe_c * l);
-            for (DcMotor m : robot.allMotors) {
-                m.setPower(0.1);
-            }
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void turnleft(double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.leftFrontMotor.setPower(-0.3);
+        robot.leftBackMotor.setPower(-0.3);
+        robot.rightFrontMotor.setPower(0.3);
+        robot.rightBackMotor.setPower(0.3);
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        robot.leftFrontMotor.setPower(0.15);
+        robot.leftBackMotor.setPower(0.15);
+        robot.rightFrontMotor.setPower(-0.15);
+        robot.rightBackMotor.setPower(-0.15);
+
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
-        public void strafeleft(int l) {
-            robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() + strafe_c * l);
-            robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() - strafe_c * l);
-            robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() - strafe_c * l);
-            robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() + strafe_c * l);
-            for (DcMotor m : robot.allMotors) {
-                m.setPower(0.25);
-            }
-            for (DcMotor m : robot.allMotors) {
-                while (m.isBusy()) {
-                    m.setPower(0.25);
-                }
-                if (!m.isBusy()) {
-                    m.setPower(0);
-                }
-            }
-
-            for (int i = 0; i < 4; i++) {
-                drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-            }
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
 
-        public void straferight(int l) {
-            robot.rightFrontMotor.setTargetPosition(robot.rightFrontMotor.getCurrentPosition() - strafe_c * l);
-            robot.rightBackMotor.setTargetPosition(robot.rightBackMotor.getCurrentPosition() + strafe_c * l);
-            robot.leftFrontMotor.setTargetPosition(robot.leftFrontMotor.getCurrentPosition() + strafe_c * l);
-            robot.leftBackMotor.setTargetPosition(robot.leftBackMotor.getCurrentPosition() - strafe_c * l);
-            for (DcMotor m : robot.allMotors) {
-                m.setPower(0.25);
-            }
-            for (DcMotor m : robot.allMotors) {
-                while (m.isBusy()) {
-                    m.setPower(0.25);
-                }
-                if (!m.isBusy()) {
-                    m.setPower(0);
-                }
-            }
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
 
-           // for (int i = 0; i < 4; i++) {
-             //   drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-            //}
+    public void stopmotors() {
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
+        }
+    }
+
+    public void straferight(double speed, double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            //m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.rightFrontMotor.setPower(speed);//for some reason setting positive speed makes it negative?
+        robot.rightBackMotor.setPower(-speed);//speeds may be inversed (for some reason this makes it go forward
+        robot.leftFrontMotor.setPower(speed);
+        robot.leftBackMotor.setPower(-speed);
+
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
-        public void lowerarm(int angle) {
-            robot.armPivot.setTargetPosition(-650);
-            robot.armPivot.setPower(1);
-            //dont set the power to 0, make sure to hold position!
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
 
-        public void raisearm(int angle) {
-            robot.armPivot.setTargetPosition(-1 * angle_c * angle);
-            robot.armPivot.setPower(1);
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void strafeleft(int l) {
+
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.leftFrontMotor.setPower(0.3);
+        robot.leftBackMotor.setPower(0.3);
+        robot.rightFrontMotor.setPower(-0.3);
+        robot.rightBackMotor.setPower(-0.3);
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        robot.leftFrontMotor.setPower(0.15);
+        robot.leftBackMotor.setPower(0.15);
+        robot.rightFrontMotor.setPower(-0.15);
+        robot.rightBackMotor.setPower(-0.15);
+
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
-        public void extendarm(int l) {
-            robot.armExtender.setTargetPosition(1581);
-            robot.armExtender.setPower(1);
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
         }
 
-        public void reelarm(int l) {
-            robot.armExtender.setTargetPosition(141);//found this value using teleop
-            robot.armExtender.setPower(1);
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
         }
+        telemetry.update();
+    }
 
-        public void print_encoders() {
-            telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
-            telemetry.update();
-        }
+    public void lowerarm(int angle) {
+        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() - pivot_c * angle);
+        robot.armPivot.setPower(1);
+        //dont set the power to 0, make sure to hold position!
+    }
+
+    public void raisearm(int angle) {
+        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + pivot_c * angle);
+        robot.armPivot.setPower(1);
+    }
+
+    public void extendarm(int l) {
+        robot.armExtender.setTargetPosition(1581);
+        robot.armExtender.setPower(1);
+    }
+
+    public void reelarm(int l) {
+        robot.armExtender.setTargetPosition(141);//found this value using teleop
+        robot.armExtender.setPower(1);
+    }
+
+    public void print_encoders() {
+        telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
+        telemetry.update();
+    }
 
 
-        @Override
+    @Override
         public void runOpMode() {
 
             float hsvValues[] = {0F, 0F, 0F};
@@ -224,14 +294,13 @@ public class VuforiaEncoders extends LinearOpMode {
 
             robot.init(hardwareMap); //load hardware from other program
 
-            telemetry.addData(">", "Press Play to start tracking");
-            telemetry.update(); //add stuff to telemetry
-            waitForStart();
-
 
             RobotLog.w(TAG, "runopmode");
             robot.init(hardwareMap); //load hardware from other program
 
+            for (int i = 0; i < drivetrainEncoders.length; i++) {
+                drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+            }
 
 
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -412,29 +481,30 @@ public class VuforiaEncoders extends LinearOpMode {
                     telemetry.addData("Visible", "we see it!");
                     telemetry.update();
                     stopmotors();
+                    print_encoders();
                     sleep(2000);
                 } 
 
 
                 if(!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
-                    forwards(18, 0.6);
-                    straferight(18);
+                    forwards(0.5, 500);
+                    straferight(0.2, 2000);
                     if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
                         telemetry.addData("Visible", "we see it!");
                         telemetry.update();
                         stopmotors();
                         sleep(2000);
                     }
-                    strafeleft(24);
-                    forwards(6,0.2);
-                    backwards(6);
-                    straferight(18);
-                    backwards(2);
-                    straferight(18);
+                    strafeleft(7000);//should be strafeleft
+                    forwards(0.5,2000);
+                    backwards(0.5, 3000);
+                    straferight(0.5,  7000); //should be straferight
+                    backwards(0.5, 3000);
+                    straferight( 0.5, 7000); //should be straferight
                     stopmotors();
                     sleep(200);
-                    forwards(6,0.2);
-                    backwards(6);
+                    forwards(0.5,3000);
+                    backwards(0.5, 7000);
 
             }
 
@@ -468,26 +538,35 @@ public class VuforiaEncoders extends LinearOpMode {
             }
 
 
-            /*
 
-            forwards(30, 0.1);//check using camera!!
+            telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
+            for (int i = 0; i < drivetrainEncoders.length; i++) {
+                telemetry.addData("motor"+i+" speed",(drivetrainEncoders[i]-drivetrainEncodersPrevious[i])/40);
+            }
+
+
+
+            telemetry.addLine();
+            telemetry.update();
+
+            forwards(0.5, 50000);//check using camera!!
             if (true) {
-                turnleft(90);
+                turnleft(1000);
                 extendarm(8);
                 robot.updown.setPosition(1);
                 robot.closer.setPosition(0.5);
                 reelarm(8);
             }//pickup block
 
-            turnleft(90);
-            forwards(80, 0.6);
-            turnleft(90);
-            backwards(24);
+            turnleft(500);
+            forwards(0.5, 5000);
+            turnleft(500);
+            backwards(0.5, 7000);
 
 
-             */
             print_encoders();
 
+            /*
                 telemetry.addData("Pos", "We see it!");
                 if (lastLocation != null) {
                     telemetry.addData("Pos", (lastLocation)); //if there was a last location, add it
@@ -498,6 +577,8 @@ public class VuforiaEncoders extends LinearOpMode {
 
                 if (lastLocation == null) {
                 }
+
+             */
 
             }
 
