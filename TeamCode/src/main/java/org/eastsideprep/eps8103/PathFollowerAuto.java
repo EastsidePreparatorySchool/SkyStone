@@ -248,8 +248,6 @@ public class PathFollowerAuto extends LinearOpMode {
 
         List<MotorVelocity> mtp = path.motorScaledVelocities;
         telemetry.addData("log", "reading " + mtp.size() + " velocities");
-        sleep(2000);
-        telemetry.addData("log", "max velocity: " + path.max);
         telemetry.update();
         waitForStart();
         for (int i = 0; i < mtp.size(); i++) {

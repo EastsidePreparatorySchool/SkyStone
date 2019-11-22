@@ -1,5 +1,6 @@
 package org.eastsideprep.eps8103;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -18,11 +19,15 @@ public class Hardware8103 {
     public DcMotor rightFrontMotor = null;
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
+
     public DcMotor armPivot = null;
     public DcMotor armExtender = null;
     public Servo wrist = null;
     public Servo updown = null;
     public Servo closer = null;
+    public CRServo bay1 = null;
+    public CRServo bay2 = null;
+
     public DcMotor[] allMotors;
     public Servo[] allServos;
     double[] rotationArray;
@@ -67,6 +72,9 @@ public class Hardware8103 {
         wrist = hwMap.servo.get("servo1");
         updown = hwMap.servo.get("servo2");
         closer = hwMap.servo.get("servo3");
+
+        bay1 = hwMap.crservo.get("bay1");
+        bay2 = hwMap.crservo.get("bay2");
 
         color_range_sensor = hwMap.colorSensor.get("color_range_sensor");
 

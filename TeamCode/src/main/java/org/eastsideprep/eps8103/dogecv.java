@@ -31,7 +31,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.*;
 
 @TeleOp(name = "open cv test", group = "Concept")
-public class opencv_cameratest extends LinearOpMode {
+public class dogecv extends LinearOpMode {
     OpenCvCamera phoneCam;
 
     @Override

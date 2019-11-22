@@ -738,8 +738,6 @@ public class MecanumPathPlanner {
         smoothRightRearVelocity = velocityFix(smoothRightRearVelocity, origRightRearVelocity, 0.0000001);
     }
 
-    static double max = 0.0;
-
     public void formatVelocities() {
 //formatting the velocities to [-1,1] range
         double scalar = 1.0;//the first element of each entry is the time
@@ -750,7 +748,6 @@ public class MecanumPathPlanner {
             if (smoothRightFrontVelocity[i][1] > scalar) scalar = smoothRightFrontVelocity[i][1];
             if (smoothRightRearVelocity[i][1] > scalar) scalar = smoothRightRearVelocity[i][1];
         }
-        max = scalar;
         motorScaledVelocities = new ArrayList<MotorVelocity>();
         for (int i = 0; i < smoothLeftFrontVelocity.length; i++) {
             //MotorVelocity powers = new MotorVelocity((int) Math.round(lf[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(rf[i][1] * 1000.0) / 1000.0 * 3360 / Math.PI / 1120, (int) Math.round(rb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI, (int) Math.round(lb[i][1] * 1000.0) / 1000.0 * 0.3333 * 3360 / Math.PI);

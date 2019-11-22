@@ -17,3 +17,9 @@ apply from: '../build.common.gradle'
 dependencies {
     implementation 'org.openftc:easyopencv:1.2'
 }
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' } // this line!
+    }
+}

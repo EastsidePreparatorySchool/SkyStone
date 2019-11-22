@@ -216,6 +216,49 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update();
     }
 
+
+    public void straferight_check(double time) {
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+
+        double speed = 0.15;
+        boolean seen = false;
+        for (DcMotor m : robot.allMotors) {
+            //m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.rightFrontMotor.setPower(-speed);
+        robot.rightBackMotor.setPower(speed);
+        robot.leftFrontMotor.setPower(-speed);
+        robot.leftBackMotor.setPower(speed);
+
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            if(seen){
+
+            }
+            sleep(10);
+        }
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+
     public void strafeleft(int l) {
 
         double start = System.currentTimeMillis();
@@ -274,6 +317,14 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.armExtender.setPower(1);
     }
 
+    public void bayintake(double time){
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        robot.bay1.setPower(1);
+        robot.bay2.setPower(1);
+        //sleep(time);
+    }
+
     public void print_encoders() {
         telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();
@@ -321,8 +372,8 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
         telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();
-        //forwards(0.5, 2000);
-        straferight(0.05, 4000);
+        forwards(0.5, 500);
+        straferight_check(6000);
 
         telemetry.update();
 
