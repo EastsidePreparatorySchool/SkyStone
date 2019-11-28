@@ -289,6 +289,7 @@ public class VuforiaEncoders extends LinearOpMode {
     @Override
         public void runOpMode() {
 
+
             float hsvValues[] = {0F, 0F, 0F};
             final float values[] = hsvValues;
 
@@ -317,7 +318,7 @@ public class VuforiaEncoders extends LinearOpMode {
             targetsSkyStone.activate();
 
 
-            VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+            final VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
             stoneTarget.setName("Stone Target");
             VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
             blueRearBridge.setName("Blue Rear Bridge");
@@ -457,7 +458,23 @@ public class VuforiaEncoders extends LinearOpMode {
             telemetry.update(); //add stuff to telemetry
             waitForStart();
 
-            targetsSkyStone.activate();
+            /*
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                telemetry.addData("status", "y yo oop");
+                telemetry.update();
+            }
+
+        };
+        actionManager.addAction(runnable, 2000);
+
+             */
+
+        ActionManager actionManager = new ActionManager();
+
+
+        targetsSkyStone.activate();
 
             for (VuforiaTrackable trackable : allTrackables) { //for each VuMark in array
                 telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible() ? "Visible" : "Not Visible"); //if it is visible mark it visible in telemetry
@@ -468,6 +485,7 @@ public class VuforiaEncoders extends LinearOpMode {
             }
 
             while (opModeIsActive()) {
+                actionManager.checkQueue();
 
 
                 for (VuforiaTrackable trackable : allTrackables) {
@@ -477,34 +495,46 @@ public class VuforiaEncoders extends LinearOpMode {
                         lastLocation = robotLocationTransform;
                     }
                 }
+
                 if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
                     telemetry.addData("Visible", "we see it!");
                     telemetry.update();
                     stopmotors();
                     print_encoders();
                     sleep(2000);
-                } 
+                }
 
 
                 if(!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+                    Runnable trackVuforia = new Runnable() {
+                        @Override
+                        public void run() {
+                            if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
+                                telemetry.addData("Visible", "we see it!");
+                                telemetry.update();
+                                stopmotors();
+                                print_encoders();
+                                sleep(4000);
+                            }
+
+
+
+                        }
+                    };
                     forwards(0.5, 500);
+                    actionManager.addAction(trackVuforia, 200);
                     straferight(0.2, 2000);
-                    if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
-                        telemetry.addData("Visible", "we see it!");
-                        telemetry.update();
-                        stopmotors();
-                        sleep(2000);
-                    }
-                    strafeleft(7000);//should be strafeleft
-                    forwards(0.5,2000);
-                    backwards(0.5, 3000);
-                    straferight(0.5,  7000); //should be straferight
-                    backwards(0.5, 3000);
-                    straferight( 0.5, 7000); //should be straferight
-                    stopmotors();
-                    sleep(200);
-                    forwards(0.5,3000);
-                    backwards(0.5, 7000);
+
+                    //strafeleft(7000);//should be strafeleft
+                    //forwards(0.5,2000);
+                    //backwards(0.5, 3000);
+                    //straferight(0.5,  7000); //should be straferight
+                    //backwards(0.5, 3000);
+                    //straferight( 0.5, 7000); //should be straferight
+                    //stopmotors();
+                    //sleep(200);
+                    //forwards(0.5,3000);
+                    //backwards(0.5, 7000);
 
             }
 
@@ -549,6 +579,7 @@ public class VuforiaEncoders extends LinearOpMode {
             telemetry.addLine();
             telemetry.update();
 
+            /*
             forwards(0.5, 50000);//check using camera!!
             if (true) {
                 turnleft(1000);
