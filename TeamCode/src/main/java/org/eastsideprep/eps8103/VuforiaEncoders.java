@@ -47,6 +47,18 @@ public class VuforiaEncoders extends LinearOpMode {
 
         //ColorSensor color_sensor;
 
+    public void getEncoderValues(){
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
     public void forwards(double speed, double time) {
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
@@ -67,15 +79,7 @@ public class VuforiaEncoders extends LinearOpMode {
             m.setPower(0);
         }
 
-        for (int i = 0; i < 4; i++) {
-            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-        }
-
-        for (int i = 0; i < drivetrainEncoders.length; i++) {
-            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
-            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
-        }
-        telemetry.update();
+      getEncoderValues();
     }
 
     public void backwards(double speed, double time) {
@@ -97,16 +101,7 @@ public class VuforiaEncoders extends LinearOpMode {
         for (DcMotor m : robot.allMotors) {
             m.setPower(0);
         }
-
-        for (int i = 0; i < 4; i++) {
-            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-        }
-
-        for (int i = 0; i < drivetrainEncoders.length; i++) {
-            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
-            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
-        }
-        telemetry.update();
+getEncoderValues();
     }
 
     public void turnright(double time) {
@@ -134,15 +129,7 @@ public class VuforiaEncoders extends LinearOpMode {
             m.setPower(0);
         }
 
-        for (int i = 0; i < 4; i++) {
-            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-        }
-
-        for (int i = 0; i < drivetrainEncoders.length; i++) {
-            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
-            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
-        }
-        telemetry.update();
+       getEncoderValues();
     }
 
     public void turnleft(double time) {
@@ -170,15 +157,7 @@ public class VuforiaEncoders extends LinearOpMode {
             m.setPower(0);
         }
 
-        for (int i = 0; i < 4; i++) {
-            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-        }
-
-        for (int i = 0; i < drivetrainEncoders.length; i++) {
-            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
-            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
-        }
-        telemetry.update();
+     getEncoderValues();
     }
 
     public void stopmotors() {
@@ -207,20 +186,53 @@ public class VuforiaEncoders extends LinearOpMode {
             m.setPower(speed / 2);
         }
         sleep(20);
-        for (DcMotor m : robot.allMotors) {
-            m.setPower(0);
-        }
+        stopmotors();
+        getEncoderValues();
 
-        for (int i = 0; i < 4; i++) {
-            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-        }
-
-        for (int i = 0; i < drivetrainEncoders.length; i++) {
-            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
-            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
-        }
-        telemetry.update();
     }
+
+
+    public void startVuStrafe(double speed, double time) {
+        robot.rightFrontMotor.setPower(speed);//for some reason setting positive speed makes it negative?
+        robot.rightBackMotor.setPower(-speed);//speeds may be inversed (for some reason this makes it go forward
+        robot.leftFrontMotor.setPower(speed);
+        robot.leftBackMotor.setPower(-speed);
+        Runnable trackVuforia = new Runnable() {
+            @Override
+            public void run() {
+                if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+                    telemetry.addData("Visible", "we see it!");
+                    telemetry.update();
+                    stopmotors();
+                    getEncoderValues();
+                    sleep(4000);
+                }
+            }
+        };
+
+    }
+        public void endVuStrafe(double speed, double time){
+            ActionManager actionManager = new ActionManager();
+
+            double start = System.currentTimeMillis();
+            double elapsed = 0.0;
+            while (time - elapsed > 20) {
+                elapsed = System.currentTimeMillis() - start;
+                sleep(10);
+            }
+            for (DcMotor m : robot.allMotors) {
+                actionManager.addAction(trackVuforia, 200);
+
+                m.setPower(speed / 2);
+            }
+            sleep(20);
+           stopmotors();
+
+           getEncoderValues();
+        }
+
+        //run peacefully until i have 20 ms left
+
 
     public void strafeleft(int l) {
 
@@ -244,19 +256,8 @@ public class VuforiaEncoders extends LinearOpMode {
         robot.rightBackMotor.setPower(-0.15);
 
         sleep(20);
-        for (DcMotor m : robot.allMotors) {
-            m.setPower(0);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
-        }
-
-        for (int i = 0; i < drivetrainEncoders.length; i++) {
-            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
-            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
-        }
-        telemetry.update();
+        stopmotors();
+       getEncoderValues();
     }
 
     public void lowerarm(int angle) {
@@ -280,10 +281,13 @@ public class VuforiaEncoders extends LinearOpMode {
         robot.armExtender.setPower(1);
     }
 
+    /*
     public void print_encoders() {
         telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();
     }
+
+     */
 
 
     @Override
@@ -500,7 +504,7 @@ public class VuforiaEncoders extends LinearOpMode {
                     telemetry.addData("Visible", "we see it!");
                     telemetry.update();
                     stopmotors();
-                    print_encoders();
+                    getEncoderValues();
                     sleep(2000);
                 }
 
@@ -513,7 +517,7 @@ public class VuforiaEncoders extends LinearOpMode {
                                 telemetry.addData("Visible", "we see it!");
                                 telemetry.update();
                                 stopmotors();
-                                print_encoders();
+                                getEncoderValues();
                                 sleep(4000);
                             }
 
