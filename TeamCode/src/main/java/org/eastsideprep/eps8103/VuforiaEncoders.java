@@ -71,6 +71,7 @@ public class VuforiaEncoders extends LinearOpMode {
             m.setPower(speed);
         }
         //run peacefully until i have 20 ms left
+        /*
         while (time - elapsed > 20) {
             elapsed = System.currentTimeMillis() - start;
             sleep(10);
@@ -81,6 +82,8 @@ public class VuforiaEncoders extends LinearOpMode {
         sleep(20);
         stopmotors();
         getEncoderValues();
+
+         */
     }
 
     public void backwards(double speed, double time) {
@@ -173,6 +176,8 @@ public class VuforiaEncoders extends LinearOpMode {
         robot.leftBackMotor.setPower(-speed);
 
         //run peacefully until i have 20 ms left
+
+        /*
         while (time - elapsed > 20) {
             elapsed = System.currentTimeMillis() - start;
             sleep(10);
@@ -183,6 +188,8 @@ public class VuforiaEncoders extends LinearOpMode {
         sleep(20);
         stopmotors();
         getEncoderValues();
+
+         */
 
     }
 
@@ -192,40 +199,10 @@ public class VuforiaEncoders extends LinearOpMode {
         robot.rightBackMotor.setPower(-speed);//speeds may be inversed (for some reason this makes it go forward
         robot.leftFrontMotor.setPower(speed);
         robot.leftBackMotor.setPower(-speed);
-        Runnable trackVuforia = new Runnable() {
-            @Override
-            public void run() {
-                if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
-                    telemetry.addData("Visible", "we see it!");
-                    telemetry.update();
-                    stopmotors();
-                    getEncoderValues();
-                    sleep(4000);
-                }
-            }
-        };
+
 
     }
 
-    public void endVuStrafe(double speed, double time) {
-        ActionManager actionManager = new ActionManager();
-
-        double start = System.currentTimeMillis();
-        double elapsed = 0.0;
-        while (time - elapsed > 20) {
-            elapsed = System.currentTimeMillis() - start;
-            sleep(10);
-        }
-        for (DcMotor m : robot.allMotors) {
-            actionManager.addAction(trackVuforia, 200);
-
-            m.setPower(speed / 2);
-        }
-        sleep(20);
-        stopmotors();
-
-        getEncoderValues();
-    }
 
     //run peacefully until i have 20 ms left
 
@@ -484,12 +461,32 @@ public class VuforiaEncoders extends LinearOpMode {
             }
         }
 
+        // move forward
+        // startStrafing with 2000 ms timeout
+        // straferight();
+        // startRightStrafe
+        // addAction(stopmotors, 2000);
+        forwards(0.5, 500);
+        sleep(500);
+
+        //actionManager.addAction(trackVuforia, 200);
+        straferight(0.05, 2000);
+        Runnable stop = new Runnable() {
+            @Override
+            public void run() {
+                stopmotors();
+            }
+        };
+
+
+        actionManager.addAction(stop, 2000);
+
         while (opModeIsActive()) {
             actionManager.checkQueue();
 
 
             for (VuforiaTrackable trackable : allTrackables) {
-                telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible() ? "Visible" : "Not Visible");
+                //telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible() ? "Visible" : "Not Visible");
                 OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener) trackable.getListener()).getUpdatedRobotLocation();
                 if (robotLocationTransform != null) {
                     lastLocation = robotLocationTransform;
@@ -501,11 +498,11 @@ public class VuforiaEncoders extends LinearOpMode {
                 telemetry.update();
                 stopmotors();
                 getEncoderValues();
-                sleep(2000);
+                //sleep(2000);
             }
 
 
-            if (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+            /*if (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
                 Runnable trackVuforia = new Runnable() {
                     @Override
                     public void run() {
@@ -535,17 +532,11 @@ public class VuforiaEncoders extends LinearOpMode {
                 //forwards(0.5,3000);
                 //backwards(0.5, 7000);
 
-            }
+            }*/
 
 
-            //Color.RGBToHSV(color_sensor.red()*8, color_sensor.green() *8, color_sensor.blue() * 8, hsvValues);
-            //telemetry.addData("red", color_sensor.red());
-            //telemetry.addData("Green", color_sensor.green());
-            //telemetry.addData("Blue", color_sensor.blue());
 
-            //telemetry.addData("color sensor", new float[] {color_sensor.red(), color_sensor.green(), color_sensor.blue()});
-            //color_sensor.enableLed(true);
-
+            /*
             telemetry.addData("log", "starting");
             //remember to start in the "legal" position
             robot.armPivot.setTargetPosition(-500);
@@ -593,8 +584,7 @@ public class VuforiaEncoders extends LinearOpMode {
 
             print_encoders();
 
-            /*
-                telemetry.addData("Pos", "We see it!");
+            */
                 if (lastLocation != null) {
                     telemetry.addData("Pos", (lastLocation)); //if there was a last location, add it
                 } else {
@@ -605,8 +595,8 @@ public class VuforiaEncoders extends LinearOpMode {
                 if (lastLocation == null) {
                 }
 
-             */
 
+             sleep(10);
         }
 
         //String format(OpenGLMatrix transformationMatrix) {
