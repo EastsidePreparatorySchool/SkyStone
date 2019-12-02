@@ -33,6 +33,8 @@ public class Hardware8103 {
     public Servo closer = null;
     public CRServo bay1 = null;
     public CRServo bay2 = null;
+    public Servo leftpuller = null;
+    public Servo rightpuller = null;
 
     public DcMotor[] allMotors;
     public Servo[] allServos;
@@ -71,19 +73,18 @@ public class Hardware8103 {
         armPivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armPivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-
         armExtender = hwMap.dcMotor.get("extend");
         armExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         intakeLeft = hwMap.dcMotor.get("intakeleft");
         intakeRight = hwMap.dcMotor.get("intakeright");
 
-        lift = hwMap.dcMotor.get("lift");
-
         wrist = hwMap.servo.get("servo1");
         updown = hwMap.servo.get("servo2");
         closer = hwMap.servo.get("servo3");
+
+        leftpuller = hwMap.servo.get("leftpuller");
+        rightpuller = hwMap.servo.get("rightpuller");
 
         bay1 = hwMap.crservo.get("bay1");
         bay2 = hwMap.crservo.get("bay2");
