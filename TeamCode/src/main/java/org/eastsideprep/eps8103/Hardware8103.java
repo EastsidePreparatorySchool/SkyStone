@@ -1,5 +1,6 @@
 package org.eastsideprep.eps8103;
 
+import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -39,7 +40,7 @@ public class Hardware8103 {
     public DcMotor[] allMotors;
     public Servo[] allServos;
     double[] rotationArray;
-   ColorSensor color_range_sensor = null;
+    ColorSensor color_range_sensor = null;
 
     double xpos;
     double ypos;
@@ -69,19 +70,8 @@ public class Hardware8103 {
         leftBackMotor = hwMap.dcMotor.get("LB");
         rightBackMotor = hwMap.dcMotor.get("RB");
 
-        armPivot = hwMap.dcMotor.get("pivot");
-        armPivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armPivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        armExtender = hwMap.dcMotor.get("extend");
-        armExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        intakeLeft = hwMap.dcMotor.get("intakeleft");
-        intakeRight = hwMap.dcMotor.get("intakeright");
-
-        wrist = hwMap.servo.get("servo1");
-        updown = hwMap.servo.get("servo2");
-        closer = hwMap.servo.get("servo3");
+        lift = hwMap.dcMotor.get("lift");
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftpuller = hwMap.servo.get("leftpuller");
         rightpuller = hwMap.servo.get("rightpuller");
@@ -89,7 +79,8 @@ public class Hardware8103 {
         bay1 = hwMap.crservo.get("bay1");
         bay2 = hwMap.crservo.get("bay2");
 
-        color_range_sensor = hwMap.colorSensor.get("color_range_sensor");
+        intakeLeft = hwMap.dcMotor.get("intakeLeft");
+        intakeRight = hwMap.dcMotor.get("intakeRight");
 
         allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, rightBackMotor, leftBackMotor};
         allServos = new Servo[]{wrist, updown, closer};
