@@ -45,9 +45,18 @@ public class Hardware8103 {
     double xpos;
     double ypos;
 
+    //constants
     int TICKS_PER_REV = 1120;
     double WHEEL_RADIUS = 2;
     double WHEEL_CIRC = WHEEL_RADIUS * 2 * Math.PI;
+    int LIFT_LEVEL_0 = 11;
+    int LIFT_LEVEL_1 = 11;
+    int LIFT_LEVEL_2 = 11;
+    int LIFT_LEVEL_3 = 11;
+    int LIFT_LEVEL_4 = 11;
+    int LIFT_LEVEL_5 = 11;
+    int LIFT_LEVEL_6 = 11;
+
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -71,7 +80,6 @@ public class Hardware8103 {
         rightBackMotor = hwMap.dcMotor.get("RB");
 
         lift = hwMap.dcMotor.get("lift");
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftpuller = hwMap.servo.get("leftpuller");
         rightpuller = hwMap.servo.get("rightpuller");

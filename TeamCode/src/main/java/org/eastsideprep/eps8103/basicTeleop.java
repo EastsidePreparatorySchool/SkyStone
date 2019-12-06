@@ -56,11 +56,9 @@ public class basicTeleop extends LinearOpMode {
         telemetry.addData("", "ready");
         waitForStart();
 
-        double up;
-        double down;
         int liftPos = 0;
 
-        boolean intakeRun;
+        boolean intakeRun = false;
 
 
         // run until the end of the match (driver presses STOP)
@@ -89,8 +87,6 @@ public class basicTeleop extends LinearOpMode {
                 for (int i = 0; i < robot.allMotors.length; i++) {
                     robot.allMotors[i].setPower(
                             powers[i] / scale * biggestWithRotation * speedControl);
-                    //robot.allMotors[i].setTargetPosition((int)powers[i] / scale * biggestWithRotation * speedControl);
-                    //robot.allMotors[i].setPower(0.8);
                     drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
                 }
             } else {
@@ -102,20 +98,36 @@ public class basicTeleop extends LinearOpMode {
 
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
 
-            down = gamepad1.left_trigger;
-            up = gamepad1.right_trigger;
+            if (gamepad2.right_trigger > 0.8) {
+                robot.lift.setPower(0.6);
 
-            if (down == 1) {
-                robot.lift.setPower(0.4);
-
-            } else if (up == 1) {
-                robot.lift.setPower(-0.4);
+            } else if (gamepad2.left_trigger > 0.8) {
+                robot.lift.setPower(-0.6);
+            } else if (gamepad2.b) {
+                robot.lift.setPower(0);
             }
             liftPos = robot.lift.getCurrentPosition();
 
-            robot.intakeRight.setPower(1);
-            robot.intakeLeft.setPower(1);
+//lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
+            if (gamepad2.a) {//toggle intake
+                if (!intakeRun) {
+                    robot.intakeRight.setPower(1);
+                    robot.intakeLeft.setPower(1);
+                    robot.bay1.setPower(-1);
+                    robot.bay2.setPower(-1);
+                    intakeRun = true;
+                    sleep(500);
+                } else if (intakeRun) {
+                    robot.intakeRight.setPower(0);
+                    robot.intakeLeft.setPower(0);
+                    robot.bay1.setPower(0);
+                    robot.bay2.setPower(0);
+                    intakeRun = false;
+                    sleep(500);
+                }
+            }
 
             telemetry.addData("lift height", liftPos);
             telemetry.addLine();
