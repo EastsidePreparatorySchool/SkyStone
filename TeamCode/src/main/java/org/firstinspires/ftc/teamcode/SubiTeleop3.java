@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "SubiTeleOp", group = "TeleOps")
+@TeleOp(name = "SubiTeleOp3", group = "TeleOps")
 
-public class SubiTeleOp extends OpMode {
+public class SubiTeleop3 extends OpMode {
 
     TeleopRobot robot;
 
@@ -109,24 +109,23 @@ public class SubiTeleOp extends OpMode {
         }
 
 
+        // pivot controlled by bumpers
+        // arm uses triggers
+        // claw uses a and b
+        // x for changing arm speed
 
-        // if this is using two gamepads;
-        // use the second gamepad's bumpers for the pivot
-        // the second gamepad's triggers for the arm
-        // the second gamepad's a and b for the claw
-        // the second gamepad's x for changing arm speed
-        if (this.gamepad2.left_bumper) {
+        if (this.gamepad1.left_bumper) {
             pivotPower = 1;
-        } else if (this.gamepad2.right_bumper) {
+        } else if (this.gamepad1.right_bumper) {
             pivotPower = -1;
         } else {
             pivotPower = 0;
         }
-        speed += this.gamepad1.right_trigger / 2;
 
-        linkageMove = thresholdCheck(this.gamepad2.left_trigger - this.gamepad2.right_trigger);
+        linkageMove = thresholdCheck(this.gamepad1.left_trigger - this.gamepad1.right_trigger);
 
-        if (this.gamepad2.a) {
+
+        if (this.gamepad1.a) {
             robot.grab();
 
         } else if (this.gamepad1.b) {
@@ -134,7 +133,7 @@ public class SubiTeleOp extends OpMode {
 
         }
 
-        if (this.gamepad2.x) {
+        if (this.gamepad1.x) {
             if (armAndPivotSpeed == slow) {
                 armAndPivotSpeed = normal;
 
@@ -148,13 +147,32 @@ public class SubiTeleOp extends OpMode {
 
             }
 
-
         }
 
 
-        // switch between normal, sprint, and precise slow speeds
-        /*
-         */
+        if (this.gamepad1.y) {
+            switch (moves) {
+                // normal speed --> sprint
+                case 0: {
+                    speed = sprint;
+                    moves++;
+                    break;
+                }
+                case 1: { // sprint --> slow
+                    speed = slow;
+                    moves++;
+                    break;
+                }
+                case 2: {
+                    //slow --> normal
+                    speed = normal;
+                    moves = 0;
+                    break;
+                }
+
+            }
+
+        }
 
 
         if (this.gamepad1.dpad_up) {

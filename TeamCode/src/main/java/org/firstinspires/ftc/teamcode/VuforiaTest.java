@@ -84,11 +84,11 @@ public class VuforiaTest  extends OpMode{
             count++;
 
         }
-        telemetry.addData("Location1:", l);
+        telemetry.addData("Location1", l);
         // important things:
         // test this by getting the columns 4 columns of last location
-        // then get hte four rows
-        // see what the shape is, and what is where in actuallity
+        // then get the four rows
+        // see what the shape is, and what is where in actuality
         // then use that to understand what the pose is from the numbers given in
         // in the mean time though, this is on hold.
         telemetry.addData("Location2 ", lastLocation);

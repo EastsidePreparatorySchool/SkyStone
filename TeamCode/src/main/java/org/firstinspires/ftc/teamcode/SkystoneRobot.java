@@ -21,7 +21,7 @@ public class SkystoneRobot implements AutoRobot {
     MotorPowers driveMotors;
     HardwareMap hardwareMap;
     Telemetry telemetry;
-    BNO055IMU imu;
+    IMU imu;
     SensorBNO055IMU sensorBNO055IMU;
     DcMotor frontLeftMotor;
     DcMotor backLeftMotor;
@@ -51,22 +51,21 @@ public class SkystoneRobot implements AutoRobot {
     }
 
     public void init(){
-        imu = hardwareMap.i
-        frontLeftMotor =hardwareMap.dcMotor.get("FrontLeftMotor");
-        frontRightMotor =hardwareMap.dcMotor.get("FrontRightMotor");
-        backLeftMotor =hardwareMap.dcMotor.get("BackLeftMotor");
-        backRightMotor =hardwareMap.dcMotor.get("BackRightMotor");
+        imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
+        frontLeftMotor =hardwareMap.dcMotor.get("frontLeftMotor");
+        frontRightMotor =hardwareMap.dcMotor.get("frontRightMotor");
+        backLeftMotor =hardwareMap.dcMotor.get("backLeftMotor");
+        backRightMotor =hardwareMap.dcMotor.get("backRightMotor");
         driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
         driveMotors = new MotorPowers(0,0,0,0);
 
 
-        pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
-        armMotor = hardwareMap.dcMotor.get("ArmMotor");
-
-        clawServo = hardwareMap.servo.get("ClawServo");
+        pivotMotor = hardwareMap.dcMotor.get("pivotMotor");
+        armMotor = hardwareMap.dcMotor.get("linkageMotor");
+        clawServo = hardwareMap.servo.get("clawServo");
 
         clawServo.setPosition(clawInit);
-
+        imu.initialize();
 
     }
 
@@ -122,9 +121,19 @@ public class SkystoneRobot implements AutoRobot {
 
     }
 
-    public void turnToHeading(double speed){
-        imu.
+    /**
+     * This method locks the robot into turning
+     * @param angle is the desired heading angle
+     * @param speed how fast the robot should be turning (recommended 0.5 or less)
+     *
+     */
+    public void turnToHeading(Double angle, Double speed){
+        speed = (speed>1)? 1:speed;
+
+        //this.pose.heading().getAngle();
+
     }
+
 
     public void trackRobot(){
 
@@ -148,6 +157,14 @@ public class SkystoneRobot implements AutoRobot {
         }
     }
 
+    public Double getIMUAngle(){
+        return imu.getAngle();
 
+    }
+
+    public BNO055IMU.CalibrationStatus getIMUCalibStatus(){
+
+        return imu.getCalibStatus();
+    }
 
 }

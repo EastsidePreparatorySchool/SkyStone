@@ -18,7 +18,7 @@ public class SimpleAutoRobot implements Robot {
     Telemetry telemetry;
     LinearOpMode lop;
     //DcMotor pivotMotor;
-    //DcMotor armMotor;
+    //DcMotor linkageMotor;
     DriveTrain driveTrain;
     //Servo clawServo;
     double encoderSpinDegrees;
@@ -48,7 +48,7 @@ public class SimpleAutoRobot implements Robot {
         driveMotors = new MotorPowers(0,0,0,0);
 
         // pivotMotor = hardwareMap.dcMotor.get("PivotMotor");
-        // armMotor = hardwareMap.dcMotor.get("ArmMotor");
+        // linkageMotor = hardwareMap.dcMotor.get("ArmMotor");
 
         // clawServo = hardwareMap.servo.get("ClawServo");
         // grabbing = false;

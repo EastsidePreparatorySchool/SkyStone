@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "SubiTeleOp", group = "TeleOps")
+@TeleOp(name = "SubiTeleOp2", group = "TeleOps")
 
-public class SubiTeleOp extends OpMode {
+public class SubiTeleop2 extends OpMode {
 
     TeleopRobot robot;
 
@@ -42,7 +42,7 @@ public class SubiTeleOp extends OpMode {
     @Override
     public void init() {
         twoGamePads = false;
-        robot = new TeleopRobot(hardwareMap, this.telemetry, false);
+        robot = new TeleopRobot(hardwareMap, this.telemetry, true);
         robot.init();
         motorPowers = new MotorPowers(0, 0, 0, 0);
         telemetry.addData("Status", "Initialized");
@@ -84,11 +84,12 @@ public class SubiTeleOp extends OpMode {
 
         if (linkageMove != 0.0) {
             robot.moveLinkage(armAndPivotSpeed * linkageMove);
+        } else {
+            robot.moveLinkage(0);
         }
         if (pivotPower != 0.0) {
             robot.pivotArm(armAndPivotSpeed * pivotPower);
         }
-
 
         speed = 0.5;
         //armAndPivotSpeed = normal;
@@ -98,6 +99,17 @@ public class SubiTeleOp extends OpMode {
     }
 
     public void getInput() {
+        // checks threshold here as well
+        g1RightAnalogX = thresholdCheck(this.gamepad1.right_stick_x);
+        g1RightAnalogY = thresholdCheck(this.gamepad1.right_stick_y);
+        g1LeftAnalogX = thresholdCheck(this.gamepad1.left_stick_x);
+        g1LeftAnalogY = thresholdCheck(this.gamepad1.left_stick_y);
+        // SWAP CONTROL SCHEMES!!
+        if (this.gamepad1.back) {
+            twoGamePads = !twoGamePads;
+        }
+
+
         // checks threshold here as well
         g1RightAnalogX = thresholdCheck(this.gamepad1.right_stick_x);
         g1RightAnalogY = thresholdCheck(this.gamepad1.right_stick_y);
@@ -133,7 +145,7 @@ public class SubiTeleOp extends OpMode {
             robot.ungrab();
 
         }
-
+        //switch sspeeds
         if (this.gamepad2.x) {
             if (armAndPivotSpeed == slow) {
                 armAndPivotSpeed = normal;
@@ -152,9 +164,7 @@ public class SubiTeleOp extends OpMode {
         }
 
 
-        // switch between normal, sprint, and precise slow speeds
-        /*
-         */
+
 
 
         if (this.gamepad1.dpad_up) {
@@ -289,3 +299,4 @@ public class SubiTeleOp extends OpMode {
 
     }
 }
+
