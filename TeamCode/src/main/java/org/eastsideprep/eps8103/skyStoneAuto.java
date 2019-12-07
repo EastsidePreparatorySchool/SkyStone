@@ -109,32 +109,11 @@ public class skyStoneAuto extends LinearOpMode {
         robot.leftBackMotor.setPower(-0.5);
     }
 
-    public void lowerarm(int angle) {
-        robot.armPivot.setPower(0.6);
-        sleep(1000 * angle);
-    }
-
-    public void raisearm(int angle) {
-        robot.armPivot.setPower(-1);
-        sleep(1000 * angle);
-    }
-
-    public void extendarm(int l) {
-        robot.armExtender.setPower(-1);
-        sleep(1000 * l);
-    }
-
-    public void reelarm(int l) {
-        robot.armExtender.setPower(1);
-        sleep(1000 * l);
-    }
-
 
     @Override
     public void runOpMode() {
         RobotLog.w(TAG, "runopmode");
         robot.init(hardwareMap); //load hardware from other program
-
 
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -300,12 +279,12 @@ public class skyStoneAuto extends LinearOpMode {
                     lastLocation = robotLocationTransform;
                 }
             }
-            if(((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()){
+            if (((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
                 stopmotors();
                 sleep(2000);
             }
 
-            if(!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
+            if (!((VuforiaTrackableDefaultListener) stoneTarget.getListener()).isVisible()) {
                 driveForward();
                 sleep(7000);
 

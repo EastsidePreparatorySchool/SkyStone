@@ -186,27 +186,6 @@ public class PathFollowerAuto extends LinearOpMode {
         }
     }
 
-    public void lowerarm(int angle) {
-        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() - pivot_c * angle);
-        robot.armPivot.setPower(1);
-        //dont set the power to 0, make sure to hold position!
-    }
-
-    public void raisearm(int angle) {
-        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + pivot_c * angle);
-        robot.armPivot.setPower(1);
-    }
-
-    public void extendarm(int l) {
-        robot.armExtender.setTargetPosition(1581);
-        robot.armExtender.setPower(1);
-    }
-
-    public void reelarm(int l) {
-        robot.armExtender.setTargetPosition(141);//found this value using teleop
-        robot.armExtender.setPower(1);
-    }
-
     public void print_encoders() {
         telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();

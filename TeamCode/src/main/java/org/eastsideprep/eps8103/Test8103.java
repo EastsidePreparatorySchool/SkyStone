@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name="Test 8103", group="8103")
+@Autonomous(name = "Test 8103", group = "8103")
 public class Test8103 extends LinearOpMode {
 
 
@@ -108,26 +108,6 @@ public class Test8103 extends LinearOpMode {
         robot.leftBackMotor.setPower(-0.5);
     }
 
-    public void lowerarm(int angle) {
-        robot.armPivot.setPower(0.6);
-        sleep(1000 * angle);
-    }
-
-    public void raisearm(int angle) {
-        robot.armPivot.setPower(-1);
-        sleep(1000 * angle);
-    }
-
-    public void extendarm(int l) {
-        robot.armExtender.setPower(-1);
-        sleep(1000 * l);
-    }
-
-    public void reelarm(int l) {
-        robot.armExtender.setPower(1);
-        sleep(1000 * l);
-    }
-
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -181,51 +161,51 @@ public class Test8103 extends LinearOpMode {
 }
 
 
-        // robot.leftBackMotor.setPower(1.0);
+// robot.leftBackMotor.setPower(1.0);
 
-        // sleep(5000);
+// sleep(5000);
 
-        //robot.leftBackMotor.setPower(-1.0);
+//robot.leftBackMotor.setPower(-1.0);
 
-        //sleep(4000);
+//sleep(4000);
 
-        //robot.rightBackMotor.setPower(1);
+//robot.rightBackMotor.setPower(1);
 
-        //sleep(4000);
+//sleep(4000);
 
-        ///robot.rightBackMotor.setPower(0.5);
+///robot.rightBackMotor.setPower(0.5);
 
-        //sleep(4000);
-        //robot.rightFrontMotor.setPower(0);
+//sleep(4000);
+//robot.rightFrontMotor.setPower(0);
 
-        //robot.leftFrontMotor.setPower(1);
+//robot.leftFrontMotor.setPower(1);
 
-        //sleep(2000);
-        //robot.leftFrontMotor.setPower(0);
+//sleep(2000);
+//robot.leftFrontMotor.setPower(0);
 
-        //robot.leftFrontMotor.setPower(-1);
+//robot.leftFrontMotor.setPower(-1);
 
-        //sleep(2000);
-        //robot.leftFrontMotor.setPower(0);
+//sleep(2000);
+//robot.leftFrontMotor.setPower(0);
 
-        //robot.rightFrontMotor.setPower(1);
+//robot.rightFrontMotor.setPower(1);
 
-        //sleep(2000);
-        //robot.rightFrontMotor.setPower(0);
+//sleep(2000);
+//robot.rightFrontMotor.setPower(0);
 
-        //robot.rightFrontMotor.setPower(-1);
+//robot.rightFrontMotor.setPower(-1);
 
-        //sleep(2000);
-        //robot.rightFrontMotor.setPower(0);
+//sleep(2000);
+//robot.rightFrontMotor.setPower(0);
 
-        //robot.leftBackMotor.setPower(1);
-        //sleep(4000);
-        //robot.leftBackMotor.setPower(0.5);
-        //sleep(4000);
-        //robot.leftBackMotor.setPower(0);
+//robot.leftBackMotor.setPower(1);
+//sleep(4000);
+//robot.leftBackMotor.setPower(0.5);
+//sleep(4000);
+//robot.leftBackMotor.setPower(0);
 
-        //robot.leftBackMotor.setPower(1);
-        //robot.rightBackMotor.setPower(1);
-        //robot.leftFrontMotor.setPower(1);
-        //robot.rightFrontMotor.setPower(1);
+//robot.leftBackMotor.setPower(1);
+//robot.rightBackMotor.setPower(1);
+//robot.leftFrontMotor.setPower(1);
+//robot.rightFrontMotor.setPower(1);
 

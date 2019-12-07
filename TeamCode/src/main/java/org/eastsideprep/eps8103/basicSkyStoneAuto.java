@@ -291,14 +291,14 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.bay2.setPower(0);
     }
 
-    public void lowerPullers(){
+    public void lowerPullers() {
         double position = robot.rightpuller.getPosition();
-        robot.leftpuller.setPosition(0.25);
-        robot.rightpuller.setPosition(0.75);
+        robot.leftpuller.setPosition(1);
+        robot.rightpuller.setPosition(1);
         sleep(2500);
     }
 
-    public void raisePullers(){
+    public void raisePullers() {
         robot.leftpuller.setPosition(0);
         robot.rightpuller.setPosition(0);
         sleep(2500);

@@ -118,16 +118,31 @@ public class basicTeleop extends LinearOpMode {
                     robot.bay1.setPower(-1);
                     robot.bay2.setPower(-1);
                     intakeRun = true;
-                    sleep(500);
+                    sleep(300);
                 } else if (intakeRun) {
                     robot.intakeRight.setPower(0);
                     robot.intakeLeft.setPower(0);
                     robot.bay1.setPower(0);
                     robot.bay2.setPower(0);
                     intakeRun = false;
-                    sleep(500);
+                    sleep(300);
                 }
             }
+
+            if (gamepad2.x) {
+                robot.grabber.setPosition(-0.1);
+            } else if (gamepad2.y) {
+                robot.grabber.setPosition(0.35);
+            }
+
+            if (gamepad2.dpad_up) {
+                robot.horSpool.setPower(0.8);
+            } else if (gamepad2.dpad_down) {
+                robot.horSpool.setPower(-0.8);
+            }
+
+            telemetry.addData("hor spool:", robot.horSpool.getCurrentPosition());
+
 
             telemetry.addData("lift height", liftPos);
             telemetry.addLine();

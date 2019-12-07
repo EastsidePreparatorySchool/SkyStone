@@ -79,11 +79,6 @@ public class Simple8103Teleop extends LinearOpMode {
         telemetry.addData("Say", "Ready");
         telemetry.update();
 
-        //make sure everything starts in the same position at the beginning of teleop every time
-        robot.closer.setPosition(0);
-        robot.wrist.setPosition(0);
-        robot.updown.setPosition(0.6);
-
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -92,7 +87,6 @@ public class Simple8103Teleop extends LinearOpMode {
         }
 
         waitForStart();
-
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -134,67 +128,16 @@ public class Simple8103Teleop extends LinearOpMode {
                 }
             }
 
-            robot.armExtender.setPower(gamepad2.left_stick_y);
-            robot.armPivot.setPower(gamepad2.right_stick_y);
-
-//            robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + 2 * Math.round(gamepad2.right_trigger));
-//            robot.armExtender.setPower(0.6);
-//
-//            robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
-//            robot.armPivot.setPower(0.6);
-
-            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
-            //pivot encoder results:
-            //90 deg - 1535
-            //all down is -750
-            //all back is 3200
-
-//            if (robot.armPivot.getCurrentPosition() < -650 || robot.armPivot.getCurrentPosition() > 3100) {
-//                robot.armPivot.setPower(0);//dont go too low or high!!!
-//            }
-//            if (robot.armExtender.getCurrentPosition() < 141 || robot.armExtender.getCurrentPosition() > 1581) {
-//                robot.armExtender.setPower(0);
-//            }
-            //extend encoder results
-            //extend:141 all extended:1581
-
-
-
-            if (gamepad2.dpad_up) {
-                robot.closer.setPosition(-0.4);
-            } else if (gamepad2.dpad_down) {
-                robot.closer.setPosition(-0.2);
-                robot.wrist.setPosition(0.2);
-            } else if (gamepad2.y) {
-                robot.closer.setPosition(1);
-            } else if (gamepad2.x) {
-                robot.closer.setPosition(0.2);
-            }
-
-            if (gamepad2.b) {
-                robot.updown.setPosition(1);
-            } else if (gamepad2.a) {
-                robot.updown.setPosition(0);
-            }
-
-            if (gamepad2.dpad_down) {
-                robot.color_range_sensor.enableLed(false);
-            } else if (gamepad2.dpad_up) {
-                robot.color_range_sensor.enableLed(true);
-            }
-
             for (int i = 0; i < robot.allServos.length; i++) {
                 servoPositions[i] = robot.allServos[i].getPosition();
             }
             telemetry.addData("servo positions", Arrays.toString(servoPositions));
 
 
-
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
             for (int i = 0; i < drivetrainEncoders.length; i++) {
-                telemetry.addData("motor"+i+" speed",(drivetrainEncoders[i]-drivetrainEncodersPrevious[i])/40);
+                telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
             }
-
 
 
             telemetry.addLine();

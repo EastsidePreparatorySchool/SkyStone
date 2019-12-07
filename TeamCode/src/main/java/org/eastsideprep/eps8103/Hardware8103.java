@@ -21,17 +21,13 @@ public class Hardware8103 {
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
 
-    public DcMotor armPivot = null;
-    public DcMotor armExtender = null;
-
-    public DcMotor intakeRight = null;
+   public DcMotor intakeRight = null;
     public DcMotor intakeLeft = null;
 
     public DcMotor lift = null;
+    public DcMotor horSpool = null;
 
-    public Servo wrist = null;
-    public Servo updown = null;
-    public Servo closer = null;
+    public Servo grabber = null;
     public CRServo bay1 = null;
     public CRServo bay2 = null;
     public Servo leftpuller = null;
@@ -80,6 +76,7 @@ public class Hardware8103 {
         rightBackMotor = hwMap.dcMotor.get("RB");
 
         lift = hwMap.dcMotor.get("lift");
+        horSpool = hwMap.dcMotor.get("horspool");
 
         leftpuller = hwMap.servo.get("leftpuller");
         rightpuller = hwMap.servo.get("rightpuller");
@@ -87,11 +84,12 @@ public class Hardware8103 {
         bay1 = hwMap.crservo.get("bay1");
         bay2 = hwMap.crservo.get("bay2");
 
+        grabber = hwMap.servo.get("grabber");
+
         intakeLeft = hwMap.dcMotor.get("intakeLeft");
         intakeRight = hwMap.dcMotor.get("intakeRight");
 
         allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, rightBackMotor, leftBackMotor};
-        allServos = new Servo[]{wrist, updown, closer};
         rotationArray = new double[]{-1.0, -1.0, 1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
