@@ -351,9 +351,19 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();
 
-        raisePullers();
-        lowerPullers();
-        raisePullers();
+        robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP);
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(0.6);
+        sleep(2000);
+
+        for (int i = 1; i < 8; i++) {
+            robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP + i * robot.LIFT_DELTA);
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lift.setPower(0.7);
+            sleep(2000);
+        }
+
+        robot.lift.setPower(0.4);//need to figure out power that keeps it steady
 
         telemetry.update();
 

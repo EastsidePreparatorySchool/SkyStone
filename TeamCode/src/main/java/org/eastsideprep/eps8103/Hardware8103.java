@@ -21,7 +21,7 @@ public class Hardware8103 {
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
 
-   public DcMotor intakeRight = null;
+    public DcMotor intakeRight = null;
     public DcMotor intakeLeft = null;
 
     public DcMotor lift = null;
@@ -45,13 +45,16 @@ public class Hardware8103 {
     int TICKS_PER_REV = 1120;
     double WHEEL_RADIUS = 2;
     double WHEEL_CIRC = WHEEL_RADIUS * 2 * Math.PI;
-    int LIFT_LEVEL_0 = 11;
-    int LIFT_LEVEL_1 = 11;
-    int LIFT_LEVEL_2 = 11;
-    int LIFT_LEVEL_3 = 11;
-    int LIFT_LEVEL_4 = 11;
-    int LIFT_LEVEL_5 = 11;
-    int LIFT_LEVEL_6 = 11;
+    int LIFT_DELTA = 340;
+    int LIFT_LEVEL_PICKUP = 200;
+    int LIFT_LEVEL_1 = -150;
+    int LIFT_LEVEL_2 = -500;
+    int LIFT_LEVEL_3 = -850;
+    int LIFT_LEVEL_4 = -1200;
+    int LIFT_LEVEL_5 = -1550;
+    int LIFT_LEVEL_6 = -1900;
+    int LIFT_LEVEL_7 = -2250;
+    int LIFT_LEVEL_8 = -2600;
 
 
     /* local OpMode members. */
