@@ -4,32 +4,50 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 /**
  * Hardware definitions for 8103
  */
 public class Hardware8103 {
-    /* Public OpMode members. */
     public DcMotor leftFrontMotor = null;
     public DcMotor rightFrontMotor = null;
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
-    public DcMotor armPivot = null;
-    public DcMotor armExtender = null;
-    public Servo wrist = null;
-    public Servo updown = null;
-    public Servo closer = null;
+
+    public DcMotor intakeRight = null;
+    public DcMotor intakeLeft = null;
+
+    public DcMotor lift = null;
+    public DcMotor horSpool = null;
+
+    public Servo grabber = null;
+    public CRServo bay1 = null;
+    public CRServo bay2 = null;
+    public Servo leftpuller = null;
+    public Servo rightpuller = null;
+
     public DcMotor[] allMotors;
     public Servo[] allServos;
     double[] rotationArray;
+    ColorSensor color_range_sensor = null;
 
     double xpos;
     double ypos;
 
+    //constants
     int TICKS_PER_REV = 1120;
     double WHEEL_RADIUS = 2;
     double WHEEL_CIRC = WHEEL_RADIUS * 2 * Math.PI;
+    int LIFT_LEVEL_0 = 11;
+    int LIFT_LEVEL_1 = 11;
+    int LIFT_LEVEL_2 = 11;
+    int LIFT_LEVEL_3 = 11;
+    int LIFT_LEVEL_4 = 11;
+    int LIFT_LEVEL_5 = 11;
+    int LIFT_LEVEL_6 = 11;
+
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -52,27 +70,27 @@ public class Hardware8103 {
         leftBackMotor = hwMap.dcMotor.get("LB");
         rightBackMotor = hwMap.dcMotor.get("RB");
 
-        armPivot = hwMap.dcMotor.get("pivot");
-        armPivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armPivot.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift = hwMap.dcMotor.get("lift");
+        horSpool = hwMap.dcMotor.get("horspool");
 
+        leftpuller = hwMap.servo.get("leftpuller");
+        rightpuller = hwMap.servo.get("rightpuller");
 
-        armExtender = hwMap.dcMotor.get("extend");
-        armExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bay1 = hwMap.crservo.get("bay1");
+        bay2 = hwMap.crservo.get("bay2");
 
-        wrist = hwMap.servo.get("servo1");
-        updown = hwMap.servo.get("servo2");
-        closer = hwMap.servo.get("servo3");
+        grabber = hwMap.servo.get("grabber");
 
-        allMotors = new DcMotor[]{leftFrontMotor, rightBackMotor, rightFrontMotor, leftBackMotor};
-        allServos = new Servo[]{wrist, updown, closer};
-        rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
+        intakeLeft = hwMap.dcMotor.get("intakeLeft");
+        intakeRight = hwMap.dcMotor.get("intakeRight");
+
+        allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, rightBackMotor, leftBackMotor};
+        rotationArray = new double[]{-1.0, -1.0, 1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-
 
         for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -90,4 +108,3 @@ public class Hardware8103 {
         return unscaledPowers;
     }
 }
-

@@ -193,26 +193,7 @@ public class EncoderTest extends LinearOpMode {
             }
         }
 
-        public void lowerarm(int angle) {
-            robot.armPivot.setTargetPosition(-650);
-            robot.armPivot.setPower(1);
-            //dont set the power to 0, make sure to hold position!
-        }
 
-        public void raisearm(int angle) {
-            robot.armPivot.setTargetPosition(-1 * angle_c * angle);
-            robot.armPivot.setPower(1);
-        }
-
-        public void extendarm(int l) {
-            robot.armExtender.setTargetPosition(1581);
-            robot.armExtender.setPower(1);
-        }
-
-        public void reelarm(int l) {
-            robot.armExtender.setTargetPosition(141);//found this value using teleop
-            robot.armExtender.setPower(1);
-        }
 
         public void print_encoders() {
             telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
@@ -243,22 +224,6 @@ public class EncoderTest extends LinearOpMode {
 
             telemetry.addData("log", "starting");
             //remember to start in the "legal" position
-            robot.armPivot.setTargetPosition(-500);
-            robot.armPivot.setPower(0.5);
-            robot.armExtender.setTargetPosition(141);
-            robot.armExtender.setPower(0.5);
-            while (robot.armPivot.isBusy()) {
-                robot.armPivot.setPower(0.5);
-            }
-            if (!robot.armPivot.isBusy()) {
-                robot.armPivot.setPower(0);
-            }
-            while (robot.armExtender.isBusy()) {
-                robot.armExtender.setPower(0.5);
-            }
-            if (!robot.armExtender.isBusy()) {
-                robot.armExtender.setPower(0);
-            }
 
             forwards(18, 0.6);
             straferight(18);

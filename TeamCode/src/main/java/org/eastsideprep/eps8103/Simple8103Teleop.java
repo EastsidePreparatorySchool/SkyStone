@@ -79,9 +79,7 @@ public class Simple8103Teleop extends LinearOpMode {
         telemetry.update();
 
         //make sure everything starts in the same position at the beginning of teleop every time
-        robot.closer.setPosition(0);
-        robot.wrist.setPosition(0);
-        robot.updown.setPosition(0.6);
+
 
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -130,16 +128,12 @@ public class Simple8103Teleop extends LinearOpMode {
                 }
             }
 
-            robot.armExtender.setPower(gamepad2.left_stick_y);
-            robot.armPivot.setPower(gamepad2.right_stick_y);
-
 //            robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + 2 * Math.round(gamepad2.right_trigger));
 //            robot.armExtender.setPower(0.6);
 //
 //            robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
 //            robot.armPivot.setPower(0.6);
 
-            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
             //pivot encoder results:
             //90 deg - 1535
             //all down is -750
@@ -157,22 +151,7 @@ public class Simple8103Teleop extends LinearOpMode {
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
 
 
-            if (gamepad2.dpad_up) {
-                robot.closer.setPosition(-0.4);
-            } else if (gamepad2.dpad_down) {
-                robot.closer.setPosition(-0.2);
-                robot.wrist.setPosition(0.2);
-            } else if (gamepad2.y) {
-                robot.closer.setPosition(1);
-            } else if (gamepad2.x) {
-                robot.closer.setPosition(0.2);
-            }
 
-            if (gamepad2.b) {
-                robot.updown.setPosition(1);
-            } else if (gamepad2.a) {
-                robot.updown.setPosition(0);
-            }
 
 
             for (int i = 0; i < robot.allServos.length; i++) {

@@ -41,7 +41,6 @@ public class VuforiaEncoders extends LinearOpMode {
     int slow_strafe_c = 1;
     int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
     int ext_c = 1;
-    int pivot_c = 1;
 
     int angle_c = 360 / robot.TICKS_PER_REV;
 
@@ -233,26 +232,7 @@ public class VuforiaEncoders extends LinearOpMode {
         getEncoderValues();
     }
 
-    public void lowerarm(int angle) {
-        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() - pivot_c * angle);
-        robot.armPivot.setPower(1);
-        //dont set the power to 0, make sure to hold position!
-    }
 
-    public void raisearm(int angle) {
-        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + pivot_c * angle);
-        robot.armPivot.setPower(1);
-    }
-
-    public void extendarm(int l) {
-        robot.armExtender.setTargetPosition(1581);
-        robot.armExtender.setPower(1);
-    }
-
-    public void reelarm(int l) {
-        robot.armExtender.setTargetPosition(141);//found this value using teleop
-        robot.armExtender.setPower(1);
-    }
 
     /*
     public void print_encoders() {
@@ -466,11 +446,11 @@ public class VuforiaEncoders extends LinearOpMode {
         // straferight();
         // startRightStrafe
         // addAction(stopmotors, 2000);
-        forwards(0.5, 500);
-        sleep(500);
+        forwards(0.5, 400);
+        sleep(400);
 
         //actionManager.addAction(trackVuforia, 200);
-        straferight(0.05, 2000);
+        straferight(0.05, 10000);
         Runnable stop = new Runnable() {
             @Override
             public void run() {
@@ -479,7 +459,7 @@ public class VuforiaEncoders extends LinearOpMode {
         };
 
 
-        actionManager.addAction(stop, 2000);
+        actionManager.addAction(stop, 10000);
 
         while (opModeIsActive()) {
             actionManager.checkQueue();

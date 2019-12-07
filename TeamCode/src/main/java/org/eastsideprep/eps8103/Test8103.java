@@ -109,23 +109,11 @@ public class Test8103 extends LinearOpMode {
     }
 
     public void lowerarm(int angle) {
-        robot.armPivot.setPower(0.6);
         sleep(1000 * angle);
     }
 
     public void raisearm(int angle) {
-        robot.armPivot.setPower(-1);
         sleep(1000 * angle);
-    }
-
-    public void extendarm(int l) {
-        robot.armExtender.setPower(-1);
-        sleep(1000 * l);
-    }
-
-    public void reelarm(int l) {
-        robot.armExtender.setPower(1);
-        sleep(1000 * l);
     }
 
     @Override
@@ -137,6 +125,9 @@ public class Test8103 extends LinearOpMode {
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
         }
         waitForStart();
+
+        straferight();
+        sleep(4000);
 
         driveForward();
         sleep(7000);

@@ -50,13 +50,15 @@ public class basicTeleop extends LinearOpMode {
         robot.init(hardwareMap);
 
         double[] drivetrainEncoders = new double[4];
-        double[] servoPositions = new double[3];
-
         for (DcMotor m : robot.allMotors) {
             m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-telemetry.addData("", "ready");
+        telemetry.addData("", "ready");
         waitForStart();
+
+        int liftPos = 0;
+
+        boolean intakeRun = false;
 
 
         // run until the end of the match (driver presses STOP)
@@ -85,8 +87,6 @@ telemetry.addData("", "ready");
                 for (int i = 0; i < robot.allMotors.length; i++) {
                     robot.allMotors[i].setPower(
                             powers[i] / scale * biggestWithRotation * speedControl);
-                    //robot.allMotors[i].setTargetPosition((int)powers[i] / scale * biggestWithRotation * speedControl);
-                    //robot.allMotors[i].setPower(0.8);
                     drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
                 }
             } else {
@@ -96,52 +96,55 @@ telemetry.addData("", "ready");
                 }
             }
 
-            robot.armExtender.setTargetPosition(robot.armExtender.getCurrentPosition() + 2 * Math.round(gamepad2.right_trigger));
-            robot.armExtender.setPower(0.6);
-
-            robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + 2 * Math.round(gamepad2.left_trigger));
-            robot.armPivot.setPower(0.6);
-
-            telemetry.addData("pivot encoder", robot.armPivot.getCurrentPosition());
-            //pivot encoder results:
-            //90 deg - 1535
-            //all down is -750
-            //all back is 3200
-
-            if (robot.armPivot.getCurrentPosition() < -650 || robot.armPivot.getCurrentPosition() > 3100) {
-                robot.armPivot.setPower(0);//dont go too low or high!!!
-            }
-            if (robot.armExtender.getCurrentPosition() < 141 || robot.armExtender.getCurrentPosition() > 1581) {
-                robot.armExtender.setPower(0);
-            }
-            //extend encoder results
-            //extend:141 all extended:1581
-
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
 
+            if (gamepad2.right_trigger > 0.8) {
+                robot.lift.setPower(0.6);
+
+            } else if (gamepad2.left_trigger > 0.8) {
+                robot.lift.setPower(-0.6);
+            } else if (gamepad2.b) {
+                robot.lift.setPower(0);
+            }
+            liftPos = robot.lift.getCurrentPosition();
+
+//lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            if (gamepad2.a) {//toggle intake
+                if (!intakeRun) {
+                    robot.intakeRight.setPower(1);
+                    robot.intakeLeft.setPower(1);
+                    robot.bay1.setPower(-1);
+                    robot.bay2.setPower(-1);
+                    intakeRun = true;
+                    sleep(300);
+                } else if (intakeRun) {
+                    robot.intakeRight.setPower(0);
+                    robot.intakeLeft.setPower(0);
+                    robot.bay1.setPower(0);
+                    robot.bay2.setPower(0);
+                    intakeRun = false;
+                    sleep(300);
+                }
+            }
+
+            if (gamepad2.x) {
+                robot.grabber.setPosition(-0.1);
+            } else if (gamepad2.y) {
+                robot.grabber.setPosition(0.35);
+            }
 
             if (gamepad2.dpad_up) {
-                robot.closer.setPosition(-0.4);
+                robot.horSpool.setPower(0.8);
             } else if (gamepad2.dpad_down) {
-                robot.closer.setPosition(-0.2);
-                robot.wrist.setPosition(0.2);
-            } else if (gamepad2.y) {
-                robot.closer.setPosition(1);
-            } else if (gamepad2.x) {
-                robot.closer.setPosition(0.2);
+                robot.horSpool.setPower(-0.8);
             }
 
-            if (gamepad2.b) {
-                robot.updown.setPosition(1);
-            } else if (gamepad2.a) {
-                robot.updown.setPosition(0);
-            }
+            telemetry.addData("hor spool:", robot.horSpool.getCurrentPosition());
 
-            for (int i = 0; i < robot.allServos.length; i++) {
-                servoPositions[i] = robot.allServos[i].getPosition();
-            }
-            telemetry.addData("servo positions", Arrays.toString(servoPositions));
 
+            telemetry.addData("lift height", liftPos);
             telemetry.addLine();
             telemetry.update();
 
@@ -150,4 +153,3 @@ telemetry.addData("", "ready");
         }
     }
 }
-

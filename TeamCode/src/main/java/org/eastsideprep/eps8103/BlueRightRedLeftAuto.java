@@ -106,27 +106,6 @@ public class BlueRightRedLeftAuto extends LinearOpMode{
             robot.leftBackMotor.setPower(-0.5);
         }
 
-        public void lowerarm(int angle) {
-            robot.armPivot.setPower(0.6);
-            sleep(1000 * angle);
-        }
-
-        public void raisearm(int angle) {
-            robot.armPivot.setPower(-1);
-            sleep(1000 * angle);
-        }
-
-        public void extendarm(int l) {
-            robot.armExtender.setPower(-1);
-            sleep(1000 * l);
-        }
-
-        public void reelarm(int l) {
-            robot.armExtender.setPower(1);
-            sleep(1000 * l);
-        }
-
-
         @Override
         public void runOpMode() {
             waitForStart();

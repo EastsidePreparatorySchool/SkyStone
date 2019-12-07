@@ -31,7 +31,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
     int slow_strafe_c = 1;
     int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
-    int pivot_c = 1;
 
     int angle_c = 360 / robot.TICKS_PER_REV;
 
@@ -196,26 +195,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
         }
     }
 
-    public void lowerarm(int angle) {
-        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() - pivot_c * angle);
-        robot.armPivot.setPower(1);
-        //dont set the power to 0, make sure to hold position!
-    }
-
-    public void raisearm(int angle) {
-        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + pivot_c * angle);
-        robot.armPivot.setPower(1);
-    }
-
-    public void extendarm(int l) {
-        robot.armExtender.setTargetPosition(1581);
-        robot.armExtender.setPower(1);
-    }
-
-    public void reelarm(int l) {
-        robot.armExtender.setTargetPosition(141);//found this value using teleop
-        robot.armExtender.setPower(1);
-    }
 
     public void print_encoders() {
         telemetry.addData("wheel encoders", Arrays.toString(drivetrainEncoders));
@@ -234,22 +213,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
 
         telemetry.addData("log", "starting");
         //remember to start in the "legal" position
-        robot.armPivot.setTargetPosition(-400);
-        robot.armPivot.setPower(0.5);
-        robot.armExtender.setTargetPosition(141);
-        robot.armExtender.setPower(0.5);
-        while (robot.armPivot.isBusy()) {
-            robot.armPivot.setPower(0.5);
-        }
-        if (!robot.armPivot.isBusy()) {
-            robot.armPivot.setPower(0);
-        }
-        while (robot.armExtender.isBusy()) {
-            robot.armExtender.setPower(0.5);
-        }
-        if (!robot.armExtender.isBusy()) {
-            robot.armExtender.setPower(0);
-        }
+
 
         forwards(18, 0.6);
         straferight(20);
