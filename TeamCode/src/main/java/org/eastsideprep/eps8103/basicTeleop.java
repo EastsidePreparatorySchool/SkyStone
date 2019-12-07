@@ -37,12 +37,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.eastsideprep.eps8103.Hardware8103;
 
-@TeleOp(name = "Trajan Teleop", group = "8103")
+@TeleOp(name = "november 25th is halloween", group = "8103")
 
 public class basicTeleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware8103 robot = new Hardware8103();
+    private DcMotor intakeLeft;
 
     @Override
     public void runOpMode() {
@@ -105,7 +106,7 @@ public class basicTeleop extends LinearOpMode {
                 robot.lift.setPower(-0.45);//down fast
             } else if (gamepad2.b) {
                 robot.lift.setPower(0);
-            }else{
+            } else {
                 robot.lift.setPower(0.25);//hold position
             }
             liftPos = robot.lift.getCurrentPosition();
@@ -113,28 +114,38 @@ public class basicTeleop extends LinearOpMode {
 //lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-            if (gamepad2.a) {//toggle intake
-                if (!intakeRun) {
+            if (!intakeRun) {//toggle intake
+                if (gamepad2.left_bumper) {
                     robot.intakeRight.setPower(1);
                     robot.intakeLeft.setPower(1);
                     robot.bay1.setPower(-1);
                     robot.bay2.setPower(-1);
                     intakeRun = true;
                     sleep(300);
-                } else if (intakeRun) {
-                    robot.intakeRight.setPower(0);
-                    robot.intakeLeft.setPower(0);
-                    robot.bay1.setPower(0);
-                    robot.bay2.setPower(0);
-                    intakeRun = false;
+                    telemetry.addData("bay", "out");
+                } else if (gamepad2.right_bumper) {
+                    robot.intakeRight.setPower(-1);
+                    robot.intakeLeft.setPower(-1);
+                    robot.bay1.setPower(1);
+                    robot.bay2.setPower(1);
+                    intakeRun = true;
                     sleep(300);
+                    telemetry.addData("bay", "in");
                 }
+            } else if (intakeRun && (gamepad2.left_bumper || gamepad2.right_bumper)) {
+                robot.intakeRight.setPower(0);
+                robot.intakeLeft.setPower(0);
+                robot.bay1.setPower(0);
+                robot.bay2.setPower(0);
+                intakeRun = false;
+                sleep(300);
+                telemetry.addData("bay", "stopped");
             }
 
             if (gamepad2.x) {
-                robot.grabber.setPosition(-0.1);
+                robot.grabber.setPosition(0.6);
             } else if (gamepad2.y) {
-                robot.grabber.setPosition(0.28);
+                robot.grabber.setPosition(0.1);
             }
 
             if (gamepad2.dpad_up) {
@@ -145,6 +156,18 @@ public class basicTeleop extends LinearOpMode {
                 robot.horSpool.setPower(0);
             }
             telemetry.addData("hor spool:", robot.horSpool.getCurrentPosition());
+
+
+            if (gamepad1.a) {
+                robot.rightpuller.setPosition(0.5);
+                robot.leftpuller.setPosition(-0.5);
+            } else if (gamepad2.b) {
+                robot.rightpuller.setPosition(0);
+                robot.leftpuller.setPosition(0);
+            } else {
+
+            }
+            telemetry.addData("left puller", robot.leftpuller.getPosition());
 
 
             telemetry.addData("lift height", liftPos);
