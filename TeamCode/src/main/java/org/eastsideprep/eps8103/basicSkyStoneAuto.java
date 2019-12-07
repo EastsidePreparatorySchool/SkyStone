@@ -363,7 +363,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
             sleep(2000);
         }
 
-        robot.lift.setPower(0.4);//need to figure out power that keeps it steady
+        robot.lift.setPower(0.25);//power that keeps it steady
 
         telemetry.update();
 

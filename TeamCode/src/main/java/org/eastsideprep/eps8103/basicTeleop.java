@@ -99,12 +99,14 @@ public class basicTeleop extends LinearOpMode {
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
 
             if (gamepad2.right_trigger > 0.8) {
-                robot.lift.setPower(0.6);
+                robot.lift.setPower(0.6);//up
 
             } else if (gamepad2.left_trigger > 0.8) {
-                robot.lift.setPower(-0.6);
+                robot.lift.setPower(-0.45);//down fast
             } else if (gamepad2.b) {
                 robot.lift.setPower(0);
+            }else{
+                robot.lift.setPower(0.25);//hold position
             }
             liftPos = robot.lift.getCurrentPosition();
 
@@ -132,15 +134,16 @@ public class basicTeleop extends LinearOpMode {
             if (gamepad2.x) {
                 robot.grabber.setPosition(-0.1);
             } else if (gamepad2.y) {
-                robot.grabber.setPosition(0.35);
+                robot.grabber.setPosition(0.28);
             }
 
             if (gamepad2.dpad_up) {
                 robot.horSpool.setPower(0.8);
             } else if (gamepad2.dpad_down) {
                 robot.horSpool.setPower(-0.8);
+            } else {
+                robot.horSpool.setPower(0);
             }
-
             telemetry.addData("hor spool:", robot.horSpool.getCurrentPosition());
 
 
