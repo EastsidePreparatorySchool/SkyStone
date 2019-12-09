@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class TeleopRobot implements Robot {
+public class TeleopRobot2 implements Robot {
 
     MotorPowers driveMotors;
     Boolean runningEncoders;
@@ -36,12 +36,12 @@ public class TeleopRobot implements Robot {
     double pivotBigStall = 0.5;
     boolean grabbing;
 
-    public TeleopRobot() {
+    public TeleopRobot2() {
 
 
     }
 
-    public TeleopRobot(HardwareMap hardwareMap, Telemetry telemetry, boolean runwithEncoders) {
+    public TeleopRobot2(HardwareMap hardwareMap, Telemetry telemetry, boolean runwithEncoders) {
         runningEncoders = runwithEncoders;
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -177,9 +177,10 @@ public class TeleopRobot implements Robot {
             }
         }
         pivotStall = pivotNormalStall;
-
+        if(grabbing){
+            clawServo.setPosition(clawGrab);
+        }
 
     }
-
 
 }

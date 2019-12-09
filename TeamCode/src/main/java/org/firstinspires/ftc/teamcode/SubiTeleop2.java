@@ -134,14 +134,14 @@ public class SubiTeleop2 extends OpMode {
         } else {
             pivotPower = 0;
         }
-        speed += this.gamepad1.right_trigger / 2;
+        speed += (this.gamepad1.right_trigger-this.gamepad1.left_trigger) / 2;
 
         linkageMove = thresholdCheck(this.gamepad2.left_trigger - this.gamepad2.right_trigger);
 
         if (this.gamepad2.a) {
             robot.grab();
 
-        } else if (this.gamepad1.b) {
+        } else if (this.gamepad2.b) {
             robot.ungrab();
 
         }

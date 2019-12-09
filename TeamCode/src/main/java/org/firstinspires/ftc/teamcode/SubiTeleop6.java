@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "SubiTeleOp", group = "TeleOps")
+@TeleOp(name = "SubiTeleOp6", group = "TeleOps")
 
-public class SubiTeleOp extends OpMode {
+public class SubiTeleop6 extends OpMode {
 
-    TeleopRobot robot;
+    TeleopRobot2 robot;
 
     MotorPowers motorPowers;
 
@@ -42,7 +42,7 @@ public class SubiTeleOp extends OpMode {
     @Override
     public void init() {
         twoGamePads = false;
-        robot = new TeleopRobot(hardwareMap, this.telemetry, false);
+        robot = new TeleopRobot2(hardwareMap, this.telemetry, true);
         robot.init();
         motorPowers = new MotorPowers(0, 0, 0, 0);
         telemetry.addData("Status", "Initialized");
