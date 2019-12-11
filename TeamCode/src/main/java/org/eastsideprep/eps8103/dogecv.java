@@ -97,6 +97,7 @@ public class dogecv extends LinearOpMode {
              * when it will be automatically stopped for you) *IS* supported. The "if" statement
              * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
              */
+
             if (gamepad1.a) {
                 /*
                  * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
@@ -146,7 +147,13 @@ public class dogecv extends LinearOpMode {
              */
             sleep(100);
         }
+
+        SkystoneDetector skystoneDetector = new SkystoneDetector();
+        skystoneDetector.useDefaults();
+
+
     }
+
 
     /*
      * An example image processing pipeline to be run upon receipt of each frame from the camera.
