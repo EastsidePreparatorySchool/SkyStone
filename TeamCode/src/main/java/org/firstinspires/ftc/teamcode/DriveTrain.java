@@ -159,12 +159,13 @@ public class DriveTrain {
         boolean done = false;
         double[] mEV = mEncoderVals.asArray();
         double[] mps = motorPowers.asArray();
-        boolean[] motDone = new boolean[4];
+        boolean[] motDone = new boolean[mEV.length];
+
         telemetry.addData("motor power 1", mps[0]);
         DcMotor[] motors = asArray();
 
         for(int i = 0; i<mEV.length && lop.opModeIsActive(); i++) {
-
+            motDone[i] = false;
             //if power is negative, get positive version
             if(mps[i]<0){
                 mps[i] = -mps[i];
@@ -285,6 +286,15 @@ public class DriveTrain {
 
         }
         return nP;
+
+    }
+
+    public void stopAllMotors(){
+        DcMotor[] motors = asArray();
+        for(DcMotor m1: motors){
+            m1.setPower(0);
+        }
+
 
     }
 }
