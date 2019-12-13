@@ -22,6 +22,12 @@ repositories {
     flatDir {
         dirs '../libs'
     }
+
+    allprojects {
+        repositories {
+            maven { url 'https://jitpack.io' } // this line!
+        }
+    }
 }
 
 apply from: 'build.release.gradle'

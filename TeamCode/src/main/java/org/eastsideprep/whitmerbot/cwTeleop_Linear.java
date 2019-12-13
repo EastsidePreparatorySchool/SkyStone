@@ -121,17 +121,18 @@ public class cwTeleop_Linear extends LinearOpMode
 
             if (yPressed)
             {
-                RunArmUpTo(100);
+                robot.arm.setPower(0.0);
+                robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
             if (bPressed)
             {
-                //ApproachAndLogSensors();
+                RunArmUp(600);
             }
 
             if (xPressed)
             {
-                RunArmDownToStop();
+                RunArmUp(-200);
             }
 
             int encoderA = robot.frontLeft.getCurrentPosition();
@@ -155,6 +156,7 @@ public class cwTeleop_Linear extends LinearOpMode
 
             robot.waitForTick(40);
         }
+        robot.arm.setPower(0.0);
     }
 
 //    void LogMeasurements()
@@ -215,11 +217,17 @@ public class cwTeleop_Linear extends LinearOpMode
     {
         robot.arm.setTargetPosition(target);
         robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.arm.setPower(0.1);
+        robot.arm.setPower(0.8);
         while (robot.arm.isBusy() && opModeIsActive())
         {}
         robot.arm.setPower(0.0);
         robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    void RunArmUp(int amt)
+    {
+        RunArmUpTo(robot.arm.getCurrentPosition()+amt);
     }
 
 
