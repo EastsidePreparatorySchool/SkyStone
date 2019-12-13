@@ -145,11 +145,16 @@ public class dogecv extends LinearOpMode {
              * excess CPU cycles for no reason. (By default, telemetry is only sent to the DS at 4Hz
              * anyway). Of course in a real OpMode you will likely not want to do this.
              */
-            sleep(100);
+
+
+
+            sleep(250);
         }
 
         SkystoneDetector skystoneDetector = new SkystoneDetector();
         skystoneDetector.useDefaults();
+
+
 
 
     }

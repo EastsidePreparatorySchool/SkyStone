@@ -107,7 +107,7 @@ public class basicTeleop extends LinearOpMode {
             } else if (gamepad2.b) {
                 robot.lift.setPower(0);
             } else {
-                robot.lift.setPower(0.25);//hold position
+                //robot.lift.setPower(0.25);//hold position
             }
             liftPos = robot.lift.getCurrentPosition();
 
@@ -142,30 +142,28 @@ public class basicTeleop extends LinearOpMode {
                 telemetry.addData("bay", "stopped");
             }
 
-            if (gamepad2.x) {
-                robot.grabber.setPosition(0.6);
-            } else if (gamepad2.y) {
-                robot.grabber.setPosition(0.1);
-            }
-
-            if (gamepad2.dpad_up) {
-                robot.horSpool.setPower(0.8);
-            } else if (gamepad2.dpad_down) {
-                robot.horSpool.setPower(-0.8);
-            } else {
-                robot.horSpool.setPower(0);
-            }
-            telemetry.addData("hor spool:", robot.horSpool.getCurrentPosition());
+//            if (gamepad2.x) {
+//                robot.grabber.setPosition(0.6);
+//            } else if (gamepad2.y) {
+//                robot.grabber.setPosition(0.1);
+//            }
+//
+//            if (gamepad2.dpad_up) {
+//                robot.horSpool.setPower(0.8);
+//            } else if (gamepad2.dpad_down) {
+//                robot.horSpool.setPower(-0.8);
+//            } else {
+//                robot.horSpool.setPower(0);
+//            }
+//            telemetry.addData("hor spool:", robot.horSpool.getCurrentPosition());
 
 
             if (gamepad1.a) {
-                robot.rightpuller.setPosition(0.5);
-                robot.leftpuller.setPosition(-0.5);
-            } else if (gamepad2.b) {
-                robot.rightpuller.setPosition(0);
-                robot.leftpuller.setPosition(0);
-            } else {
-
+                robot.rightpuller.setPosition(0.1);
+                robot.leftpuller.setPosition(0.1);
+            } else if (gamepad1.b) {
+                robot.rightpuller.setPosition(0.3);
+                robot.leftpuller.setPosition(0.3);
             }
             telemetry.addData("left puller", robot.leftpuller.getPosition());
 

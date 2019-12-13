@@ -196,15 +196,12 @@ public class PathFollowerAuto extends LinearOpMode {
     public void runOpMode() {
 
         double[][] waypoints = new double[][]{
+                {0, 0, 0},
+                {1, 0, 45},
                 {2, 0, 90},
-                {0.5, 0.5, 135},
-                {0, 2, 180},
-                {0.5, 3.5, 225},
-                {2, 4, 270},
-                {3.5, 3.5, 215},
-                {4, 2, 360},
-                {3.5, 0.5, 405},
-                {2, 0, 450}
+                {2, 1, 135},
+                {1, 2, 180},
+                {1, 0, 225}
         };
 
         double totalTime = 16; //max seconds we want to drive the path
