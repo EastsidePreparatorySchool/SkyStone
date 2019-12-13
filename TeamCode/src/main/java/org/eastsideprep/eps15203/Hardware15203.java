@@ -139,6 +139,13 @@ public class Hardware15203 {
         rightBackMotor.setPower(0);
     }
 
+    public void turnAllOn(double power){
+        leftBackMotor.setPower(power);
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(power);
+        rightBackMotor.setPower(power);
+    }
+
     public void spinTurn(double power, int milliseconds){
         leftFrontMotor.setPower(-power);
         rightFrontMotor.setPower(power);

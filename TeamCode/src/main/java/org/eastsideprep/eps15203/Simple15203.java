@@ -56,8 +56,8 @@ public class Simple15203 extends LinearOpMode {
         boolean dpad_up_state = false;
         boolean dpad_down_state = false;
         int z_arm_pos_index = 0;
-        int[] z_arm_pos = {0, -50, -75, -140};
-        double[] z_arm_power = {0.2, 1, 1, 0.4};
+        int[] z_arm_pos = {0, /*-50,*/ -75, -140};
+        double[] z_arm_power = {0.2, /*1,*/ 1, 0.4};
 
         if(z_arm_pos.length != z_arm_power.length) {
             telemetry.addData("ERROR", "z_arm_pos and z_arm_power arrays are not the same length.");
