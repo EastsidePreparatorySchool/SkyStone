@@ -159,11 +159,11 @@ public class basicTeleop extends LinearOpMode {
 
 
             if (gamepad1.a) {
-                robot.rightpuller.setPosition(0.1);
-                robot.leftpuller.setPosition(0.1);
+                robot.rightpuller.setPosition(1);
+                robot.leftpuller.setPosition(0);
             } else if (gamepad1.b) {
-                robot.rightpuller.setPosition(0.3);
-                robot.leftpuller.setPosition(0.3);
+                robot.rightpuller.setPosition(0);
+                robot.leftpuller.setPosition(1);
             }
             telemetry.addData("left puller", robot.leftpuller.getPosition());
 

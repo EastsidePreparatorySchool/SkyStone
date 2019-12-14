@@ -217,7 +217,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update();
     }
 
-    public void strafeleft(int l) {
+    public void strafeleft(double time) {
 
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
@@ -351,17 +351,27 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
         telemetry.update();
 
-        robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP);
-        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.setPower(0.6);
-        sleep(2000);
+//        robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP);
+//        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.lift.setPower(0.6);
+//        sleep(2000);
+//
+//        for (int i = 1; i < 8; i++) {
+//            robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP + i * robot.LIFT_DELTA);
+//            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.lift.setPower(0.7);
+//            sleep(2000);
+//        }
+        strafeleft(1.5);
+        forwards(0.4, 1);
+        turnleft(2);
+        backwards(0.1, 0.5);
 
-        for (int i = 1; i < 8; i++) {
-            robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP + i * robot.LIFT_DELTA);
-            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lift.setPower(0.7);
-            sleep(2000);
-        }
+        robot.rightpuller.setPosition(1);
+        robot.leftpuller.setPosition(1);
+
+        robot.rightpuller.setPosition(0);
+        robot.leftpuller.setPosition(0);
 
         robot.lift.setPower(0.25);//power that keeps it steady
 
