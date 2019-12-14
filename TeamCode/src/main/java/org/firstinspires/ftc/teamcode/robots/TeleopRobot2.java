@@ -84,7 +84,7 @@ public class TeleopRobot2 implements Robot {
         pivotPos = pivotMotor.getCurrentPosition();
         grabbing = false;
         //imu.initialize();
-        telemetry.addData("imu", "inited");
+        telemetry.addData("imu", "initialized");
         telemetry.update();
     }
 
