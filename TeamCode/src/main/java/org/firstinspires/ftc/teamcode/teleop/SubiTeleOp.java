@@ -75,7 +75,7 @@ public class SubiTeleOp extends OpMode {
         goMotor();
 
 
-        motorPowers.set(thresholdCheck2(fLM), thresholdCheck2(bLM), thresholdCheck2(-fRM), thresholdCheck2(-bRM));
+        motorPowers.set(thresholdCheck2(fLM), thresholdCheck2(bLM), thresholdCheck2(fRM), thresholdCheck2(bRM));
         //motorPowers.set(0.25,0.25,0.25,0.25);
         telemetry.addData("", motorPowers);
         robot.setMotors(motorPowers);

@@ -57,7 +57,7 @@ public class SkystoneRobot implements AutoRobot {
         frontRightMotor =hardwareMap.dcMotor.get("frontRightMotor");
         backLeftMotor =hardwareMap.dcMotor.get("backLeftMotor");
         backRightMotor =hardwareMap.dcMotor.get("backRightMotor");
-        driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+        driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, true);
         driveMotors = new MotorPowers(0,0,0,0);
 
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.robots.TeleopRobot3;
 import org.firstinspires.ftc.teamcode.robots.motors.MotorPowers;
 import org.firstinspires.ftc.teamcode.robots.TeleopRobot;
 
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.teamcode.robots.TeleopRobot;
 
 public class SubiTeleop2 extends OpMode {
 
-    TeleopRobot robot;
+    TeleopRobot3 robot;
 
     MotorPowers motorPowers;
 
@@ -45,7 +46,7 @@ public class SubiTeleop2 extends OpMode {
     @Override
     public void init() {
         twoGamePads = false;
-        robot = new TeleopRobot(hardwareMap, this.telemetry, true);
+        robot = new TeleopRobot3(hardwareMap, this.telemetry, true);
         robot.init();
         motorPowers = new MotorPowers(0, 0, 0, 0);
         telemetry.addData("Status", "Initialized");
@@ -70,12 +71,12 @@ public class SubiTeleop2 extends OpMode {
         telemetry.addData("speed", speed);
         telemetry.addData("armAndPivotSpeed", armAndPivotSpeed);
         telemetry.addData("pivotPower", pivotPower);
-        telemetry.addData("clawPos", robot.frontServo.getPosition());
+        telemetry.addData("clawPos", robot.getClawServo().getPosition());
         //telemetry.addData("loops", i);
         goMotor();
 
 
-        motorPowers.set(thresholdCheck2(fLM), thresholdCheck2(bLM), thresholdCheck2(-fRM), thresholdCheck2(-bRM));
+        motorPowers.set(thresholdCheck2(fLM), thresholdCheck2(bLM), thresholdCheck2(fRM), thresholdCheck2(bRM));
         //motorPowers.set(0.25,0.25,0.25,0.25);
         telemetry.addData("", motorPowers);
         robot.setMotors(motorPowers);

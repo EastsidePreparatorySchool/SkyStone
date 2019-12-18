@@ -45,7 +45,7 @@ public class ChassisRobot implements Robot {
         telemetry.addData("driveTrain", "done");
         telemetry.update();
 
-        driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+        driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, true);
         if(runningWithEncoders) {
             driveTrain.runWithEncoders();
         }else{
