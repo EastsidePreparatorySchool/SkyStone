@@ -42,6 +42,14 @@ public class Claw {
 
     }
 
+    public Servo getFrontServo(){
+        return frontServo;
+    }
+
+    public Servo getBackServo(){
+        return backServo;
+    }
+
     /**
      * Gets if the claw is closing
      * @return if the claw is closing
@@ -118,6 +126,21 @@ public class Claw {
         closing = false;
     }
 
+    /**
+     * Returns the front servo position
+     * @return the front servo position
+     */
+    public Double frontServoPosition(){
+        return frontServo.getPosition();
+    }
+
+    /**
+     * Returns the back servo position
+     * @return the back servo position
+     */
+    public Double backServoPosition(){
+        return backServo.getPosition();
+    }
 
     /**
      * Sets the front claw servo direction
@@ -214,6 +237,16 @@ public class Claw {
      */
     public double getBackMin(){
         return backMin;
+    }
+
+    public String toString(){
+        String clawStats = "";
+        clawStats += "Front Position: " + frontServo.getPosition();
+        clawStats += "Front Direction: " + frontServo.getDirection();
+        clawStats += "Back Position: " + backServo.getPosition();
+        clawStats += "Back Direction: " +backServo.getDirection();
+        return clawStats;
+
     }
 
 }

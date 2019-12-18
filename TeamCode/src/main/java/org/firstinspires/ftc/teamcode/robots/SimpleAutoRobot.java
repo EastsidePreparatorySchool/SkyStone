@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.robots.motors.MotorPowers;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.robots.motors.MotorDistances;
 
@@ -20,10 +21,12 @@ public class SimpleAutoRobot implements Robot {
     DcMotor backRightMotor;
     Telemetry telemetry;
     LinearOpMode lop;
-    //public DcMotor pivotMotor;
-    //public DcMotor linkageMotor;
+    public Arm arm;
+    public Claw claw;
+    DcMotor pivotMotor;
+    DcMotor linkageMotor;
     public DriveTrain driveTrain;
-    //public Servo frontServo;
+    Servo frontServo;
     double encoderSpinDegrees;
     double encoderDist;
 
@@ -31,6 +34,7 @@ public class SimpleAutoRobot implements Robot {
     Boolean turnMode;
     Boolean forwardMode;
     Boolean nothingMode;
+    Boolean grabbing;
     Long lastTime;
     Long timer;
 
@@ -56,18 +60,23 @@ public class SimpleAutoRobot implements Robot {
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
 
-        driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
-        // running with encoders, you should probably sotp and resert their current position to 0
+        driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, true);
+        // running with encoders, you should probably stop and reset their current position to 0
         driveTrain.runWithoutEncoders();
 
         //driveTrain.stopAndResetEncoders();
         driveMotors = new MotorPowers(0, 0, 0, 0);
+        arm = new Arm(hardwareMap, telemetry);
+        arm.init();
+        linkageMotor = arm.getLinkageMotor();
+        pivotMotor = arm.getPivotMotor();
 
-        // pivotMotor = hardwareMap.dcMotor.get("pivotMotor");
-        // linkageMotor = hardwareMap.dcMotor.get("linkageMotor");
+        claw = new Claw(hardwareMap, telemetry);
+        claw.init();
+        frontServo = claw.getFrontServo();
 
-        // frontServo = hardwareMap.servo.get("frontServo");
-        // grabbing = false;
+
+        grabbing = false;
 
     }
 
@@ -77,8 +86,32 @@ public class SimpleAutoRobot implements Robot {
 
     }
 
+    public void armUpdate(){
+        arm.update();
+    }
+
     public String getChassisWheels() {
         return driveTrain.toString();
+    }
+
+    public Claw getClaw() {
+        return claw;
+    }
+
+    public Arm getArm(){
+        return arm;
+    }
+
+    public Servo getFrontServo(){
+        return frontServo;
+    }
+
+    public DcMotor getPivotMotor(){
+        return pivotMotor;
+    }
+
+    public DcMotor getLinkageMotor(){
+        return linkageMotor;
     }
 
     public void stopAndResetEncoders() {
@@ -100,6 +133,8 @@ public class SimpleAutoRobot implements Robot {
     public DriveTrain getDriveTrain(){
         return driveTrain;
     }
+
+
 
     /**
      * Set the Robot to strafe
@@ -153,6 +188,16 @@ public class SimpleAutoRobot implements Robot {
         driveTrain.runMotors(driveMotors);
     }
 
+
+    public void grab(){
+        claw.close();
+        grabbing = true;
+    }
+
+    public void ungrab(){
+        grabbing = false;
+        claw.open();
+    }
 
     /**
      * Set the Robot to drive forward for a certain period of time

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,7 +12,7 @@ import org.firstinspires.ftc.teamcode.robots.motors.DriveTrain;
 import org.firstinspires.ftc.teamcode.robots.sensors.IMU;
 import org.firstinspires.ftc.teamcode.robots.motors.MotorPowers;
 
-public class TeleopRobot implements Robot {
+public class TeleopRobot3 implements Robot {
 
     MotorPowers driveMotors;
     Boolean runningEncoders;
@@ -22,25 +24,29 @@ public class TeleopRobot implements Robot {
     Telemetry telemetry;
     DcMotor pivotMotor;
     DcMotor linkageMotor;
-    Servo frontServo;
-    Servo backServo;
-    public Boolean armForUpdate = false;
-    public Arm arm;
     public DriveTrain driveTrain;
-    public Claw claw;
-    public IMU imu;
+    public Servo clawServo;
+    IMU imu;
     // this may need to be changed, depending on what we want the default for this servo to be
     double clawInit = 0.56;
     double clawGrab = 0;
-
+    double pivotPos;
+    double pivotError = 20;
+    double linkagePos;
+    double linkageNormalError = 20;
+    double linkageError = 20;
+    double linkageBigError = 40;
+    double pivotNormalStall = 0.3;
+    double pivotStall = 0.3;
+    double pivotBigStall = 0.5;
     boolean grabbing;
 
-    public TeleopRobot() {
+    public TeleopRobot3() {
 
 
     }
 
-    public TeleopRobot(HardwareMap hardwareMap, Telemetry telemetry, boolean runwithEncoders) {
+    public TeleopRobot3(HardwareMap hardwareMap, Telemetry telemetry, boolean runwithEncoders) {
         runningEncoders = runwithEncoders;
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -69,20 +75,34 @@ public class TeleopRobot implements Robot {
             driveTrain.runWithoutEncoders();
         }
         driveMotors = new MotorPowers(0, 0, 0, 0);
-        arm = new Arm(hardwareMap, telemetry);
-        arm.init();
+
+        pivotMotor = hardwareMap.dcMotor.get("pivotMotor");
+        linkageMotor = hardwareMap.dcMotor.get("linkageMotor");
+
+        telemetry.addData("arm", "workin");
         telemetry.update();
-        pivotMotor = arm.getPivotMotor();
-        linkageMotor = arm.getLinkageMotor();
-        claw = new Claw(hardwareMap, telemetry);
-        claw.init();
-        telemetry.update();
-        frontServo = claw.getFrontServo();
-        backServo = claw.getBackServo();
+        clawServo = hardwareMap.servo.get("frontServo");
+        pivotPos = pivotMotor.getCurrentPosition();
         grabbing = false;
         //imu.initialize();
-        telemetry.addData("imu", "inited");
+        telemetry.addData("imu", "initialized");
         telemetry.update();
+    }
+
+    public Servo getClawServo(){
+        return clawServo;
+    }
+
+    public DriveTrain getDriveTrain() {
+        return driveTrain;
+    }
+
+    public DcMotor getLinkageMotor() {
+        return linkageMotor;
+    }
+
+    public DcMotor getPivotMotor() {
+        return pivotMotor;
     }
 
 
@@ -96,25 +116,7 @@ public class TeleopRobot implements Robot {
 
     }
 
-    public Claw getClaw(){
-        return claw;
-    }
 
-    public Arm getArm(){
-        return arm;
-    }
-
-    public Servo getFrontServo() {
-        return frontServo;
-    }
-
-    public Servo getBackServo(){
-        return backServo;
-    }
-
-    /**
-     * Set the Drive Train's motors to the Drive Motor Powers
-     */
     public void moveMotors() {
         driveMotors.scale();
         telemetry.addData("dmotor", driveMotors);
@@ -124,34 +126,28 @@ public class TeleopRobot implements Robot {
     }
 
 
-
     public MotorPowers getDriveMotors() {
         return driveMotors;
     }
 
-    /**
-     * Set the linkage's power. After calling an arm movement function,
-     * the arm must be continually updated
-     * @param power Is the power the linkage motor will be set to
-     */
-    public void moveLinkage(double power) {
-        armForUpdate = true;
-        if(power <= 0.0){
-            arm.retractLinkage(power);
-        }else{
-            arm.extendLinkage(power);
+    public void moveLinkage(double m) {
+        linkageMotor.setPower(m);
+        linkagePos = linkageMotor.getCurrentPosition();
+        if (m > 0.5) {
+            if (pivotMotor.getPower() <= pivotNormalStall) {
+                pivotMotor.setPower(pivotBigStall);
+            }
+        }else if(m>0){
+            if(pivotMotor.getPower() <= pivotNormalStall){
+                pivotMotor.setPower(pivotNormalStall);
+            }
         }
 
     }
 
-    /**
-     * Set the pivot's power. After calling an arm movement function,
-     * the arm must be continually updated
-     * @param power Is the power the pivot motor will be set to.
-     */
-    public void pivotArm(double power) {
-        armForUpdate = true;
-        arm.pivotArm(power);
+    public void pivotArm(double m) {
+        pivotMotor.setPower(m);
+        pivotPos = pivotMotor.getCurrentPosition();
 
     }
 
@@ -166,67 +162,47 @@ public class TeleopRobot implements Robot {
     }
 
 
-    /**
-     * Closes the claw
-     */
     public void grab() {
 
-        claw.close();
+        if (clawServo.getPosition() > clawGrab) {
+
+            clawServo.setPosition(clawServo.getPosition() - 0.1);
+        }
         grabbing = true;
 
     }
 
-    /**
-     * Opens the claw
-     */
     public void ungrab() {
-        claw.open();
+        if (clawServo.getPosition() < clawInit) {
+
+            clawServo.setPosition(clawServo.getPosition() + 0.1);
+        }
+
         grabbing = false;
     }
 
-    /**
-     * Sets the claw servo positions closer to the 0 position
-     */
-    public void limitlessGrab(){
-        claw.noLimitClose();
-        grabbing = true;
-    }
-    /**
-     * Moves the claw closer to the furthest open extreme
-     * This means that the servos will move towards whichever direction is their 1
-     */
-    public void limitlessUngrab(){
-        claw.noLimitOpen();
-        grabbing = false;
-    }
-
-    /**
-     * Sets the claw servos to be closer to their closed position
-     * Must be called multiple times to have the desired effect
-     */
-    public void variedGrab(){
-        claw.varyingClose();
-        grabbing = true;
-    }
-
-    /**
-     * Sets the claw servos to be closer to their open position
-     * Must be called multiple times to have the desired effect
-     */
-    public void variedUngrab(){
-        claw.varyingOpen();
-        grabbing = false;
-    }
-
-    /**
-     * Updates the arm
-     */
     public void armUpdate() {
-        if(armForUpdate){
-            arm.update();
+        if (linkagePos - linkageMotor.getCurrentPosition() > linkageError) {
+            linkageMotor.setPower(-0.1);
+            pivotStall = pivotBigStall;
+        } else if (linkagePos - linkageMotor.getCurrentPosition() < -linkageError / 5) {
+            linkageMotor.setPower(0.1);
+
+        }
+        linkageError = linkageNormalError;
+        if (pivotPos - pivotMotor.getCurrentPosition() > pivotError) {
+            pivotMotor.setPower(-0.1);
+        } else if (pivotPos - pivotMotor.getCurrentPosition() < -pivotError / 5) {
+            pivotMotor.setPower(pivotStall);
+            if (pivotStall == pivotBigStall) {
+                linkageError = linkageBigError;
+            }
+        }
+        pivotStall = pivotNormalStall;
+        if(grabbing){
+            clawServo.setPosition(clawGrab);
         }
 
     }
-
 
 }

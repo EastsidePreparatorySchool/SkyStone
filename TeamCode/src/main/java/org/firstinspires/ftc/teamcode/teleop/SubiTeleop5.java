@@ -3,14 +3,19 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.robots.motors.MotorPowers;
 import org.firstinspires.ftc.teamcode.robots.TeleopRobot;
+import org.firstinspires.ftc.teamcode.robots.motors.MotorPowers;
+import org.firstinspires.ftc.teamcode.robots.TeleopRobot3;
 
-@TeleOp(name = "SubiTeleOp", group = "TeleOps")
 
-public class SubiTeleOp extends OpMode {
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-    TeleopRobot robot;
+@TeleOp(name = "SubiTeleOp5", group = "TeleOps")
+
+public class SubiTeleop5 extends OpMode {
+
+
+    TeleopRobot3 robot;
 
     MotorPowers motorPowers;
 
@@ -45,7 +50,7 @@ public class SubiTeleOp extends OpMode {
     @Override
     public void init() {
         twoGamePads = false;
-        robot = new TeleopRobot(hardwareMap, this.telemetry, false);
+        robot = new TeleopRobot3(hardwareMap, this.telemetry, false);
         robot.init();
         motorPowers = new MotorPowers(0, 0, 0, 0);
         telemetry.addData("Status", "Initialized");
@@ -70,7 +75,7 @@ public class SubiTeleOp extends OpMode {
         telemetry.addData("speed", speed);
         telemetry.addData("armAndPivotSpeed", armAndPivotSpeed);
         telemetry.addData("pivotPower", pivotPower);
-        telemetry.addData("Claw: ", robot.getClaw());
+        telemetry.addData("clawPos", robot.clawServo.getPosition());
         //telemetry.addData("loops", i);
         goMotor();
 

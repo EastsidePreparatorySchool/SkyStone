@@ -11,36 +11,59 @@ public class DriveTrain {
     DcMotor backLeftMotor;
     DcMotor frontRightMotor;
     DcMotor backRightMotor;
+    // turns per m
     double TPM;
+    Boolean rightFlipped;
 
-    public DriveTrain(DcMotor fL, DcMotor bL, DcMotor fR, DcMotor bR){
+
+    /**
+     *
+     * @param fL
+     * @param bL
+     * @param fR
+     * @param bR
+     * @param rightFlipped Is the right side flipped?
+     */
+    public DriveTrain(DcMotor fL, DcMotor bL, DcMotor fR, DcMotor bR, Boolean rightFlipped){
         frontLeftMotor = fL;
         backLeftMotor = bL;
         frontRightMotor = fR;
         backRightMotor = bR;
-
+        this.rightFlipped = rightFlipped;
     }
 
-    public DriveTrain(DcMotor fL, DcMotor bL, DcMotor fR, DcMotor bR, Telemetry telemetry, double TPM){
-        this(fL, bL, fR, bR);
+    /**
+     *
+     * @param fL
+     * @param bL
+     * @param fR
+     * @param bR
+     * @param telemetry
+     * @param TPM
+     * @param rightFlipped
+     */
+    public DriveTrain(DcMotor fL, DcMotor bL, DcMotor fR, DcMotor bR, Telemetry telemetry, double TPM, Boolean rightFlipped){
+        this(fL, bL, fR, bR, rightFlipped);
         this.TPM = TPM;
-
-
-    }
-
-    public DriveTrain(DriveTrain motors){
-        this(motors.asArray());
+        this.rightFlipped = rightFlipped;
 
     }
 
+    public DriveTrain(DriveTrain motors, Boolean rightFlipped){
+        this(motors.asArray(), rightFlipped);
+        this.rightFlipped = rightFlipped;
+    }
 
 
-    public DriveTrain(DcMotor[] motors){
+
+    public DriveTrain(DcMotor[] motors, Boolean rightFlipped){
         DcMotor[] a = asArray();
 
+        this.rightFlipped = rightFlipped;
         for (int i = 0; i < motors.length; i++) {
             a[i] = motors[i];
         }
+
 
     }
 
@@ -51,7 +74,19 @@ public class DriveTrain {
         double[] mp = motorPowers.asArray();
 
         for (int i = 0; i < mp.length; i++) {
-            dt[i].setPower(mp[i]);
+            if(rightFlipped) {
+                if(i>1) {
+                    dt[i].setPower(-mp[i]);
+                }else{
+                    dt[i].setPower((mp[i]));
+                }
+            }else{
+                if(i<=1){
+                    dt[i].setPower(-mp[i]);
+                }else {
+                    dt[i].setPower(mp[i]);
+                }
+            }
 
         }
 
@@ -60,7 +95,19 @@ public class DriveTrain {
     public void runMotors(double[] motorPowers){
         DcMotor[] dt = asArray();
         for (int i = 0; i < motorPowers.length; i++) {
-            dt[i].setPower(motorPowers[i]);
+            if(rightFlipped) {
+                if(i>1) {
+                    dt[i].setPower(-motorPowers[i]);
+                }else{
+                    dt[i].setPower((motorPowers[i]));
+                }
+            }else{
+                if(i<=1){
+                    dt[i].setPower(-motorPowers[i]);
+                }else {
+                    dt[i].setPower(motorPowers[i]);
+                }
+            }
 
         }
     }
@@ -71,16 +118,20 @@ public class DriveTrain {
         dt[1].setPower(bL);
         dt[2].setPower(fR);
         dt[3].setPower(bR);
+        if(rightFlipped){
+            dt[2].setPower(-fR);
+            dt[3].setPower(-bR);
+        }else{
+            dt[0].setPower(-fL);
+            dt[1].setPower(-bL);
+        }
+
 
 
     }
 
     public void runAllOneVal(double power){
-        DcMotor[] dt = asArray();
-        for(DcMotor d: dt){
-            d.setPower(power);
-
-        }
+        runMotors(power,power,power,power);
 
     }
 
@@ -269,7 +320,7 @@ public class DriveTrain {
     }
 
     public String negativePositive(){
-        String nP = "";
+        String nP = (rightFlipped)?"The right side is flipped":"The left side is flipped";
         DcMotor[] motors = asArray();
         for (DcMotor m1: motors
              ) {

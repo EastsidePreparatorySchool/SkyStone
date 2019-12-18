@@ -61,7 +61,8 @@ public class ChassisTester1 extends OpMode {
         telemetry.addData("robot",robot.getDriveTrain());
         robot.moveMotors();
         telemetry.addData("robot", robot.driveMotors);
-        telemetry.addData("robot", robot.driveTrain.negativePositive());
+        telemetry.addData("robot", robot.getDriveTrain().negativePositive());
+
 
 
     }
