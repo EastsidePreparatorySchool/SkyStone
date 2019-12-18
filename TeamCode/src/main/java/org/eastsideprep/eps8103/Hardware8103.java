@@ -25,9 +25,7 @@ public class Hardware8103 {
     public DcMotor intakeLeft = null;
 
     public DcMotor lift = null;
-    public DcMotor horSpool = null;
 
-    public Servo grabber = null;
     public CRServo bay1 = null;
     public CRServo bay2 = null;
     public Servo leftpuller = null;
@@ -79,15 +77,12 @@ public class Hardware8103 {
         rightBackMotor = hwMap.dcMotor.get("RB");
 
         lift = hwMap.dcMotor.get("lift");
-        horSpool = hwMap.dcMotor.get("horspool");
 
         leftpuller = hwMap.servo.get("leftpuller");
         rightpuller = hwMap.servo.get("rightpuller");
 
         bay1 = hwMap.crservo.get("bay1");
         bay2 = hwMap.crservo.get("bay2");
-
-        grabber = hwMap.servo.get("grabber");
 
         intakeLeft = hwMap.dcMotor.get("intakeLeft");
         intakeRight = hwMap.dcMotor.get("intakeRight");

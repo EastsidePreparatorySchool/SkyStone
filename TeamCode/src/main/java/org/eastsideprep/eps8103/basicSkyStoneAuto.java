@@ -42,6 +42,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
 //    ColorSensor color_sensor;
 
     public void forwards(double speed, double time) {
+        time = time * 1000;
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
@@ -73,6 +74,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void backwards(double speed, double time) {
+        time = time * 1000;
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
@@ -104,6 +106,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void turnright(double time) {
+        time = time * 1000;
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
@@ -140,6 +143,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void turnleft(double time) {
+        time = time * 1000;
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
@@ -182,6 +186,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void straferight(double time) {
+        time = time * 1000;
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
@@ -218,7 +223,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void strafeleft(double time) {
-
+        time = time * 1000;
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
         for (DcMotor m : robot.allMotors) {
@@ -276,6 +281,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
 //    }
 
     public void bayintake(double time) {
+        time = time * 1000;
         double start = System.currentTimeMillis();
         double elapsed = 0.0;
         robot.bay1.setPower(1);
@@ -373,10 +379,9 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.rightpuller.setPosition(0);
         robot.leftpuller.setPosition(0);
 
-        robot.lift.setPower(0.25);//power that keeps it steady
+        robot.lift.setPower(0.15);//power that keeps it steady
 
         telemetry.update();
-
     }
 }
 
