@@ -298,16 +298,13 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void lowerPullers() {
-        double position = robot.rightpuller.getPosition();
-        robot.leftpuller.setPosition(1);
-        robot.rightpuller.setPosition(1);
-        sleep(2500);
+        robot.leftpuller.setPosition(0);
+        robot.rightpuller.setPosition(0);
     }
 
     public void raisePullers() {
-        robot.leftpuller.setPosition(0);
-        robot.rightpuller.setPosition(0);
-        sleep(2500);
+        robot.leftpuller.setPosition(1);
+        robot.rightpuller.setPosition(1);
     }
 
     public void print_encoders() {
@@ -368,16 +365,16 @@ public class basicSkyStoneAuto extends LinearOpMode {
 //            robot.lift.setPower(0.7);
 //            sleep(2000);
 //        }
-        strafeleft(1.5);
-        forwards(0.4, 1);
-        turnleft(2);
+        strafeleft(1.6);
+        forwards(0.2, 1.5);
+        turnleft(0.8);
         backwards(0.1, 0.5);
 
-        robot.rightpuller.setPosition(1);
-        robot.leftpuller.setPosition(1);
+        lowerPullers();
 
-        robot.rightpuller.setPosition(0);
-        robot.leftpuller.setPosition(0);
+        sleep(5000);
+
+        raisePullers();
 
         robot.lift.setPower(0.15);//power that keeps it steady
 
