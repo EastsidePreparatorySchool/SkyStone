@@ -21,20 +21,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.*;
 
-@Autonomous(name = "Trajan's auto", group = "Concept")
+@Autonomous(name = "Just puller", group = "Concept")
 public class basicSkyStoneAuto extends LinearOpMode {
 
     Hardware8103 robot = new Hardware8103();
 
     //these have to be found experimentally aka a lot of testing
-    int fast_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.24); //2 because the motors are geared up 2:1 to the wheels
-    int strafe_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.5);//last constants need tweaking
-
-    int slow_strafe_c = 1;
-    int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
-    int pivot_c = 1;
-
-    int angle_c = 360 / robot.TICKS_PER_REV;
+//    int fast_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.24); //2 because the motors are geared up 2:1 to the wheels
+//    int strafe_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.5);//last constants need tweaking
+//
+//    int slow_strafe_c = 1;
+//    int turn_c = (int) (2 * robot.TICKS_PER_REV / robot.WHEEL_CIRC * 0.061);
+//    int pivot_c = 1;
+//
+//    int angle_c = 360 / robot.TICKS_PER_REV;
 
     double[] drivetrainEncoders = new double[4];
     double[] drivetrainEncodersPrevious = new double[4];
@@ -379,6 +379,7 @@ public class basicSkyStoneAuto extends LinearOpMode {
         robot.lift.setPower(0.15);//power that keeps it steady
 
         telemetry.update();
+        sleep(2000);
     }
 }
 

@@ -1,157 +1,345 @@
-
 package org.eastsideprep.eps8103;
 
-import android.util.Log;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.DogeCVDetector;
-import com.disnodeteam.dogecv.filters.CbColorFilter;
-import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
-import com.disnodeteam.dogecv.filters.GrayscaleFilter;
-import com.disnodeteam.dogecv.filters.LeviColorFilter;
-import com.disnodeteam.dogecv.scoring.MaxAreaScorer;
-import com.disnodeteam.dogecv.scoring.PerfectAreaScorer;
-import com.disnodeteam.dogecv.scoring.RatioScorer;
+/*
+ * Copyright (c) 2019 OpenFTC Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class SkystoneDetector extends DogeCVDetector {
-    public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
-    //Create the default filters and scorers
-    public DogeCVColorFilter blackFilter = new GrayscaleFilter(0, 25);
-    public DogeCVColorFilter yellowFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW, 70); //Default Yellow blackFilter
+/**
+ * In this sample, we demonstrate how to use the {@link OpenCvPipeline#onViewportTapped()}
+ * callback to switch which stage of a pipeline is rendered to the viewport for debugging
+ * purposes. We also show how to get data from the pipeline to your OpMode.
+ */
+@Autonomous
+public class SkystoneDetector extends LinearOpMode {
+    OpenCvCamera phoneCam;
+    SampleSkystoneDetector detector;
+    Hardware8103 robot = new Hardware8103();
 
-    public RatioScorer ratioScorer = new RatioScorer(1.25, 3); // Used to find the short face of the stone
-    public MaxAreaScorer maxAreaScorer = new MaxAreaScorer( 0.01);                    // Used to find largest objects
-    public PerfectAreaScorer perfectAreaScorer = new PerfectAreaScorer(5000,0.05); // Used to find objects near a tuned area value
+    double targetX = 240;
+    double error = 30;
 
-
-    // Results of the detector
-    private Point screenPosition = new Point(); // Screen position of the mineral
-    private Rect foundRect = new Rect(); // Found rect
-
-    private Mat rawImage = new Mat();
-    private Mat workingMat = new Mat();
-    private Mat displayMat = new Mat();
-    private Mat blackMask = new Mat();
-    private Mat yellowMask = new Mat();
-    private Mat hierarchy  = new Mat();
-
-    public Point getScreenPosition() {
-        return screenPosition;
-    }
-
-    public Rect foundRectangle() {
-        return foundRect;
-    }
-
-
-    public SkystoneDetector() {
-        detectorName = "Skystone Detector";
-    }
+    boolean found = false;
 
     @Override
-    public Mat process(Mat input) {
-        input.copyTo(rawImage);
-        input.copyTo(workingMat);
-        input.copyTo(displayMat);
-        input.copyTo(blackMask);
+    public void runOpMode() {
 
-        // Imgproc.GaussianBlur(workingMat,workingMat,new Size(5,5),0);
-        yellowFilter.process(workingMat.clone(), yellowMask);
+        robot.init(hardwareMap);
 
-        List<MatOfPoint> contoursYellow = new ArrayList<>();
-
-        Imgproc.findContours(yellowMask, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.drawContours(displayMat,contoursYellow,-1,new Scalar(255,30,30),2);
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        phoneCam.openCameraDevice();
+        detector = new SampleSkystoneDetector();
+        detector.useDefaults();
+        phoneCam.setPipeline(detector);
+        phoneCam.startStreaming(640, 480, OpenCvCameraRotation.UPSIDE_DOWN);
 
 
-        // Current result
-        Rect bestRect = foundRect;
-        double bestDifference = Double.MAX_VALUE; // MAX_VALUE since less difference = better
+        waitForStart();
 
-        // Loop through the contours and score them, searching for the best result
-        for(MatOfPoint cont : contoursYellow){
-            double score = calculateScore(cont); // Get the difference score using the scoring API
+        while (opModeIsActive()) {
+            while (!found) {
+                telemetry.addData("FPS", String.format("%.2f", phoneCam.getFps()));
+                telemetry.addData("Top left corner", detector.getScreenPosition());
+                telemetry.addData("Found rectangle", detector.foundRectangle());
 
-            // Get bounding rect of contour
-            Rect rect = Imgproc.boundingRect(cont);
-            Imgproc.rectangle(displayMat, rect.tl(), rect.br(), new Scalar(0,0,255),2); // Draw rect
+                Point corner = detector.getScreenPosition();
+                double currentX = corner.x;
 
-            // If the result is better then the previously tracked one, set this rect as the new best
-            if(score < bestDifference){
-                bestDifference = score;
-                bestRect = rect;
+                //turn left and right until its in the center ish
+
+                if (currentX < targetX - error) {
+                    turnright(0.01);//seconds not millis
+                    telemetry.addData("log", "turning right");
+                } else if (currentX > targetX + error) {
+                    turnleft(0.01);
+                    telemetry.addData("log", "turning left");
+                } else if (currentX > targetX - error && currentX < targetX + error) {
+                    found = true;
+                }
+
+                telemetry.update();
+                sleep(100);
             }
-        }
-
-        Imgproc.rectangle(blackMask, bestRect.tl(), bestRect.br(), new Scalar(255,255,255), 1, Imgproc.LINE_4, 0);
-        blackFilter.process(workingMat.clone(), blackMask);
-        List<MatOfPoint> contoursBlack = new ArrayList<>();
-
-        Imgproc.findContours(blackMask, contoursBlack, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.drawContours(displayMat,contoursBlack,-1,new Scalar(40,40,40),2);
-
-        for(MatOfPoint cont : contoursBlack){
-            double score = calculateScore(cont); // Get the difference score using the scoring API
-
-            // Get bounding rect of contour
-            Rect rect = Imgproc.boundingRect(cont);
-            Imgproc.rectangle(displayMat, rect.tl(), rect.br(), new Scalar(0,0,255),2); // Draw rect
-
-            // If the result is better then the previously tracked one, set this rect as the new best
-            if(score < bestDifference){
-                bestDifference = score;
-                bestRect = rect;
-            }
-        }
-        if(bestRect != null) {
-            // Show chosen result
-            Imgproc.rectangle(displayMat, bestRect.tl(), bestRect.br(), new Scalar(255,0,0),4);
-            Imgproc.putText(displayMat, "Chosen", bestRect.tl(),0,1,new Scalar(255,255,255));
-
-            screenPosition = new Point(bestRect.x, bestRect.y);
-            foundRect = bestRect;
-            found = true;
-        }
-        else {
-            found = false;
-        }
-
-        switch (stageToRenderToViewport) {
-            case THRESHOLD: {
-                Imgproc.cvtColor(blackMask, blackMask, Imgproc.COLOR_GRAY2BGR);
-
-                return blackMask;
-            }
-            case RAW_IMAGE: {
-                return rawImage;
-            }
-            default: {
-                return displayMat;
-            }
+            intakeIn(2);
         }
     }
 
-    @Override
-    public void useDefaults() {
-        addScorer(ratioScorer);
-
-        // Add diffrent scorers depending on the selected mode
-        if(areaScoringMethod == DogeCV.AreaScoringMethod.MAX_AREA){
-            addScorer(maxAreaScorer);
+    public void forwards(double speed, double time) {
+        time = time * 1000;
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            m.setPower(speed);
+        }
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
 
-        if (areaScoringMethod == DogeCV.AreaScoringMethod.PERFECT_AREA){
-            addScorer(perfectAreaScorer);
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void backwards(double speed, double time) {
+        time = time * 1000;
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            m.setPower(-speed);
+        }
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(-speed / 2);
+        }
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void turnright(double time) {
+        time = time * 1000;
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.leftFrontMotor.setPower(0.3);
+        robot.leftBackMotor.setPower(0.3);
+        robot.rightFrontMotor.setPower(-0.3);
+        robot.rightBackMotor.setPower(-0.3);
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        robot.leftFrontMotor.setPower(0.15);
+        robot.leftBackMotor.setPower(0.15);
+        robot.rightFrontMotor.setPower(-0.15);
+        robot.rightBackMotor.setPower(-0.15);
+
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void turnleft(double time) {
+        time = time * 1000;
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.leftFrontMotor.setPower(-0.3);
+        robot.leftBackMotor.setPower(-0.3);
+        robot.rightFrontMotor.setPower(0.3);
+        robot.rightBackMotor.setPower(0.3);
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        robot.leftFrontMotor.setPower(-0.15);
+        robot.leftBackMotor.setPower(-0.15);
+        robot.rightFrontMotor.setPower(0.15);
+        robot.rightBackMotor.setPower(0.15);
+
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void stopmotors() {
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
         }
     }
+
+    public void straferight(double time) {
+        time = time * 1000;
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.leftFrontMotor.setPower(0.3);
+        robot.leftBackMotor.setPower(-0.3);
+        robot.rightFrontMotor.setPower(-0.3);
+        robot.rightBackMotor.setPower(0.3);
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        robot.leftFrontMotor.setPower(0.15);
+        robot.leftBackMotor.setPower(-0.15);
+        robot.rightFrontMotor.setPower(-0.15);
+        robot.rightBackMotor.setPower(0.15);
+
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void strafeleft(double time) {
+        time = time * 1000;
+        double start = System.currentTimeMillis();
+        double elapsed = 0.0;
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        robot.leftFrontMotor.setPower(-0.3);
+        robot.leftBackMotor.setPower(0.3);
+        robot.rightFrontMotor.setPower(0.3);
+        robot.rightBackMotor.setPower(-0.3);
+        //run peacefully until i have 20 ms left
+        while (time - elapsed > 20) {
+            elapsed = System.currentTimeMillis() - start;
+            sleep(10);
+        }
+        robot.leftFrontMotor.setPower(0.15);
+        robot.leftBackMotor.setPower(0.15);
+        robot.rightFrontMotor.setPower(-0.15);
+        robot.rightBackMotor.setPower(-0.15);
+
+        sleep(20);
+        for (DcMotor m : robot.allMotors) {
+            m.setPower(0);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+        }
+
+        for (int i = 0; i < drivetrainEncoders.length; i++) {
+            telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+        }
+        telemetry.update();
+    }
+
+    public void intakeIn(double time) {
+        robot.intakeRight.setPower(1);
+        robot.intakeLeft.setPower(1);
+        sleep((long) time);
+        robot.intakeRight.setPower(0);
+        robot.intakeLeft.setPower(0);
+    }
+
+    public void intakeOut(double time) {
+        robot.intakeRight.setPower(-1);
+        robot.intakeLeft.setPower(-1);
+        sleep((long) time);
+        robot.intakeRight.setPower(0);
+        robot.intakeLeft.setPower(0);
+    }
+
+    double[] drivetrainEncoders = new double[4];
+    double[] drivetrainEncodersPrevious = new double[4];
+
 }
+

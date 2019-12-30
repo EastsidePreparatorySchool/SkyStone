@@ -111,5 +111,7 @@ public class Hardware8103 {
         unscaledPowers[3] = unscaledPowers[0];
         return unscaledPowers;
     }
+
+
 }
 
