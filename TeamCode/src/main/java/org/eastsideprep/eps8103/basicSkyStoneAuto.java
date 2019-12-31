@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.*;
 
-@Autonomous(name = "Just puller", group = "Concept")
+@Autonomous(name = "BLUE Just puller", group = "BLUE")
 public class basicSkyStoneAuto extends LinearOpMode {
 
     Hardware8103 robot = new Hardware8103();
@@ -259,27 +259,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
         telemetry.update();
     }
 
-//    public void lowerarm(int angle) {
-//        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() - pivot_c * angle);
-//        robot.armPivot.setPower(1);
-//        //dont set the power to 0, make sure to hold position!
-//    }
-//
-//    public void raisearm(int angle) {
-//        robot.armPivot.setTargetPosition(robot.armPivot.getCurrentPosition() + pivot_c * angle);
-//        robot.armPivot.setPower(1);
-//    }
-//
-//    public void extendarm(int l) {
-//        robot.armExtender.setTargetPosition(1581);
-//        robot.armExtender.setPower(1);
-//    }
-//
-//    public void reelarm(int l) {
-//        robot.armExtender.setTargetPosition(141);//found this value using teleop
-//        robot.armExtender.setPower(1);
-//    }
-
     public void bayintake(double time) {
         time = time * 1000;
         double start = System.currentTimeMillis();
@@ -298,13 +277,14 @@ public class basicSkyStoneAuto extends LinearOpMode {
     }
 
     public void lowerPullers() {
+        robot.rightpuller.setPosition(0.6);
+        sleep(250);
         robot.leftpuller.setPosition(0);
-        robot.rightpuller.setPosition(0);
     }
 
     public void raisePullers() {
-        robot.leftpuller.setPosition(1);
         robot.rightpuller.setPosition(1);
+        robot.leftpuller.setPosition(1);
     }
 
     public void print_encoders() {
@@ -322,30 +302,6 @@ public class basicSkyStoneAuto extends LinearOpMode {
         waitForStart();
 
         telemetry.addData("log", "starting");
-        //remember to start in the "legal" position
-//        robot.armPivot.setTargetPosition(-400);
-//        robot.armPivot.setPower(0.5);
-//        robot.armExtender.setTargetPosition(141);
-//        robot.armExtender.setPower(0.5);
-//        while (robot.armPivot.isBusy()) {
-//            robot.armPivot.setPower(0.5);
-//        }
-//        if (!robot.armPivot.isBusy()) {
-//            robot.armPivot.setPower(0);
-//        }
-//        while (robot.armExtender.isBusy()) {
-//            robot.armExtender.setPower(0.5);
-//        }
-//        if (!robot.armExtender.isBusy()) {
-//            robot.armExtender.setPower(0);
-//        }
-
-//        forwards(18, 0.6);
-//        straferight(20);
-//        backwards(20);
-//        strafeleft(20);
-//        forwards(20, 0.6);
-
         for (int i = 0; i < 4; i++) {
             drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
             drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
@@ -365,18 +321,25 @@ public class basicSkyStoneAuto extends LinearOpMode {
 //            robot.lift.setPower(0.7);
 //            sleep(2000);
 //        }
-        strafeleft(1.6);
-        forwards(0.2, 1.5);
-        turnleft(0.8);
-        backwards(0.1, 0.5);
+
+        forwards(0.2, 0.7);
+        turnleft(1);
+        forwards(0.4, 1.3);
+        turnleft(1.75);
+        backwards(0.4, 0.9);
+        straferight(0.5);
 
         lowerPullers();
-
-        sleep(5000);
+        sleep(500);
+        forwards(0.25, 2);
+        sleep(3000);
 
         raisePullers();
+        telemetry.addData("log", "done");
+        telemetry.update();
+//
 
-        robot.lift.setPower(0.15);//power that keeps it steady
+        //robot.lift.setPower(0.15);//power that keeps it steady
 
         telemetry.update();
         sleep(2000);

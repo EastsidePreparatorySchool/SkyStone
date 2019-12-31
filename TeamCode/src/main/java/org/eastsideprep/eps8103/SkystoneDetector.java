@@ -86,13 +86,13 @@ public class SkystoneDetector extends LinearOpMode {
                 double currentX = corner.x;
 
                 //turn left and right until its in the center ish
-
+                int k = 1500;
                 if (currentX < targetX - error) {
-                    turnright(0.01);//seconds not millis
-                    telemetry.addData("log", "turning right");
+                    turnright((targetX - error-currentX) / k);//seconds not millis
+                    telemetry.addData("log", "turning right" + ((targetX - currentX) / k));
                 } else if (currentX > targetX + error) {
-                    turnleft(0.01);
-                    telemetry.addData("log", "turning left");
+                    turnleft((currentX - targetX) / k);
+                    telemetry.addData("log", "turning left" + ((currentX - targetX) / k));
                 } else if (currentX > targetX - error && currentX < targetX + error) {
                     found = true;
                 }
