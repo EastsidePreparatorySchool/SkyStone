@@ -69,6 +69,7 @@ public class cwTeleop_Linear extends LinearOpMode
         boolean yPressed = false;
         boolean xLastState = false;
         boolean xPressed = false;
+        boolean armIsReset = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -123,17 +124,47 @@ public class cwTeleop_Linear extends LinearOpMode
             {
                 robot.arm.setPower(0.0);
                 robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                armIsReset = false;
             }
 
             if (bPressed)
             {
-                RunArmUp(600);
+                RunArmUp(200);
+            }
+
+            if (aPressed)
+            {
+                if (!armIsReset)
+                {
+                    armIsReset = RunArmDownToStop();
+                }
+                else
+                {
+                    RunArmUpTo(0);
+                }
             }
 
             if (xPressed)
             {
-                RunArmUp(-200);
+                RunArmUp(-100);
             }
+
+            double grabberPos = robot.grabber.getPosition();
+            if (gamepad1.dpad_up)
+            {
+                grabberPos += 0.1;
+//                robot.grabber.setPosition(grabberPos);
+                robot.grabber.setPosition(0.1);
+            }
+            else if (gamepad1.dpad_down)
+            {
+                grabberPos -= 0.1;
+//                robot.grabber.setPosition(grabberPos);
+                robot.grabber.setPosition(0.9);
+            }
+            grabberPos = robot.grabber.getPosition();
+
+            telemetry.addData("grabber", "%4.2f", grabberPos);
 
             int encoderA = robot.frontLeft.getCurrentPosition();
             int encoderB = robot.backLeft.getCurrentPosition();
@@ -146,11 +177,6 @@ public class cwTeleop_Linear extends LinearOpMode
             telemetry.addData("Encoders","%6d %6d %6d %6d", encoderA,encoderB,encoderC,encoderD);
             telemetry.addData("Power","%6.2f %6.2f %6.2f %6.2f",
                     setPower[0],setPower[1],setPower[2],setPower[3]);
-            // The sonar only refreshes at 6.7 Hz.
-            // We will average over 1 second to reduce noise.
-            //double dLeft = robot.getFrontDistance();
-            //double dRight = robot.rev2M.getDistance(DistanceUnit.CM);
-            //telemetry.addData("ds",  "%.2f %.2f", dLeft, dRight);
             ReportOnArm();
             telemetry.update();
 
@@ -185,7 +211,7 @@ public class cwTeleop_Linear extends LinearOpMode
         telemetry.update();
     }
 
-    void RunArmDownToStop()
+    boolean RunArmDownToStop()
     {
         boolean atLimit = robot.armLimitSwitch.getState();
         boolean weDidRun = false;
@@ -211,6 +237,7 @@ public class cwTeleop_Linear extends LinearOpMode
         }
         sleep(250);
         ReportOnArm();
+        return weDidRun;
     }
 
     void RunArmUpTo(int target)

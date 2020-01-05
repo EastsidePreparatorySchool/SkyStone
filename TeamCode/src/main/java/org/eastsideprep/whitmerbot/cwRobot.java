@@ -30,6 +30,7 @@ public class cwRobot
     public DcMotor frontLeft = null;
     public DcMotor arm = null;
     public Servo phoneServo = null;
+    public Servo grabber = null;
     public DigitalChannel armLimitSwitch = null;
 
     public static final double PHONE_VERTICAL =  0.4 ;
@@ -126,6 +127,10 @@ public class cwRobot
         phoneServo = hwMap.servo.get("phoneServo");
         phoneServo.setPosition(PHONE_HORIZONTAL);
         phoneServo.close();
+
+        grabber = hwMap.servo.get("grabber");
+        grabber.setPosition(0.0);
+
 
         armLimitSwitch = hwMap.digitalChannel.get("limitSwitch");
         armLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
