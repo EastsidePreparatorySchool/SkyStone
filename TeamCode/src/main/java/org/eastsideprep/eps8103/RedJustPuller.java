@@ -21,8 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.*;
 
-@Autonomous(name = "basic skystone auto", group = "BLUE")
-public class basicSkyStoneAuto extends LinearOpMode {
+@Autonomous(name = "RED Just puller", group = "BLUE")
+public class RedJustPuller extends LinearOpMode {
 
     Hardware8103 robot = new Hardware8103();
 
@@ -326,10 +326,10 @@ public class basicSkyStoneAuto extends LinearOpMode {
         forwards(1, 0.5);//drop the intake
         backwards(1, 0.5);
 
-        turnleft(1);
+        turnright(1);
         forwards(0.4, 1.8);
-        turnleft(1.6);
-        straferight(0.4);
+        turnright(1.6);
+        strafeleft(0.4);
 
         raisePullers();
         backwards(0.4, 0.8);
@@ -337,11 +337,11 @@ public class basicSkyStoneAuto extends LinearOpMode {
         sleep(200);
 
         forwards(1, 2.7);
-        turnleft(1.5);
+        turnright(1.5);
         raisePullers();//gotta raise them to push
         backwards(1, 0.6);
 
-        straferight(0.5);
+        strafeleft(0.5);
         forwards(0.4, 1);//park on the line
 
         telemetry.addData("log", "done");

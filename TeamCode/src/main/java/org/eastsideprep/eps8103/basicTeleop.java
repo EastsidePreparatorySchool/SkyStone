@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.eastsideprep.eps8103.Hardware8103;
 
-@TeleOp(name = "november 25th is halloween", group = "8103")
+@TeleOp(name = "All control teleop", group = "8103")
 
 public class basicTeleop extends LinearOpMode {
 
@@ -58,9 +58,11 @@ public class basicTeleop extends LinearOpMode {
         waitForStart();
 
         int liftPos = 0;
+        int blockLevel = -1;
+        boolean v4BarIn = true;
 
         boolean intakeRun = false;
-
+        boolean pullersDown = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -110,9 +112,7 @@ public class basicTeleop extends LinearOpMode {
                 //robot.lift.setPower(0.25);//hold position
             }
             liftPos = robot.lift.getCurrentPosition();
-
-//lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+            telemetry.addData("lift height", liftPos);
 
             if (!intakeRun) {//toggle intake
                 if (gamepad2.left_bumper) {
@@ -142,39 +142,54 @@ public class basicTeleop extends LinearOpMode {
                 telemetry.addData("bay", "stopped");
             }
 
-//            if (gamepad2.x) {
-//                robot.grabber.setPosition(0.6);
-//            } else if (gamepad2.y) {
-//                robot.grabber.setPosition(0.1);
-//            }
-//
-//            if (gamepad2.dpad_up) {
-//                robot.horSpool.setPower(0.8);
-//            } else if (gamepad2.dpad_down) {
-//                robot.horSpool.setPower(-0.8);
-//            } else {
-//                robot.horSpool.setPower(0);
-//            }
-//            telemetry.addData("hor spool:", robot.horSpool.getCurrentPosition());
-
-
-            if (gamepad1.a) {
-                robot.rightpuller.setPosition(1);
-                robot.leftpuller.setPosition(0);
-            } else if (gamepad1.b) {
-                robot.rightpuller.setPosition(0);
-                robot.leftpuller.setPosition(1);
+            if (gamepad1.a && !pullersDown) {
+                lowerPullers();
+                pullersDown = true;
+            } else if (gamepad1.a && pullersDown) {
+                raisePullers();
+                pullersDown = false;
             }
-            telemetry.addData("left puller", robot.leftpuller.getPosition());
-
-
-            telemetry.addData("lift height", liftPos);
             telemetry.addLine();
             telemetry.update();
+
+            if (gamepad2.x && v4BarIn) {
+                //placeBlock(blockLevel + 1);
+                //blockLevel++;
+                placeBlock(0);
+                v4BarIn = false;
+            } else if (gamepad2.x && !v4BarIn) {
+                getBlock();
+                v4BarIn = true;
+            }
+
 
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);
         }
+    }
+
+    public void lowerPullers() {
+        robot.rightpuller.setPosition(0.4);
+        robot.leftpuller.setPosition(0.1);
+        sleep(350);
+    }
+
+    public void raisePullers() {
+        robot.rightpuller.setPosition(1);
+        robot.leftpuller.setPosition(1);
+        sleep(350);
+    }
+
+    public void getBlock() {
+        robot.left4Bar.setPosition(1);
+        robot.right4Bar.setPosition(1);
+        sleep(250);
+    }
+
+    public void placeBlock(int height) {
+        robot.left4Bar.setPosition(height);
+        robot.right4Bar.setPosition(height);
+        sleep(250);
     }
 }
 

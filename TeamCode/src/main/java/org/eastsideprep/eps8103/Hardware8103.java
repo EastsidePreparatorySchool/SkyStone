@@ -29,8 +29,12 @@ public class Hardware8103 {
 
     public CRServo bay1 = null;
     public CRServo bay2 = null;
+
     public Servo leftpuller = null;
     public Servo rightpuller = null;
+
+    public Servo left4Bar = null;
+    public Servo right4Bar = null;
 
     public DcMotor[] allMotors;
     public Servo[] allServos;
@@ -77,18 +81,22 @@ public class Hardware8103 {
         leftBackMotor = hwMap.dcMotor.get("LB");
         rightBackMotor = hwMap.dcMotor.get("RB");
 
-        lift = hwMap.dcMotor.get("lift");
+        intakeLeft = hwMap.dcMotor.get("intakeLeft");
+        intakeRight = hwMap.dcMotor.get("intakeRight");
 
-        leftpuller = hwMap.servo.get("leftpuller");
-        rightpuller = hwMap.servo.get("rightpuller");
+        lift = hwMap.dcMotor.get("lift");
 
         bay1 = hwMap.crservo.get("bay1");
         bay2 = hwMap.crservo.get("bay2");
 
-        intakeLeft = hwMap.dcMotor.get("intakeLeft");
-        intakeRight = hwMap.dcMotor.get("intakeRight");
+        leftpuller = hwMap.servo.get("leftpuller");
+        rightpuller = hwMap.servo.get("rightpuller");
+
+        left4Bar = hwMap.servo.get("left4bar");
+        right4Bar = hwMap.servo.get("right4bar");
 
         allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
+        allServos = new Servo[]{leftpuller, rightpuller, left4Bar, right4Bar};
         rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
 
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -111,7 +119,6 @@ public class Hardware8103 {
         unscaledPowers[3] = unscaledPowers[0];
         return unscaledPowers;
     }
-
 
 }
 
