@@ -12,6 +12,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 /**
  * Hardware definitions for 8103
  */
@@ -35,6 +38,7 @@ public class Hardware8103 {
 
     public Servo left4Bar = null;
     public Servo right4Bar = null;
+    public Servo grabber = null;
 
     public DcMotor[] allMotors;
     public Servo[] allServos;
@@ -48,8 +52,12 @@ public class Hardware8103 {
     int TICKS_PER_REV = 1120;
     double WHEEL_RADIUS = 2;
     double WHEEL_CIRC = WHEEL_RADIUS * 2 * Math.PI;
-    int LIFT_DELTA = 340;
+
+    //using initial and change i can figure out any height
+    int LIFT_DELTA = -345;//range from -340 to -350
     int LIFT_LEVEL_PICKUP = 200;
+
+    //these are tested values and they work well enough
     int LIFT_LEVEL_1 = -150;
     int LIFT_LEVEL_2 = -500;
     int LIFT_LEVEL_3 = -850;
@@ -58,6 +66,7 @@ public class Hardware8103 {
     int LIFT_LEVEL_6 = -1900;
     int LIFT_LEVEL_7 = -2250;
     int LIFT_LEVEL_8 = -2600;
+    ArrayList<Integer> liftHeights = new ArrayList<>();
 
 
     /* local OpMode members. */
@@ -85,6 +94,8 @@ public class Hardware8103 {
         intakeRight = hwMap.dcMotor.get("intakeRight");
 
         lift = hwMap.dcMotor.get("lift");
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         bay1 = hwMap.crservo.get("bay1");
         bay2 = hwMap.crservo.get("bay2");
@@ -94,6 +105,7 @@ public class Hardware8103 {
 
         left4Bar = hwMap.servo.get("left4bar");
         right4Bar = hwMap.servo.get("right4bar");
+        grabber = hwMap.servo.get("grabbercloser");
 
         allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         allServos = new Servo[]{leftpuller, rightpuller, left4Bar, right4Bar};
@@ -108,6 +120,9 @@ public class Hardware8103 {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // really? good for autonomous. But in driver control?
+        }
+        for (int i = 0; i < 9; i++) {
+            liftHeights.add(LIFT_LEVEL_PICKUP + i * LIFT_DELTA);
         }
     }
 
