@@ -28,7 +28,7 @@ public class ServoMover1 extends OpMode {
         frontServo.setPosition(0.001);
         //frontController.setServoPosition(0, 0);
         //frontServo.setPosition(max);
-        frontController.setServoPosition(0, max);
+        frontController.setServoPosition(0, 0.001);
 
     }
 

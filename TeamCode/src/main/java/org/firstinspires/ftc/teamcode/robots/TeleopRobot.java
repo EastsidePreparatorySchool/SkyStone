@@ -63,6 +63,7 @@ public class TeleopRobot implements Robot {
         telemetry.update();
 
         driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, true);
+        driveTrain.stopAndResetEncoders();
         if (runningEncoders) {
             driveTrain.runWithEncoders();
         } else {
@@ -80,7 +81,7 @@ public class TeleopRobot implements Robot {
         frontServo = claw.getFrontServo();
         backServo = claw.getBackServo();
         grabbing = false;
-        //imu.initialize();
+        imu.initialize();
         telemetry.addData("imu", "inited");
         telemetry.update();
     }

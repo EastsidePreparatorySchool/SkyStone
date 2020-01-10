@@ -76,8 +76,8 @@ public class Claw {
         if(frontServo.getPosition()>frontMin){
             frontServo.setPosition(frontServo.getPosition()-0.1);
         }
-        if(backServo.getPosition()>backMin){
-            backServo.setPosition(backServo.getPosition()-0.1);
+        if(backServo.getPosition()<backMax){
+            backServo.setPosition(backServo.getPosition()+0.1);
         }
         closing = true;
 
@@ -89,7 +89,7 @@ public class Claw {
      */
     public void noLimitClose(){
         frontServo.setPosition(frontServo.getPosition()-0.1);
-        backServo.setPosition(backServo.getPosition()-0.1);
+        backServo.setPosition(backServo.getPosition()+0.1);
         closing = true;
     }
 
@@ -98,7 +98,6 @@ public class Claw {
      */
     public void open(){
         frontServo.setPosition(frontMax);
-
         closing = false;
     }
 
@@ -110,10 +109,9 @@ public class Claw {
         if(frontServo.getPosition()<frontMax){
             frontServo.setPosition(frontServo.getPosition()+0.1);
         }
-        if(backServo.getPosition()<backMax){
-            backServo.setPosition(backServo.getPosition()+0.1);
+        if(backServo.getPosition()>backMin){
+            backServo.setPosition(backServo.getPosition()-0.1);
         }
-
         closing = false;
     }
 
@@ -122,7 +120,7 @@ public class Claw {
      */
     public void noLimitOpen(){
         frontServo.setPosition(frontServo.getPosition()+0.1);
-        backServo.setPosition(backServo.getPosition()+0.1);
+        backServo.setPosition(backServo.getPosition()-0.1);
         closing = false;
     }
 

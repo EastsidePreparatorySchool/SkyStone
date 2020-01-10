@@ -5,23 +5,26 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robots.SimpleAutoRobot;
 
-@Autonomous(name = "StrafeLeft", group = "autos")
+@Autonomous(name = "ForwardTurn", group = "autos")
 
-public class StrafeLeft extends LinearOpMode {
+public class ForwardTurn extends  LinearOpMode {
 
     SimpleAutoRobot robot;
 
     public void runOpMode() throws InterruptedException {
         robot = new SimpleAutoRobot(hardwareMap, telemetry, this);
         robot.init();
-        long time = 1000;
-        robot.strafeTime(true, 1.0, time);
+        robot.stopAndResetEncoders();
+        robot.runWithoutEncoders();
 
+
+
+        robot.forwardEncoder(true, 0.5, 500.0, 60.0);
+        robot.stopAndResetEncoders();
+        robot.runWithoutEncoders();
+        robot.turnToAngle(0.5,165.0,20.0);
         telemetry.addData("robotWheels", robot.getChassisWheels());
-        telemetry.addData("Encoders", robot.getDriveTrain().encoders());
         telemetry.update();
 
     }
-
-
 }

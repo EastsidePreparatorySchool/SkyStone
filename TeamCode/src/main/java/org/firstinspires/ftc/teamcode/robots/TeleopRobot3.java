@@ -69,6 +69,7 @@ public class TeleopRobot3 implements Robot {
         telemetry.update();
 
         driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, true);
+        driveTrain.stopAndResetEncoders();
         if (runningEncoders) {
             driveTrain.runWithEncoders();
         } else {
@@ -84,7 +85,7 @@ public class TeleopRobot3 implements Robot {
         clawServo = hardwareMap.servo.get("frontServo");
         pivotPos = pivotMotor.getCurrentPosition();
         grabbing = false;
-        //imu.initialize();
+        imu.initialize();
         telemetry.addData("imu", "initialized");
         telemetry.update();
     }
@@ -205,4 +206,14 @@ public class TeleopRobot3 implements Robot {
 
     }
 
+    public double imuRawAngle(){
+        return imu.getAngle();
+
+    }
+
+
+    public double imuAngle(){
+        return (imu.getAngle()/6.2)*360;
+
+    }
 }

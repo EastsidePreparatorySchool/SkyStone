@@ -5,16 +5,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.BasicUtility;
+import org.firstinspires.ftc.teamcode.robots.sensors.IMU;
 
+//TODO: check around hte toEncoderVal Section
+//TODO: split toencoderVal into: toencoderStrafe toEncoderDrive toEncoderStrafeSlow toEncoderDriveSlow
+//TODO: Make the turn functions
 public class DriveTrain {
     DcMotor frontLeftMotor;
     DcMotor backLeftMotor;
     DcMotor frontRightMotor;
     DcMotor backRightMotor;
-    // turns per m
-    double TPM;
+    // 500 ticks 90 mm
+    // 5.555 ticks per mm
+    double TPM = 5.56;
     Boolean rightFlipped;
-
+    BasicUtility bu = new BasicUtility();
 
     /**
      *
@@ -166,18 +172,26 @@ public class DriveTrain {
     }
 
     //in millimeters
-    public void toEncoderDist(MotorDistances mDists, MotorPowers motorPowers, double check, boolean slowApproach){
+    public void toEncoderDist(MotorDistances mDists, MotorPowers motorPowers, double check, boolean slowApproach, Telemetry telemetry, LinearOpMode lop){
 
         // slow approach slows the motors as they approach target position
 
         if(!isWithoutEncoders()){runWithoutEncoders();}
         boolean done = false;
+        int dmotors = 0;
         double[] mEV = mDists.asArray();
         double[] mps = motorPowers.asArray();
         DcMotor[] motors = asArray();
-        while(!done){
+        while(!done && dmotors<3 && !lop.isStopRequested()){
+            if(lop.isStopRequested()){
+                break;
+            }
             done = true;
+            dmotors= 0;
             for(int i = 0; i <mEV.length; i++){
+                if(lop.isStopRequested()){
+                    break;
+                }
                 double diff = Math.abs(mEV[i]-motors[i].getCurrentPosition()/TPM);
 
                 if(diff>1){
@@ -191,6 +205,7 @@ public class DriveTrain {
                     }
                     done = false;
                 }else {
+                    dmotors++;
                     motors[i].setPower(0.0);
 
                 }
@@ -198,6 +213,45 @@ public class DriveTrain {
             }
         }
 
+
+    }
+
+
+    //TODO: split toencoderVal into: toencoderStrafe toEncoderDrive toEncoderStrafeSlow toEncoderDriveSlow
+    //TODO: Make the turn functions
+
+    /**
+     * This turns the robot to an angle on the imu (-180, 180) it can't wrap or go over or under
+     * @param speed the speed of the turn. If this is negative, the turn will be in reverse
+     * @param angle the desired angle of the turn
+     * @param margin the margin of error (in degrees)
+     * @param imu IMU
+     * @param telemetry telemetry
+     * @param lop Linear Op Mode
+     */
+    public void turnToAngle(double speed, double angle, double margin, IMU imu, Telemetry telemetry,LinearOpMode lop){
+        Double error = 404.0;
+
+        while(bu.wrapConstraintCheck(imu.getAngleDegrees(), angle, margin, 180.0, -180.0, error)==error && !lop.isStopRequested()){
+            MotorPowers mp = new MotorPowers(speed, speed, -speed, -speed);
+            runMotors(mp);
+            telemetry.addData("angle", imu.getAngleDegrees());
+            telemetry.update();
+        }
+
+    }
+
+    /**
+     *This function turns the robot a given number of degrees (positive numbers only)
+     * If the speed is negative, the robot turns left instead of right
+     * @param speed the speed of the turn, if negative the robot turns left
+     * @param degrees the number of degrees to turn (must be positive)
+     * @param margin the margin of error (in degrees)
+     * @param imu IMU
+     * @param telemetry telemetry
+     * @param lop Linear Op Mode
+     */
+    public void turnDegrees(double speed, double degrees, double margin, IMU imu, Telemetry telemetry, LinearOpMode lop){
 
     }
 
@@ -216,56 +270,51 @@ public class DriveTrain {
 
         for(int i = 0; i<mEV.length && lop.opModeIsActive(); i++) {
             motDone[i] = false;
-            //if power is negative, get positive version
-            if(mps[i]<0){
-                mps[i] = -mps[i];
-            }
-            // only want magnitude, not direction, we'll take care of that
 
             //then add your target position to your current position
             mEV[i]+=motors[i].getCurrentPosition();
-            // if your target is still less than your current position
-            // set the motor powers to be negative
-            // in other words, whichever direction will get you to your target position
-            // go there
-            if(mEV[i]<motors[i].getCurrentPosition()) {
-                mps[i] = -mps[i];
-            }
+
             if(lop.isStopRequested()){break;}
         }
 
+        int donemotors = 0;
+        runMotors(mps);
+        while(!done && !lop.isStopRequested() &&donemotors<3){
 
-        while(!done && !lop.isStopRequested()){
             done = true;
+            donemotors = 0;
             telemetry.update();
             if(lop.isStopRequested()){break;}
 
             for(int i = 0; i <mEV.length && !lop.isStopRequested(); i++){
-                double diff = mEV[i]-motors[i].getCurrentPosition();
-                if(diff<0){
-                    diff = -diff;
-                }
+                double diff = Math.abs(Math.abs(mEV[i])-Math.abs(motors[i].getCurrentPosition()));
+
                 telemetry.addData("motor " +i, diff);
                 telemetry.addData("motor "+i+" mEV",mEV[i]);
                 if(!motDone[i]) {
-                    if (diff > slowPoint) {
-                        motors[i].setPower(mps[i]);
-                        done = false;
+                    if (diff >check && diff<slowPoint) {
 
-                    } else if (diff >check && diff<slowPoint) {
-
-                        if (slowApproach) {
+                      /*  if (slowApproach) {
                             motors[i].setPower(mps[i] * (diff / (slowPoint)));
                         }else{
                             motors[i].setPower(mps[i]);
 
                         }
+                        */
+
                         done = false;
                     } else if(diff<=check){
-                        motors[i].setPower(0.0);
+                        //motors[i].setPower(0.0);
                         motDone[i] = true;
+                        donemotors++;
+
+                    }else if (diff > slowPoint) {
+                        //motors[i].setPower(mps[i]);
+                        done = false;
 
                     }
+                }else{
+                    donemotors++;
                 }
                 if(lop.isStopRequested()){break;}
 
@@ -276,7 +325,6 @@ public class DriveTrain {
         }
 
     }
-
 
 
 
@@ -337,6 +385,17 @@ public class DriveTrain {
         }
         return nP;
 
+    }
+
+    public String encoders(){
+        String enc = "";
+        DcMotor[] motors = asArray();
+        enc+=" fL EncPos: "+motors[0].getCurrentPosition();
+        enc+=" bL EncPos: "+motors[1].getCurrentPosition();
+        enc+=" fR EncPos: "+motors[2].getCurrentPosition();
+        enc+=" bR EncPos: "+motors[3].getCurrentPosition();
+
+        return enc;
     }
 
     public void stopAllMotors(){

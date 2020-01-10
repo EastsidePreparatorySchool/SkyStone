@@ -32,7 +32,7 @@ public class Arm {
     Arm(){}
 
 
-    Arm(HardwareMap hardwareMap, Telemetry telemetry){
+    public Arm(HardwareMap hardwareMap, Telemetry telemetry){
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
 
@@ -46,10 +46,16 @@ public class Arm {
     public void init(){
         pivotMotor = hardwareMap.dcMotor.get("pivotMotor");
         linkageMotor = hardwareMap.dcMotor.get("linkageMotor");
+
+        pivotMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        linkageMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         pivotPosition = pivotMotor.getCurrentPosition();
         linkagePosition = linkageMotor.getCurrentPosition();
+
         pivotStartPosition = pivotPosition;
         linkageStartPosition = linkagePosition;
+
         pivotMoving = false;
         linkageMoving = false;
         telemetry.addData("Arm", "Initialized");
@@ -167,6 +173,15 @@ public class Arm {
         }
     }
 
+
+    public void pivotAndRotate(Double pivotPower, Double linkagePower){
+
+        pivotMotor.setPower(basicUtility.constraintCheck(pivotPower, 1.0, 0.0));
+
+
+    }
+
+
     /**
      * Extends the linkage given a certain power. After calling a movement function
      * the update function must be continuously called
@@ -213,6 +228,10 @@ public class Arm {
         armString += "\nLinkage Desired Pos: " +linkagePosition;
         armString += "\nLinkage Motor Power: " + linkageMotor.getPower();
         armString += "\nLinkage Moving: " + linkageMoving;
+        armString+= "pivot manufacturer: "+pivotMotor.getManufacturer();
+        armString+= "pivot motor type: "+pivotMotor.getMotorType();
+        armString+= "link manu: " +linkageMotor.getManufacturer();
+        armString+="link motoType: "+linkageMotor.getMotorType();
         return armString;
 
     }

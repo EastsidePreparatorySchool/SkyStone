@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode.robots;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robots.motors.DriveTrain;
 import org.firstinspires.ftc.teamcode.robots.motors.MotorPowers;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.robots.motors.MotorDistances;
+import org.firstinspires.ftc.teamcode.robots.sensors.IMU;
 
 public class SimpleAutoRobot implements Robot {
 
@@ -37,7 +40,7 @@ public class SimpleAutoRobot implements Robot {
     Boolean grabbing;
     Long lastTime;
     Long timer;
-
+    public IMU imu;
     // accuracy is how close an encoder value needs to be to what it's expected to be
     double accuracy;
 
@@ -59,8 +62,9 @@ public class SimpleAutoRobot implements Robot {
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
-
         driveTrain = new DriveTrain(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, true);
+        driveTrain.stopAndResetEncoders();
+
         // running with encoders, you should probably stop and reset their current position to 0
         driveTrain.runWithoutEncoders();
 
@@ -75,6 +79,8 @@ public class SimpleAutoRobot implements Robot {
         claw.init();
         frontServo = claw.getFrontServo();
 
+        imu = new IMU(hardwareMap.get(BNO055IMU.class, "imu"));
+        imu.initialize();
 
         grabbing = false;
 
@@ -121,6 +127,17 @@ public class SimpleAutoRobot implements Robot {
 
     public void runWithoutEncoders() {
         driveTrain.runWithoutEncoders();
+    }
+
+    /**
+     * This turns the robot to an angle on the imu (-180, 180) it can't wrap or go over or under
+     * @param speed the speed of the turn. If this is negative, the turn will be in reverse
+     * @param angle the desired angle of the turn
+     * @param margin the margin of error (in degrees)
+     */
+    public void turnToAngle(Double speed, Double angle, Double margin){
+        driveTrain.turnToAngle(speed, angle, margin, imu, telemetry, lop);
+
     }
 
 
@@ -224,20 +241,20 @@ public class SimpleAutoRobot implements Robot {
         moveMotors();
     }
 
-    public void forwardEncoder(Boolean forwardDirection, Double speed, Double encoderVal, Double checkPoint) {
+    public void forwardEncoder(Boolean forwardDirection, Double speed, Double encoderVal, Double margin) {
         MotorDistances encoderDists = (forwardDirection) ? new MotorDistances(Math.abs(encoderVal)) : new MotorDistances(-Math.abs(encoderVal));
 
         MotorPowers forwardMotorPowers = new MotorPowers(speed, speed, speed, speed);
-        driveTrain.toEncoderVal(encoderDists, forwardMotorPowers, checkPoint, 0, false, telemetry, lop);
+        driveTrain.toEncoderVal(encoderDists, forwardMotorPowers, margin, 0, false, telemetry, lop);
 
 
     }
 
-    public void forwardEncoderSlowDown(Boolean forwardDirection, Double speed, Double encoderVal, Double checkPoint, Double slowPoint) {
+    public void forwardEncoderSlowDown(Boolean forwardDirection, Double speed, Double encoderVal, Double margin, Double slowPoint) {
         MotorDistances encoderDists = (forwardDirection) ? new MotorDistances(Math.abs(encoderVal)) : new MotorDistances(-Math.abs(encoderVal));
 
         MotorPowers forwardMotorPowers = new MotorPowers(speed, speed, speed, speed);
-        driveTrain.toEncoderVal(encoderDists, forwardMotorPowers, checkPoint, slowPoint, true, telemetry, lop);
+        driveTrain.toEncoderVal(encoderDists, forwardMotorPowers, margin, slowPoint, true, telemetry, lop);
 
 
     }

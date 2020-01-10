@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
+import org.firstinspires.ftc.teamcode.robots.Arm;
+import org.firstinspires.ftc.teamcode.robots.Claw;
+
 @TeleOp(name = "ArmAndClawMover", group = "Tests")
 
 public class ArmAndClawMover extends OpMode {
@@ -18,45 +21,45 @@ public class ArmAndClawMover extends OpMode {
     double linkagePower;
     double pivotPos = 0;
     double linkagePos = 0;
-    Servo testServo;
-    ServoController testController;
     double max = 0.56;
-
+    Arm arm;
+    Claw claw;
     @Override
     public void init() {
-        testServo = hardwareMap.servo.get("frontServo");
-        testController = testServo.getController();
-        testServo.setDirection(Servo.Direction.FORWARD);
 
+        claw = new Claw(hardwareMap, telemetry);
+        claw.init();
         linkageMotor = hardwareMap.dcMotor.get("linkageMotor");
         pivotMotor = hardwareMap.dcMotor.get("pivotMotor");
+        arm = new Arm(hardwareMap, telemetry);
+        arm.init();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
     @Override
     public void start() {
-        testServo.setPosition(0.001);
         //frontController.setServoPosition(0, 0);
         //frontServo.setPosition(1);
-        testController.setServoPosition(0, 0.56);
+
 
     }
 
     @Override
     public void loop() {
 
-        telemetry.addData("Servo Position", testServo.getPosition());
-        telemetry.addData("ControlPos", testController.getServoPosition(0));
+
         if(this.gamepad1.a){
             telemetry.addData("turning", "closer");
-            testServo.setPosition(testServo.getPosition()-0.01);
+            claw.varyingClose();
         }else if(this.gamepad1.b){
             telemetry.addData("turning", "farther");
-            testServo.setPosition(testServo.getPosition()+0.01);
+            claw.varyingOpen();
         }
 
+
         linkagePower = thresholdCheck(this.gamepad1.left_trigger - this.gamepad1.right_trigger);
+
         if (this.gamepad1.left_bumper) {
             pivotPower = 1;
         } else if (this.gamepad1.right_bumper) {
@@ -65,13 +68,19 @@ public class ArmAndClawMover extends OpMode {
             pivotPower = 0;
         }
 
+        arm.pivotArm(pivotPower);
+
+        if(linkagePower>0){
+            arm.extendLinkage(linkagePower);
+        }else if(linkagePower <0){
+            arm.retractLinkage(linkagePower);
+        }
+
         linkageMotor.setPower(speed * linkagePower);
         pivotMotor.setPower(speed * pivotPower);
-
-        pivotPos = pivotMotor.getCurrentPosition();
-        linkagePos = linkageMotor.getCurrentPosition();
-        telemetry.addData("Pivot Position", pivotPos);
-        telemetry.addData("Linkage Position", linkagePos);
+        arm.update();
+        telemetry.addData("claw", claw);
+        telemetry.addData("arm", arm);
         telemetry.update();
     }
 

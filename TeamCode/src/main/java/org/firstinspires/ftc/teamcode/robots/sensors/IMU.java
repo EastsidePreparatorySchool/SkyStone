@@ -93,6 +93,11 @@ public class IMU {
         return x;
     }
 
+    public Double getAngleDegrees(){
+        return (getAngle()/6.2)*360;
+
+    }
+
     @Override
     public String toString() {
         return imu.toString();

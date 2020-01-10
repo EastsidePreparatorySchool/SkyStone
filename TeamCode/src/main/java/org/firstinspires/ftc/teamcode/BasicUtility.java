@@ -135,4 +135,40 @@ public class BasicUtility {
         return value;
     }
 
+    //TODO: wrapping constraints
+    // constraints that work for things like the imu's -180,180 angles
+    public Double wrapConstraintCheck(Double value, Double target, Double range, Double top, Double bottom, Double error){
+        if(target>top || target< bottom){
+            return error;
+        }
+        Double topConstraint = Math.abs(target-top);
+        Double botConstraint = Math.abs(bottom-target);
+        if(topConstraint<Math.abs(range)){
+            Double extra = Math.abs(range)-topConstraint;
+            Double topLowConst = top-Math.abs(range);
+            Double botHighConst = bottom+extra;
+            if(constraintDefault(value, botHighConst, bottom).equals(value) || constraintDefault(value, top, topLowConst).equals(value)){
+                return value;
+
+            }else{
+                return error;
+            }
+        }else if(botConstraint<Math.abs(range)){
+            Double extra = Math.abs(range)-botConstraint;
+            Double topLowConst = top-Math.abs(extra);
+            Double botHighConst = bottom+Math.abs(range);
+            if(constraintDefault(value, botHighConst, bottom).equals(value) || constraintDefault(value, top, topLowConst).equals(value)){
+                return value;
+            }else{
+                return error;
+            }
+
+        }else{
+            return constraintDefault(value, (target+range),(target-range), error);
+        }
+
+
+
+    }
+
 }

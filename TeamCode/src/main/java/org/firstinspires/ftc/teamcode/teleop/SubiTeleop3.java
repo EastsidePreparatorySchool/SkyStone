@@ -92,7 +92,7 @@ public class SubiTeleop3 extends OpMode {
         if (pivotPower != 0.0) {
             robot.pivotArm(armAndPivotSpeed * pivotPower);
         }
-
+        telemetry.addData("angle","%6.2f", robot.imuAngle());
 
         speed = 0.5;
         //armAndPivotSpeed = normal;
