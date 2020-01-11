@@ -45,8 +45,8 @@ public class basicTeleop extends LinearOpMode {
     Hardware8103 robot = new Hardware8103();
 
     int liftPos = 0;
+    int prevLiftPos = liftPos;
     int liftEncoder = 0;
-    int blockLevel = -1;
     boolean v4BarIn = true;
 
     boolean intakeRun = false;
@@ -103,11 +103,10 @@ public class basicTeleop extends LinearOpMode {
 
             if (gamepad2.right_trigger > 0.8) {
                 raiseLift(liftPos);
-                liftPos++;
+                liftPos = Math.min(liftPos + 1, 8);//there are 9 possible heights starting at 0
             } else if (gamepad2.left_trigger > 0.8) {
                 dropLift();
-                liftPos = 0;
-            } else if (gamepad2.b) {
+            } else if (gamepad2.b) {//in case of sadness press b
                 robot.lift.setPower(0);
             }
             liftEncoder = robot.lift.getCurrentPosition();
@@ -124,6 +123,7 @@ public class basicTeleop extends LinearOpMode {
                     sleep(300);
                     telemetry.addData("bay", "out");
                 } else if (gamepad2.right_bumper) {
+                    placeBlock();
                     robot.intakeRight.setPower(-1);
                     robot.intakeLeft.setPower(-1);
                     robot.bay1.setPower(1);
@@ -152,12 +152,16 @@ public class basicTeleop extends LinearOpMode {
 
 
             if (gamepad2.x && v4BarIn) {
-                //placeBlock(blockLevel + 1);
-                //blockLevel++;
-                placeBlock(0.2);
+                robot.grabber.setPosition(0.7);
+                sleep(400);
+                placeBlock();
+                telemetry.addData("log", "placing block");
                 v4BarIn = false;
+                robot.grabber.setPosition(1);
+                sleep(400);
             } else if (gamepad2.x && !v4BarIn) {
                 getBlock();
+                telemetry.addData("log", "getting block");
                 v4BarIn = true;
             }
 
@@ -175,45 +179,46 @@ public class basicTeleop extends LinearOpMode {
     }
 
     public void raisePullers() {
-        robot.rightpuller.setPosition(1);
-        robot.leftpuller.setPosition(1);
+        robot.rightpuller.setPosition(1);//1
+        robot.leftpuller.setPosition(0);//0
         sleep(350);
     }
 
     public void getBlock() {
-        robot.left4Bar.setPosition(1);
-        robot.right4Bar.setPosition(-1);
-        robot.grabber.setPosition(0);
-        sleep(250);
-        telemetry.addData("log", "getting block");
+        robot.left4Bar.setPosition(0.8);
+        robot.right4Bar.setPosition(0.2);
+        sleep(1500);
     }
 
-    public void placeBlock(double height) {
-        robot.left4Bar.setPosition(-1);
+    public void placeBlock() {
+        robot.left4Bar.setPosition(0);
         robot.right4Bar.setPosition(1);
-        sleep(250);
-        telemetry.addData("log", "placing block");
+        sleep(1500);
     }
 
     public void raiseLift(int height) {
         robot.lift.setTargetPosition(robot.liftHeights.get(height));
-        robot.lift.setPower(-0.45);//pretty fast, then hold. Negative because lower encoder values mean higher lift
-        while (robot.lift.getCurrentPosition() - robot.lift.getTargetPosition() > 20) {//on the way up target will be smaller than current
-            sleep(10);
-        }
-        robot.lift.setPower(-0.35);//slow down when current gets within 20 ticks of target
-        sleep(20);
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.setPower(-0.6);//pretty fast, then hold. Negative because lower encoder values mean higher lift
+        sleep(800);//should be enough time to get there.
+//        while (robot.lift.getCurrentPosition() - robot.lift.getTargetPosition() > 10) {//on the way up target will be smaller than current
+//            sleep(10);
+//        }
+//        robot.lift.setPower(-0.4);//slow down when current gets within 10 ticks of target
+//        sleep(20);
         //make sure to leave the motor alone to hold its position
     }
 
     public void dropLift() {
         robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP);
+        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.setPower(0.35);//positive direction to go down
-        while (robot.lift.getCurrentPosition() - robot.LIFT_LEVEL_PICKUP > 20) {//current position will be higher than lift level
-            sleep(10);
-        }
-        robot.lift.setPower(0.25);//slow down when you get close, about 20 encoder ticks away
-        sleep(20);
+        sleep(800);
+//        while (robot.lift.getCurrentPosition() - robot.LIFT_LEVEL_PICKUP > 20) {//current position will be higher than lift level
+//            sleep(10);
+//        }
+//        robot.lift.setPower(0.25);//slow down when you get close, about 20 encoder ticks away
+//        sleep(20);
         robot.lift.setPower(0);//at the bottom its ok to let go
     }
 }

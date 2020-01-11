@@ -95,7 +95,6 @@ public class Hardware8103 {
 
         lift = hwMap.dcMotor.get("lift");
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         bay1 = hwMap.crservo.get("bay1");
         bay2 = hwMap.crservo.get("bay2");
@@ -106,6 +105,7 @@ public class Hardware8103 {
         left4Bar = hwMap.servo.get("left4bar");
         right4Bar = hwMap.servo.get("right4bar");
         grabber = hwMap.servo.get("grabbercloser");
+        grabber.setDirection(Servo.Direction.REVERSE);
 
         allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         allServos = new Servo[]{leftpuller, rightpuller, left4Bar, right4Bar};

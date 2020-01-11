@@ -323,26 +323,29 @@ public class RedJustPuller extends LinearOpMode {
 
         forwards(0.2, 0.7);
 
-        forwards(1, 0.5);//drop the intake
-        backwards(1, 0.5);
+        forwards(1, 0.1);//drop the intake
+        backwards(1, 0.1);
+        sleep(1000);
 
         turnright(1);
         forwards(0.4, 1.8);
         turnright(1.6);
-        strafeleft(0.4);
+        strafeleft(0.5);
 
         raisePullers();
         backwards(0.4, 0.8);
         lowerPullers();
         sleep(200);
 
-        forwards(1, 2.7);
-        turnright(1.5);
+        forwards(0.7, 3.5);
+        turnleft(1.3);
         raisePullers();//gotta raise them to push
-        backwards(1, 0.6);
+        backwards(1, 0.8);
 
-        strafeleft(0.5);
-        forwards(0.4, 1);//park on the line
+        forwards(0.4, 0.5);
+        strafeleft(2);
+        straferight(1.5);
+        forwards(0.4, 1.2);//park on the line
 
         telemetry.addData("log", "done");
         telemetry.update();
