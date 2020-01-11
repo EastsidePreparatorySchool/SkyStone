@@ -118,45 +118,15 @@ public class Test8103 extends LinearOpMode {
         }
         waitForStart();
 
-        driveForward();
-        sleep(7000);
-
-        straferightslowly();
-        sleep(6000);
-
-        strafeleft();
+        robot.right4Bar.setPosition(0.7);
         sleep(2000);
-
-        driveForward();
+        robot.right4Bar.setPosition(0);
+        sleep(2000);
+        robot.right4Bar.setPosition(1);
+        sleep(2000);
+        telemetry.addData("log", "done");
+        telemetry.update();
         sleep(5000);
-
-        strafeleft();
-        sleep(3000);
-
-        backwards();
-        sleep(7000);
-
-        straferight();
-        sleep(3000);
-        //sleep(3500 );
-
-        driveForward();
-        sleep(4000);
-
-        straferightslowly();
-        sleep(1000);
-
-        strafeleft();
-        sleep(2000);
-
-        driveForward();
-        sleep(2000);
-
-        strafeleft();
-        sleep(4000);
-
-        backwards();
-        sleep(3000);
     }
 }
 
