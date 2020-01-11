@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="5 | TapePark Wait | Blue LZ / Red BZ", group="15203")
+@Autonomous(name="TapePark Wait | Blue LZ / Red BZ", group="15203")
 
 public class TapeParkBlueLZWait extends LinearOpMode {
 

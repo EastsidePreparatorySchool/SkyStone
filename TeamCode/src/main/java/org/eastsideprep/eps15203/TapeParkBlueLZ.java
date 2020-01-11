@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="5 | TapePark | Blue LZ / Red BZ", group="15203")
+@Autonomous(name="TapePark | Blue LZ / Red BZ", group="15203")
 
 public class TapeParkBlueLZ extends LinearOpMode {
 
@@ -22,10 +22,18 @@ public class TapeParkBlueLZ extends LinearOpMode {
 
         waitForStart();
 
+
         robot.allDrive(-0.5, 750);
         robot.turn(-0.5, 785);
         robot.allDrive(-0.5, 1000);
         robot.allDrive(0.0, 1000);
+        //both servos starting position
+        robot.fingerServo1.setPosition(0);
+        robot.fingerServo2.setPosition(1);
+
+        sleep(2000);
+
+
     }
 }
 

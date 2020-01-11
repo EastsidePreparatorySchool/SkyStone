@@ -52,7 +52,8 @@ public class Simple15203 extends LinearOpMode {
         telemetry.addData("Say", "ready");
 
         double grabberPos = 0;
-        double fingerPos = 0;
+        double fingerPos1 = 0;
+        double fingerPos2 = 1;
         boolean dpad_up_state = false;
         boolean dpad_down_state = false;
         int z_arm_pos_index = 0;
@@ -188,15 +189,34 @@ public class Simple15203 extends LinearOpMode {
             }
 
             //finger controls
-            double fingerPosMultiplier = 0.025;
-
+            double fingerPos1Multiplier = 0.005;
+            double fingerPos2Multiplier = -0.005;
+//
             if(gamepad1.x){
-                fingerPos +=  fingerPosMultiplier;
+//                fingerPos1 +=  fingerPos1Multiplier;
+//                fingerPos2 +=  fingerPos2Multiplier;
+//                fingerPos1 = 0;
+//                fingerPos2 = 1;
+                robot.fingerServo1.setPosition(0);
+                robot.fingerServo2.setPosition(1);
+
             } else if (gamepad1.b) {
-                fingerPos -= fingerPosMultiplier;
+//                fingerPos1 -= fingerPos1Multiplier;
+//                fingerPos2 -= fingerPos2Multiplier;
+//                fingerPos1 = 1;
+//                fingerPos2 = 0;
+                robot.fingerServo1.setPosition(1);
+                robot.fingerServo2.setPosition(0);
+
             } else {
-                fingerPos = robot.fingerServo.getPosition();
+                fingerPos1 = robot.fingerServo1.getPosition();
+                fingerPos2 = robot.fingerServo2.getPosition();
             }
+
+            fingerPos1 = Math.min(fingerPos1, 1);
+            fingerPos1 = Math.max(fingerPos1, 0);
+            fingerPos2 = Math.min(fingerPos2, 1);
+            fingerPos2 = Math.max(fingerPos2, 0);
 
             //Check to make sure the servo isn't hurting itself
             if(grabberPos > 0.4 || robot.grabberServo.getPosition() > 0.4 ) {
@@ -206,7 +226,8 @@ public class Simple15203 extends LinearOpMode {
 
             telemetry.addData("Grabber Pos Read", robot.grabberServo.getPosition());
             telemetry.addData("Grabber Pos Var", grabberPos);
-            telemetry.addData("Finger Pos Var", fingerPos);
+            telemetry.addData("Finger Pos1 Var", fingerPos1);
+            telemetry.addData("Finger Pos2 Var", fingerPos2);
             telemetry.addData("Z arm position index", z_arm_pos_index);
             telemetry.addData("Z arm position array length", z_arm_pos.length);
             telemetry.addData("Z arm position num", robot.zArmMotor.getCurrentPosition());
@@ -215,7 +236,8 @@ public class Simple15203 extends LinearOpMode {
 
             //Update the grabber & finger position
             robot.grabberServo.setPosition(grabberPos);
-            robot.fingerServo.setPosition(fingerPos);
+//            robot.fingerServo1.setPosition(fingerPos1);
+//            robot.fingerServo2.setPosition(fingerPos2);
 
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);
