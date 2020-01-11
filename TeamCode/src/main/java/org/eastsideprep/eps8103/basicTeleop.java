@@ -100,21 +100,36 @@ public class basicTeleop extends LinearOpMode {
             }
 
             telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
-
-            if (gamepad2.right_trigger > 0.8) {
+            telemetry.addData("joysticks", "left y" + gamepad2.left_stick_y + "right y" + gamepad2.right_stick_y);
+            if (gamepad2.right_stick_y > 0.8) {
+                raiseGrabber();
                 raiseLift(liftPos);
                 liftPos = Math.min(liftPos + 1, 8);//there are 9 possible heights starting at 0
-            } else if (gamepad2.left_trigger > 0.8) {
+
+            } else if (gamepad2.right_stick_y < -0.8) {
+                raiseGrabber();
                 dropLift();
             } else if (gamepad2.b) {//in case of sadness press b
+                raiseGrabber();
                 robot.lift.setPower(0);
             }
             liftEncoder = robot.lift.getCurrentPosition();
             telemetry.addData("lift pos", liftPos);
             telemetry.addData("lift encoder", liftEncoder);
 
+            if (gamepad2.b) {
+                //release block
+                robot.grabber.setPosition(1);
+            }
+
+            if (gamepad2.a) {
+                //grab bloc
+                robot.grabber.setPosition(0.6);
+            }
+
             if (!intakeRun) {//toggle intake
-                if (gamepad2.left_bumper) {
+                if (gamepad2.left_trigger > 0.8) {
+                    raiseGrabber();
                     robot.intakeRight.setPower(1);
                     robot.intakeLeft.setPower(1);
                     robot.bay1.setPower(-1);
@@ -122,8 +137,9 @@ public class basicTeleop extends LinearOpMode {
                     intakeRun = true;
                     sleep(300);
                     telemetry.addData("bay", "out");
-                } else if (gamepad2.right_bumper) {
-                    placeBlock();
+
+                } else if (gamepad2.right_trigger > 0.8) {
+                    raiseGrabber();
                     robot.intakeRight.setPower(-1);
                     robot.intakeLeft.setPower(-1);
                     robot.bay1.setPower(1);
@@ -131,14 +147,15 @@ public class basicTeleop extends LinearOpMode {
                     intakeRun = true;
                     sleep(300);
                     telemetry.addData("bay", "in");
+
                 }
-            } else if (intakeRun && (gamepad2.left_bumper || gamepad2.right_bumper)) {
+            } else if (intakeRun && (gamepad2.left_trigger > 0.8 || gamepad2.right_trigger > 0.8)) {
                 robot.intakeRight.setPower(0);
                 robot.intakeLeft.setPower(0);
                 robot.bay1.setPower(0);
                 robot.bay2.setPower(0);
+                sleep(500);
                 intakeRun = false;
-                sleep(300);
                 telemetry.addData("bay", "stopped");
             }
 
@@ -151,19 +168,32 @@ public class basicTeleop extends LinearOpMode {
             }
 
 
-            if (gamepad2.x && v4BarIn) {
-                robot.grabber.setPosition(0.7);
-                sleep(400);
-                placeBlock();
-                telemetry.addData("log", "placing block");
-                v4BarIn = false;
-                robot.grabber.setPosition(1);
-                sleep(400);
-            } else if (gamepad2.x && !v4BarIn) {
-                getBlock();
-                telemetry.addData("log", "getting block");
-                v4BarIn = true;
-            }
+//            if (gamepad2.x && v4BarIn) {
+//                robot.grabber.setPosition(0.6);
+//                sleep(400);
+//                placeBlock();
+//                sleep(400);
+//                telemetry.addData("log", "placing block");
+//                v4BarIn = false;
+//
+//            } else if (gamepad2.x && !v4BarIn) {
+//                robot.grabber.setPosition(1);
+//                sleep(400);
+//                getBlock();
+//                telemetry.addData("log", "getting block");
+//                v4BarIn = true;
+//            } else if (gamepad2.y) {
+//                getBlock();
+//                v4BarIn = true;
+//            }
+
+            double right = gamepad2.left_stick_y * 2 / 3 + 0.25;
+            //right: 1 maps to 1, -0.5 maps to 0
+            //left: 1 maps to 0, -0.5 maps to 1
+
+            double left = 1 - (gamepad2.left_stick_y * 2 / 3) - 0.25;
+            robot.left4Bar.setPosition(left);
+            robot.right4Bar.setPosition(right);
 
             telemetry.addLine();
             telemetry.update();
@@ -185,21 +215,29 @@ public class basicTeleop extends LinearOpMode {
     }
 
     public void getBlock() {
-        robot.left4Bar.setPosition(0.8);
-        robot.right4Bar.setPosition(0.2);
+        robot.left4Bar.setPosition(1);//left goes a bit more
+        robot.right4Bar.setPosition(0.05);
         sleep(1500);
     }
 
     public void placeBlock() {
-        robot.left4Bar.setPosition(0);
-        robot.right4Bar.setPosition(1);
+        robot.left4Bar.setPosition(0.25);
+        robot.right4Bar.setPosition(0.8);
         sleep(1500);
     }
 
+    public void raiseGrabber() {
+        robot.left4Bar.setPosition(0.77);
+        robot.right4Bar.setPosition(0.3);
+        sleep(800);
+    }
+
+
     public void raiseLift(int height) {
+        robot.grabber.setPosition(0.6);
         robot.lift.setTargetPosition(robot.liftHeights.get(height));
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.setPower(-0.6);//pretty fast, then hold. Negative because lower encoder values mean higher lift
+        robot.lift.setPower(-0.7);//pretty fast, then hold. Negative because lower encoder values mean higher lift
         sleep(800);//should be enough time to get there.
 //        while (robot.lift.getCurrentPosition() - robot.lift.getTargetPosition() > 10) {//on the way up target will be smaller than current
 //            sleep(10);
@@ -212,7 +250,7 @@ public class basicTeleop extends LinearOpMode {
     public void dropLift() {
         robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP);
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.setPower(0.35);//positive direction to go down
+        robot.lift.setPower(0.55);//positive direction to go down
         sleep(800);
 //        while (robot.lift.getCurrentPosition() - robot.LIFT_LEVEL_PICKUP > 20) {//current position will be higher than lift level
 //            sleep(10);
