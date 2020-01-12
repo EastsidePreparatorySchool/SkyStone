@@ -107,6 +107,7 @@ public class basicTeleop extends LinearOpMode {
                 liftPos = Math.min(liftPos + 1, 8);//there are 9 possible heights starting at 0
 
             } else if (gamepad2.right_stick_y < -0.8) {
+                liftPos = 0;
                 raiseGrabber();
                 dropLift();
 
