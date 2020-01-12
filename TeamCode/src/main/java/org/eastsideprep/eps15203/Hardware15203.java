@@ -24,7 +24,8 @@ public class Hardware15203 {
     public DcMotor rightBackMotor = null;
     public DcMotor [] allMotors;
     public DcMotor zArmMotor = null;
-    public Servo grabberServo = null;
+    public Servo grabberServo1 = null;
+    public Servo grabberServo2 = null;
     public Servo fingerServo1 = null;
     public Servo fingerServo2 = null;
     public Gyroscope gyro = null;
@@ -59,7 +60,11 @@ public class Hardware15203 {
         zArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         zArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        grabberServo = hwMap.servo.get("GS");
+        grabberServo1 = hwMap.servo.get("GS1");
+        grabberServo2 = hwMap.servo.get("GS2");
+        grabberServo1.setPosition(0.5);
+        grabberServo2.setPosition(0.5);
+
         fingerServo1 = hwMap.servo.get("FS1");
         fingerServo2 = hwMap.servo.get("FS2");
 
@@ -161,6 +166,21 @@ public class Hardware15203 {
         zArmMotor.setTargetPosition(pos);
         zArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         zArmMotor.setPower(power);
+    }
+
+    public void strafe (double power, int milliseconds) {
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(-1*power);
+        leftBackMotor.setPower(-1*power);
+        rightBackMotor.setPower(power);
+
+        threadSleep(milliseconds);
+
+        leftFrontMotor.setPower(0.0);
+        rightFrontMotor.setPower(0.0);
+        leftBackMotor.setPower(0.0);
+        rightBackMotor.setPower(0.0);
+
     }
 
 
