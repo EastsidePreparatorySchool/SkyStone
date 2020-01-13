@@ -108,6 +108,11 @@ public class Test8103 extends LinearOpMode {
         robot.leftBackMotor.setPower(-0.5);
     }
 
+    public void testLift(){
+        robot.lift.setPower(0.25);//with no load on the slides this is pretty slow
+        telemetry.addData("lift encoder", robot.lift.getCurrentPosition());
+    }
+
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);

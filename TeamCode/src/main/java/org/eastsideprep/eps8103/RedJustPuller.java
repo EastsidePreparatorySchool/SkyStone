@@ -338,7 +338,7 @@ public class RedJustPuller extends LinearOpMode {
         sleep(200);
 
         forwards(0.7, 3.5);
-        turnleft(1.3);
+        turnright(1.3);
         raisePullers();//gotta raise them to push
         backwards(1, 0.8);
 

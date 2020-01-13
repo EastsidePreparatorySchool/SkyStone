@@ -115,7 +115,6 @@ public class basicTeleop extends LinearOpMode {
             }
             liftEncoder = robot.lift.getCurrentPosition();
             telemetry.addData("lift pos", liftPos);
-            telemetry.addData("lift encoder", liftEncoder);
 
             if (gamepad2.b) {
                 //release block
@@ -209,8 +208,8 @@ public class basicTeleop extends LinearOpMode {
     }
 
     public void raisePullers() {
-        robot.rightpuller.setPosition(1);//1
-        robot.leftpuller.setPosition(0);//0
+        robot.rightpuller.setPosition(1);
+        robot.leftpuller.setPosition(1);
         sleep(350);
     }
 
@@ -234,7 +233,7 @@ public class basicTeleop extends LinearOpMode {
 
 
     public void raiseLift(int height) {
-        robot.grabber.setPosition(0.6);
+        //robot.grabber.setPosition(0.6);
         robot.lift.setTargetPosition(robot.liftHeights.get(height));
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.setPower(-0.7);//pretty fast, then hold. Negative because lower encoder values mean higher lift
