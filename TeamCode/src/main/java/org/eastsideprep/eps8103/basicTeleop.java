@@ -107,12 +107,18 @@ public class basicTeleop extends LinearOpMode {
                 liftPos = Math.min(liftPos + 1, 8);//there are 9 possible heights starting at 0
 
             } else if (gamepad2.right_stick_y < -0.8) {
+                liftPos = 0;
                 raiseGrabber();
                 dropLift();
-            } else if (gamepad2.b) {//in case of sadness press b
+
+            }
+            /*
+            else if (gamepad2.b) {//in case of sadness press b
                 raiseGrabber();
                 robot.lift.setPower(0);
             }
+
+                 */
             liftEncoder = robot.lift.getCurrentPosition();
             telemetry.addData("lift pos", liftPos);
 
@@ -203,32 +209,28 @@ public class basicTeleop extends LinearOpMode {
 
     public void lowerPullers() {
         robot.rightpuller.setPosition(0.4);
-        robot.leftpuller.setPosition(0.1);
-        sleep(350);
+        robot.leftpuller.setPosition(1);
     }
 
     public void raisePullers() {
-        robot.rightpuller.setPosition(1);
-        robot.leftpuller.setPosition(1);
-        sleep(350);
+        robot.rightpuller.setPosition(1);//1
+        robot.leftpuller.setPosition(0);//0
     }
 
     public void getBlock() {
         robot.left4Bar.setPosition(1);//left goes a bit more
         robot.right4Bar.setPosition(0.05);
-        sleep(1500);
     }
 
     public void placeBlock() {
         robot.left4Bar.setPosition(0.25);
         robot.right4Bar.setPosition(0.8);
-        sleep(1500);
     }
 
     public void raiseGrabber() {
-        robot.left4Bar.setPosition(0.77);
-        robot.right4Bar.setPosition(0.3);
-        sleep(800);
+        robot.left4Bar.setPosition(0.45);
+        robot.right4Bar.setPosition(0.6);
+        //sleep(800);
     }
 
 
@@ -237,7 +239,6 @@ public class basicTeleop extends LinearOpMode {
         robot.lift.setTargetPosition(robot.liftHeights.get(height));
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.setPower(-0.7);//pretty fast, then hold. Negative because lower encoder values mean higher lift
-        sleep(800);//should be enough time to get there.
 //        while (robot.lift.getCurrentPosition() - robot.lift.getTargetPosition() > 10) {//on the way up target will be smaller than current
 //            sleep(10);
 //        }
@@ -250,7 +251,6 @@ public class basicTeleop extends LinearOpMode {
         robot.lift.setTargetPosition(robot.LIFT_LEVEL_PICKUP);
         robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.lift.setPower(0.55);//positive direction to go down
-        sleep(800);
 //        while (robot.lift.getCurrentPosition() - robot.LIFT_LEVEL_PICKUP > 20) {//current position will be higher than lift level
 //            sleep(10);
 //        }
