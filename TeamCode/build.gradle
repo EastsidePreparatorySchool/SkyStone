@@ -9,7 +9,7 @@
 // before doing so.
 
 
-// Custom definitions may go here
+// Custom definitions may perform here
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'

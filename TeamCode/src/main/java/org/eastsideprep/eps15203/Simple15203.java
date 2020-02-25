@@ -101,7 +101,7 @@ public class Simple15203 extends LinearOpMode {
                 dsWeight *= 0.25;
             }
 
-//always drive slower and then go faster when left trigger pressed
+//always drive slower and then perform faster when left trigger pressed
             if (gamepad1.left_trigger == 0) {
                 dsWeight *= 0.6;
             }
@@ -125,7 +125,7 @@ public class Simple15203 extends LinearOpMode {
             }
 
             if(gamepad1.dpad_up && !dpad_up_state) {
-                //if up is pressed, go up a level.
+                //if up is pressed, perform up a level.
                 dpad_up_state = true;
                 z_arm_pos_index ++;
 
@@ -138,7 +138,7 @@ public class Simple15203 extends LinearOpMode {
             }
 
             if(gamepad1.dpad_down && !dpad_down_state) {
-                //if down is pressed, go down a level.
+                //if down is pressed, perform down a level.
                 dpad_down_state = true;
                 z_arm_pos_index --;
 
@@ -154,7 +154,7 @@ public class Simple15203 extends LinearOpMode {
 
 /* old code
             if(gamepad1.dpad_down && !dpad_down_state) {
-                //if down is pressed, go back to resting state.
+                //if down is pressed, perform back to resting state.
                 dpad_down_state = true;
                 robot.setArmPosition(0, 0.5);
 

@@ -3,6 +3,8 @@ package org.eastsideprep.eps15203;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.eastsideprep.robotools.ChassisInstruction;
+
 
 @Autonomous(name="Autonomous Template 15203", group="15203")
 
@@ -15,6 +17,7 @@ public class Auto15203 extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "started");    //
