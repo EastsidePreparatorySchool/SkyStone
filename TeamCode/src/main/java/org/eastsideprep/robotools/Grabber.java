@@ -36,7 +36,7 @@ public class Grabber {
     }
 
     private void setRightServo(Servo servo2, int min, int max) {
-        if(!servo1set) {
+        if(!servo2set) {
             this.rightServo = servo2;
             this.min2 = min;
             this.max2 = max;

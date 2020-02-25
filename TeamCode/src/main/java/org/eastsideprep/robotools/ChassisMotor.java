@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class ChassisMotor {
 
     private DcMotor motor;
-    private double modifier;
+    private double modifier = 1.0;
 
     public void setPower(double power){
         this.motor.setPower(power * this.modifier);

@@ -21,6 +21,7 @@ public class AutoE2 extends LinearOpMode {
         waitForStart();
 
         telemetry.addData("BR Multiplier", robot.chassis.getBackRightMotor().getModifier());
+        telemetry.addData("BR Speed", robot.chassis.getBackRightMotor().getMotor().getPower());
         telemetry.update();
 
         robot.chassis.performAll(
