@@ -1,14 +1,11 @@
 package org.eastsideprep.epseoreizy;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.eastsideprep.robotools.Chassis;
-import org.eastsideprep.robotools.Mechanism;
+import org.eastsideprep.rclasslib.Chassis;
+import org.eastsideprep.rclasslib.Mechanism;
 
 
 /**
@@ -50,7 +47,8 @@ public class HardwareE {
         chassis.setModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         chassis.setModes(DcMotor.RunMode.RUN_USING_ENCODER);
         chassis.setZeroPowerBehaviors(DcMotor.ZeroPowerBehavior.BRAKE);
-        chassis.getBackRightMotor().setModifier(0.75);
+        //chassis.getBackRightMotor().setModifier(0.75);
+        chassis.getBackRightMotor().setModifier(0.0); //to test if this actually does anything
 
         //Set up the foundation grabbers
 //        foundation1 = new Mechanism(hwMap, "foundationGrabber1",0, 180);

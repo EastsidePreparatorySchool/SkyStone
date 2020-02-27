@@ -23,11 +23,24 @@ public class Grabber {
         this.isOpen = false;
     }
 
+    public void openPercent(int p){
+        leftMechanism.openPercent(p);
+        rightMechanism.openPercent(p);
+    }
+
     public void toggle(){
         if(this.isOpen){
             this.close();
         } else {
             this.open();
         }
+    }
+
+    public Mechanism getLeftMechanism() {
+        return leftMechanism;
+    }
+
+    public Mechanism getRightMechanism() {
+        return rightMechanism;
     }
 }

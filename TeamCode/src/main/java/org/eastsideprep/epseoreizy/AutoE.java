@@ -3,8 +3,8 @@ package org.eastsideprep.epseoreizy;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.eastsideprep.robotools.ChassisDirection;
-import org.eastsideprep.robotools.ChassisInstruction;
+import org.eastsideprep.rclasslib.ChassisDirection;
+import org.eastsideprep.rclasslib.ChassisInstruction;
 
 
 @Autonomous(name = "Everest Auto 1", group = "15203")
@@ -30,7 +30,7 @@ public class AutoE extends LinearOpMode {
                 new ChassisInstruction(ChassisDirection.STRAFE_RIGHT, 0.25, 1000),
                 new ChassisInstruction(ChassisDirection.REVERSE, 0.5, 1000)
         );
-        telemetry.addData("Status", "started");    //
+        telemetry.addData("Status", "started");
         telemetry.update();
 
 

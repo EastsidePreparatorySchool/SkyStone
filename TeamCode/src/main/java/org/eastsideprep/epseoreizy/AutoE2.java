@@ -3,8 +3,8 @@ package org.eastsideprep.epseoreizy;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.eastsideprep.robotools.ChassisDirection;
-import org.eastsideprep.robotools.ChassisInstruction;
+import org.eastsideprep.rclasslib.ChassisDirection;
+import org.eastsideprep.rclasslib.ChassisInstruction;
 
 @Autonomous(name = "Everest Auto 2", group = "15203")
 
@@ -21,7 +21,6 @@ public class AutoE2 extends LinearOpMode {
         waitForStart();
 
         telemetry.addData("BR Multiplier", robot.chassis.getBackRightMotor().getModifier());
-        telemetry.addData("BR Speed", robot.chassis.getBackRightMotor().getMotor().getPower());
         telemetry.update();
 
         robot.chassis.performAll(

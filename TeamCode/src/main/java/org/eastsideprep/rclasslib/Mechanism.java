@@ -3,6 +3,8 @@ package org.eastsideprep.rclasslib;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Mechanism {
     private Servo servo;
     private int max;
@@ -40,6 +42,11 @@ public class Mechanism {
 
     public void setPosition(int pos){
         servo.setPosition(pos);
+    }
+
+    public void openPercent(int p){
+        int calc = (this.max - this.min) * p;
+        servo.setPosition(this.min + calc);
     }
 
 }
