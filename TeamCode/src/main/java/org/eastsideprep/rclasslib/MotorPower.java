@@ -1,4 +1,4 @@
-package org.eastsideprep.robotools;
+package org.eastsideprep.rclasslib;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 

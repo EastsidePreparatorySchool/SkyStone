@@ -1,4 +1,4 @@
-package org.eastsideprep.robotools;
+package org.eastsideprep.rclasslib;
 
 public class ChassisInstruction {
     private ChassisDirection direction;

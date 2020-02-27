@@ -1,7 +1,4 @@
-package org.eastsideprep.robotools;
-
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+package org.eastsideprep.rclasslib;
 
 public class Grabber {
 
