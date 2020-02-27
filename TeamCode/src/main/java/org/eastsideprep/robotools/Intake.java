@@ -22,14 +22,13 @@ public class Intake {
 
     public void go(){
         for (MotorPower t : this.motors){
-            DcMotor m = t.getMotor();
-            m.setPower(t.getPower());
+            t.run();
         }
     }
 
     public void stop(){
         for (MotorPower t : this.motors){
-            t.getMotor().setPower(0.0);
+            t.stop();
         }
     }
 

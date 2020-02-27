@@ -24,5 +24,17 @@ public class MotorPower {
         return power;
     }
 
+    public void run(){
+        this.motor.setPower(this.power);
+    }
+
+    public void runAtOtherPower(double otherPower){
+        this.motor.setPower(otherPower);
+    }
+
+    public void stop(){
+        this.motor.setPower(0.0);
+    }
+
 
 }
