@@ -10,6 +10,7 @@ public class Chassis{
     private ChassisMotor fr;
     private ChassisMotor bl;
     private ChassisMotor br;
+    private int test;
 
     public Chassis(HardwareMap hwMap, String fL, String fR, String bL, String bR){
         this.fl = new ChassisMotor(hwMap.dcMotor.get(fL));
