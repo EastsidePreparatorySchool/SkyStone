@@ -43,4 +43,5 @@ public class Grabber {
     public Mechanism getRightMechanism() {
         return rightMechanism;
     }
+
 }

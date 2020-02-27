@@ -10,7 +10,6 @@ public class Chassis{
     private ChassisMotor fr;
     private ChassisMotor bl;
     private ChassisMotor br;
-    private int test;
 
     public Chassis(HardwareMap hwMap, String fL, String fR, String bL, String bR){
         this.fl = new ChassisMotor(hwMap.dcMotor.get(fL));
@@ -79,9 +78,9 @@ public class Chassis{
 
         if(instruction.getMilliseconds() != ChassisInstruction.FOREVER){
             Thread.sleep(instruction.getMilliseconds());
-            this.stop();
         }
 
+        this.stop();
     }
 
     public void performAll(ChassisInstruction... instructions) throws InterruptedException {
