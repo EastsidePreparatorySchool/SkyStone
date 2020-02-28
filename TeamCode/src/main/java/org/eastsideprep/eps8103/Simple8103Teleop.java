@@ -29,50 +29,75 @@
 
 package org.eastsideprep.eps8103;
 
+import java.util.Arrays;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.eastsideprep.eps9884.Hardware9884;
+import org.eastsideprep.eps8103.Hardware8103;
 
-@TeleOp(name = "Teleop Simple", group = "8103")
+@TeleOp(name = "Kalie Teleop", group = "8103")
 
-public class Simple8103 extends LinearOpMode {
+public class Simple8103Teleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     Hardware8103 robot = new Hardware8103();
+//
+//    public void toggleWrist(int wristpos) {
+//        robot.wrist.setPosition(wristpos == 0 ? 180 : 0);
+//        wristpos = wristpos == 0 ? 1 : 0; //i like me my ternary bois
+//    }
 
     @Override
     public void runOpMode() {
-       /* double left;
-        double right;*/
-        boolean armU;
-        boolean armD;
-        boolean hoist;
-        boolean release;
 
+        robot.init(hardwareMap);
 
+        double left;
+        double right;
+        float extendControl;
+        float pivotControl;
 
+        double globalX = robot.xpos;
+        double globalY = robot.ypos;
+
+        double[] drivetrainEncoders = new double[4];
+        double[] drivetrainEncodersPrevious = new double[4];
+        double[] servoPositions = new double[3];
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+
+
+//        for (DcMotor m : robot.allMotors) {
+//            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); //better for driver control
+//        }
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Hello Peter");
+        telemetry.addData("Say", "Ready");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         //robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        waitForStart();
 
+        for (DcMotor m : robot.allMotors) {
+            m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+
+        waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            for (int i = 0; i < drivetrainEncoders.length; i++) {
+                drivetrainEncodersPrevious[i] = drivetrainEncoders[i];
+            }
+
             float x = gamepad1.left_stick_x;
             float y = -gamepad1.left_stick_y; // Negate to get +y forward.
             float rotation = -gamepad1.right_stick_x;
-            float speedControl = 0.5f * (1.0f + gamepad1.left_trigger);
+            float speedControl = 0.75f * (1.2f + gamepad1.left_trigger);
             double biggestControl = Math.sqrt(x * x + y * y);
             double biggestWithRotation = Math.sqrt(x * x + y * y + rotation * rotation);
 
@@ -80,6 +105,7 @@ public class Simple8103 extends LinearOpMode {
 
             double[] powers = robot.getDrivePowersFromAngle(angle);
             double pow2 = 0.0;
+
             for (int i = 0; i < robot.allMotors.length; i++) {
                 double pow = powers[i] * biggestControl + rotation * robot.rotationArray[i];
                 powers[i] = pow;
@@ -91,27 +117,35 @@ public class Simple8103 extends LinearOpMode {
                 for (int i = 0; i < robot.allMotors.length; i++) {
                     robot.allMotors[i].setPower(
                             powers[i] / scale * biggestWithRotation * speedControl);
+                    //robot.allMotors[i].setTargetPosition((int)powers[i] / scale * biggestWithRotation * speedControl);
+                    //robot.allMotors[i].setPower(0.8);
+                    drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
                 }
             } else {
-                for (int i = 0; i < robot.allMotors.length; i++)
+                for (int i = 0; i < robot.allMotors.length; i++) {
                     robot.allMotors[i].setPower(0.0);
+                    drivetrainEncoders[i] = robot.allMotors[i].getCurrentPosition();
+                }
             }
 
-            armU = gamepad1.dpad_up;
-            armD = gamepad1.dpad_down;
-            hoist = gamepad1.x;
-            release = gamepad1.b;
+            for (int i = 0; i < robot.allServos.length; i++) {
+                servoPositions[i] = robot.allServos[i].getPosition();
+            }
+            telemetry.addData("servo positions", Arrays.toString(servoPositions));
 
-            // Send telemetry message to signify robot running;
-            telemetry.addLine()
-                    .addData("some variable", "%.2f", 0);
+
+            telemetry.addData("drivetrain encoders", Arrays.toString(drivetrainEncoders));
+            for (int i = 0; i < drivetrainEncoders.length; i++) {
+                telemetry.addData("motor" + i + " speed", (drivetrainEncoders[i] - drivetrainEncodersPrevious[i]) / 40);
+            }
+
 
             telemetry.addLine();
             telemetry.update();
 
             // Pause for 40 mS each cycle = update 25 times a second.
             sleep(40);
-
         }
     }
 }
+
