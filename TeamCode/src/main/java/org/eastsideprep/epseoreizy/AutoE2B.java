@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.eastsideprep.rclasslib.ChassisDirection;
 import org.eastsideprep.rclasslib.ChassisInstruction;
 
-@Autonomous(name = "Everest Auto 2A", group = "15203")
+@Autonomous(name = "Everest Auto 2B", group = "15203")
 
-public class AutoE2 extends LinearOpMode {
+public class AutoE2B extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareE robot = new HardwareE();   // Use a Pushbot's hardware
@@ -17,6 +17,8 @@ public class AutoE2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
+
+        robot.chassis.getBackRightMotor().setModifier(0.5);
 
         waitForStart();
 
