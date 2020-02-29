@@ -37,7 +37,10 @@ public class HardwareE {
 
 
         //Set up the Chassis
-        chassis = new Chassis(hwMap, "frontLeftMotor", "frontRightMotor", "backLeftMotor", "backRightMotor");
+        //chassis = new Chassis(hwMap, "frontLeftMotor", "frontRightMotor", "backLeftMotor", "backRightMotor");
+//        chassis = new Chassis(hwMap, "frontLeftMotor", "frontRightMotor", "backLeftMotor", "backRightMotor");
+        chassis = new Chassis(hwMap, "LF", "RF", "LB", "RB");
+
         chassis.setDirections(
                 DcMotor.Direction.REVERSE,
                 DcMotor.Direction.FORWARD,
@@ -47,17 +50,9 @@ public class HardwareE {
         chassis.setModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         chassis.setModes(DcMotor.RunMode.RUN_USING_ENCODER);
         chassis.setZeroPowerBehaviors(DcMotor.ZeroPowerBehavior.BRAKE);
-        chassis.getBackRightMotor().setModifier(0.75);
-
-        //Set up the foundation grabbers
-//        foundation1 = new Mechanism(hwMap, "foundationGrabber1",0, 180);
-//        foundation2 = new Mechanism(hwMap, "foundationGrabber2",0, 180);
-
-
+        //chassis.getBackRightMotor().setModifier(0.75);
 
     }
-
-
 
     public double[] getDrivePowersFromAngle(double angle) {
         double[] unscaledPowers = new double[4];
@@ -66,14 +61,6 @@ public class HardwareE {
         unscaledPowers[2] = unscaledPowers[1];
         unscaledPowers[3] = unscaledPowers[0];
         return unscaledPowers;
-    }
-
-    void threadSleep(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (Exception e) {
-            //do nothing
-        }
     }
 
 }

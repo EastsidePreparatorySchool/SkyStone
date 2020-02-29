@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Chassis{
 
     private ChassisMotor fl;
@@ -11,12 +13,22 @@ public class Chassis{
     private ChassisMotor bl;
     private ChassisMotor br;
 
+    private Telemetry telemetry;
+
     public Chassis(HardwareMap hwMap, String fL, String fR, String bL, String bR){
         this.fl = new ChassisMotor(hwMap.dcMotor.get(fL));
         this.fr = new ChassisMotor(hwMap.dcMotor.get(fR));
         this.bl = new ChassisMotor(hwMap.dcMotor.get(bL));
         this.br = new ChassisMotor(hwMap.dcMotor.get(bR));
     }
+
+//    public Chassis(HardwareMap hwMap, Telemetry telemetry, String fL, String fR, String bL, String bR){
+//        this.fl = new ChassisMotor(hwMap.dcMotor.get(fL), "fl", telemetry);
+//        this.fr = new ChassisMotor(hwMap.dcMotor.get(fR), "fr", telemetry);
+//        this.bl = new ChassisMotor(hwMap.dcMotor.get(bL), "bl", telemetry);
+//        this.br = new ChassisMotor(hwMap.dcMotor.get(bR), "br", telemetry);
+//        this.telemetry = telemetry;
+//    }
 
     public void setDirections(DcMotorSimple.Direction fL, DcMotorSimple.Direction fR, DcMotorSimple.Direction bL, DcMotorSimple.Direction bR){
         this.fl.getMotor().setDirection(fL);
