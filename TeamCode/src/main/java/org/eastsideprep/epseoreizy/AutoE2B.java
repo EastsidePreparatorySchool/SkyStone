@@ -25,10 +25,10 @@ public class AutoE2B extends LinearOpMode {
         telemetry.addData("BR Multiplier", robot.chassis.getBackRightMotor().getModifier());
         telemetry.update();
 
-        robot.chassis.performAll(
+        robot.chassis.performAll(new ChassisInstruction[]{
                 new ChassisInstruction(ChassisDirection.FORWARD, 0.5, 1000000000),
                 new ChassisInstruction(ChassisDirection.REVERSE, 0.5, 1000000000)
-        );
+        });
 
 
     }

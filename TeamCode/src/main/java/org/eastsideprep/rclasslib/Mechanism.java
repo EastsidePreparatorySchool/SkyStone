@@ -7,11 +7,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Mechanism {
     private Servo servo;
-    private int max;
-    private int min;
+    private double max;
+    private double min;
     private boolean isOpen;
 
-    public Mechanism(HardwareMap hwmap, String servo, int max, int min){
+    public Mechanism(HardwareMap hwmap, String servo, double max, double min){
         this.servo = hwmap.servo.get(servo);
         this.max = max;
         this.min = min;
@@ -21,7 +21,7 @@ public class Mechanism {
         return servo;
     }
 
-    public void setConstraints(int max, int min){
+    public void setConstraints(double max, double min){
         this.max = max;
         this.min = min;
     }
@@ -44,9 +44,9 @@ public class Mechanism {
         servo.setPosition(pos);
     }
 
-    public void openPercent(int p){
-        int calc = (this.max - this.min) * p;
-        servo.setPosition(this.min + calc);
-    }
+//    public void openPercent(int p){
+//        int calc = (this.max - this.min) * p;
+//        servo.setPosition(this.min + calc);
+//    }
 
 }

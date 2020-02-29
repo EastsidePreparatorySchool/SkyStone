@@ -2,10 +2,10 @@ package org.eastsideprep.epseoreizy;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.eastsideprep.rclasslib.Chassis;
-import org.eastsideprep.rclasslib.Mechanism;
+import org.eastsideprep.rclasslib.*;
 
 
 /**
@@ -18,8 +18,9 @@ public class HardwareE {
 
     double [] rotationArray;
     Chassis chassis;
-    Mechanism foundation1;
-    Mechanism foundation2;
+    Grabber claw;
+    Servo gs1;
+    Servo gs2;
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
@@ -42,15 +43,22 @@ public class HardwareE {
         chassis = new Chassis(hwMap, "LF", "RF", "LB", "RB");
 
         chassis.setDirections(
-                DcMotor.Direction.REVERSE,
                 DcMotor.Direction.FORWARD,
                 DcMotor.Direction.REVERSE,
-                DcMotor.Direction.FORWARD
+                DcMotor.Direction.FORWARD,
+                DcMotor.Direction.REVERSE
         );
         chassis.setModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         chassis.setModes(DcMotor.RunMode.RUN_USING_ENCODER);
         chassis.setZeroPowerBehaviors(DcMotor.ZeroPowerBehavior.BRAKE);
-        //chassis.getBackRightMotor().setModifier(0.75);
+
+        claw = new Grabber(
+                new Mechanism(hwMap, "GS1", 0.48, 0.55),
+                new Mechanism(hwMap, "GS2", 0.52, 0.45)
+        );
+
+        gs1 = hwMap.servo.get("GS1");
+        gs2 = hwMap.servo.get("GS2");
 
     }
 

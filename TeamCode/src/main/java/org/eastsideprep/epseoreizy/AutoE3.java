@@ -7,7 +7,7 @@ import org.eastsideprep.rclasslib.ChassisDirection;
 import org.eastsideprep.rclasslib.ChassisInstruction;
 
 
-@Autonomous(name = "Everest Auto 3", group = "15203")
+@Autonomous(name = "Everest Auto 3 - Individual Motors", group = "15203")
 
 public class AutoE3 extends LinearOpMode {
 

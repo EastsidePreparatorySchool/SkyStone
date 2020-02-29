@@ -6,9 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.eastsideprep.rclasslib.ChassisDirection;
 import org.eastsideprep.rclasslib.ChassisInstruction;
 
-@Autonomous(name = "Everest Auto 2D - BR .0", group = "15203")
 
-public class AutoE2D extends LinearOpMode {
+@Autonomous(name = "Everest Auto 4 - Grabber Test", group = "15203")
+
+public class AutoE4 extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareE robot = new HardwareE();   // Use a Pushbot's hardware
@@ -18,17 +19,16 @@ public class AutoE2D extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
 
-        robot.chassis.getBackRightMotor().setModifier(0.0);
-
         waitForStart();
 
-        telemetry.addData("BR Multiplier", robot.chassis.getBackRightMotor().getModifier());
+        robot.claw.open();
+        sleep(1000);
+        robot.claw.close();
+        sleep(1000);
+
+        telemetry.addData("Status", "started");
         telemetry.update();
 
-        robot.chassis.performAll(new ChassisInstruction[]{
-                new ChassisInstruction(ChassisDirection.FORWARD, 0.5, 1000000000),
-                new ChassisInstruction(ChassisDirection.REVERSE, 0.5, 1000000000)
-        });
 
     }
 }

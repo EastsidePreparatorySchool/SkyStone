@@ -7,7 +7,7 @@ import org.eastsideprep.rclasslib.ChassisDirection;
 import org.eastsideprep.rclasslib.ChassisInstruction;
 
 
-@Autonomous(name = "Everest Auto 1", group = "15203")
+@Autonomous(name = "Everest Auto 1 - Functions Test", group = "15203")
 
 public class AutoE extends LinearOpMode {
 
@@ -21,7 +21,7 @@ public class AutoE extends LinearOpMode {
 
         waitForStart();
 
-        robot.chassis.performAll(
+        robot.chassis.performAll(new ChassisInstruction[]{
                 new ChassisInstruction(ChassisDirection.FORWARD, 0.5, 1000),
                 new ChassisInstruction(ChassisDirection.FORWARD, 0.25, 1000),
                 new ChassisInstruction(ChassisDirection.TURN_LEFT, 0.25, 1000),
@@ -29,7 +29,7 @@ public class AutoE extends LinearOpMode {
                 new ChassisInstruction(ChassisDirection.STRAFE_LEFT, 0.25, 1000),
                 new ChassisInstruction(ChassisDirection.STRAFE_RIGHT, 0.25, 1000),
                 new ChassisInstruction(ChassisDirection.REVERSE, 0.5, 1000)
-        );
+    });
         telemetry.addData("Status", "started");
         telemetry.update();
 

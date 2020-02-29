@@ -22,14 +22,6 @@ public class Chassis{
         this.br = new ChassisMotor(hwMap.dcMotor.get(bR));
     }
 
-//    public Chassis(HardwareMap hwMap, Telemetry telemetry, String fL, String fR, String bL, String bR){
-//        this.fl = new ChassisMotor(hwMap.dcMotor.get(fL), "fl", telemetry);
-//        this.fr = new ChassisMotor(hwMap.dcMotor.get(fR), "fr", telemetry);
-//        this.bl = new ChassisMotor(hwMap.dcMotor.get(bL), "bl", telemetry);
-//        this.br = new ChassisMotor(hwMap.dcMotor.get(bR), "br", telemetry);
-//        this.telemetry = telemetry;
-//    }
-
     public void setDirections(DcMotorSimple.Direction fL, DcMotorSimple.Direction fR, DcMotorSimple.Direction bL, DcMotorSimple.Direction bR){
         this.fl.getMotor().setDirection(fL);
         this.fr.getMotor().setDirection(fR);
@@ -95,7 +87,7 @@ public class Chassis{
         this.stop();
     }
 
-    public void performAll(ChassisInstruction... instructions) throws InterruptedException {
+    public void performAll(ChassisInstruction[] instructions) throws InterruptedException {
         for (ChassisInstruction i : instructions){
             this.perform(i);
         }

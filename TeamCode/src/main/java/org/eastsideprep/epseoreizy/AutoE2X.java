@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.eastsideprep.rclasslib.ChassisDirection;
 import org.eastsideprep.rclasslib.ChassisInstruction;
 
-@Autonomous(name = "Everest Auto 2X", group = "15203")
+@Autonomous(name = "Everest Auto 2X - BR .1", group = "15203")
 
 public class AutoE2X extends LinearOpMode {
 
@@ -25,10 +25,10 @@ public class AutoE2X extends LinearOpMode {
         telemetry.addData("BR Multiplier", robot.chassis.getBackRightMotor().getModifier());
         telemetry.update();
 
-        robot.chassis.performAll(
+        robot.chassis.performAll(new ChassisInstruction[]{
                 new ChassisInstruction(ChassisDirection.FORWARD, 0.5, 1000000000),
                 new ChassisInstruction(ChassisDirection.REVERSE, 0.5, 1000000000)
-        );
+        });
 
     }
 }
