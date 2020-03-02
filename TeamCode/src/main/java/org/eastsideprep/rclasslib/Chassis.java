@@ -88,7 +88,7 @@ public class Chassis{
     }
 
     public void performAll(ChassisInstruction[] instructions) throws InterruptedException {
-        for (ChassisInstruction i : instructions){
+        for (ChassisInstruction i : instructions) {
             this.perform(i);
         }
     }

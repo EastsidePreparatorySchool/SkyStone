@@ -7,7 +7,7 @@ import org.eastsideprep.rclasslib.ChassisDirection;
 import org.eastsideprep.rclasslib.ChassisInstruction;
 
 
-@Autonomous(name = "Everest Auto 5 - Real Actual", group = "15203")
+@Autonomous(name = "Everest Auto 5 - Forwards & Back", group = "15203")
 
 public class AutoE5 extends LinearOpMode {
 
@@ -34,7 +34,6 @@ public class AutoE5 extends LinearOpMode {
         );
         telemetry.addData("Status", "ended");
         telemetry.update();
-
 
     }
 }

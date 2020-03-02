@@ -19,6 +19,7 @@ public class HardwareE {
     double [] rotationArray;
     Chassis chassis;
     Grabber claw;
+    Grabber foundation;
     Servo gs1;
     Servo gs2;
 
@@ -57,8 +58,10 @@ public class HardwareE {
                 new Mechanism(hwMap, "GS2", 0.52, 0.45)
         );
 
-        gs1 = hwMap.servo.get("GS1");
-        gs2 = hwMap.servo.get("GS2");
+//        foundation = new Grabber(
+//                new Mechanism(hwMap, "FS1", ),
+//                new Mechanism(hwMap, "FS2", )
+//        );
 
     }
 
