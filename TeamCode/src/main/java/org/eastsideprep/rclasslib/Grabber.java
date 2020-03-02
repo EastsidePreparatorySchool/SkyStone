@@ -1,10 +1,11 @@
 package org.eastsideprep.rclasslib;
 
 public class Grabber {
-
+    //I previously had this class take 2 servos and 4 integers but then I realized that just taking 2
+    //  mechanisms was way easier.
     private Mechanism leftMechanism;
     private Mechanism rightMechanism;
-    private boolean isOpen;
+    private boolean isOpen; //keep track of if the grabber is open or not, so toggle() knows what to do.
 
     public Grabber(Mechanism leftMechanism, Mechanism rightMechanism){
         this.leftMechanism = leftMechanism;
@@ -22,11 +23,6 @@ public class Grabber {
         this.rightMechanism.close();
         this.isOpen = false;
     }
-
-//    public void openPercent(int p){
-//        leftMechanism.openPercent(p);
-//        rightMechanism.openPercent(p);
-//    }
 
     public void toggle(){
         if(this.isOpen){

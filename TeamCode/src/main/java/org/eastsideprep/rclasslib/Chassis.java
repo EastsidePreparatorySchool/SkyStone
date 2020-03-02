@@ -8,13 +8,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Chassis{
 
+    //Keep track of motors and modifiers using ChassisMotor class
     private ChassisMotor fl;
     private ChassisMotor fr;
     private ChassisMotor bl;
     private ChassisMotor br;
 
-    private Telemetry telemetry;
-
+    //I need to pass in a hardware map so that it can convert the strings into objects
     public Chassis(HardwareMap hwMap, String fL, String fR, String bL, String bR){
         this.fl = new ChassisMotor(hwMap.dcMotor.get(fL));
         this.fr = new ChassisMotor(hwMap.dcMotor.get(fR));
@@ -22,6 +22,7 @@ public class Chassis{
         this.br = new ChassisMotor(hwMap.dcMotor.get(bR));
     }
 
+    //DcMotorSimple.FORWARD, DcMotorSimple.REVERSE - important so the motor knows which way to go. to be called in init
     public void setDirections(DcMotorSimple.Direction fL, DcMotorSimple.Direction fR, DcMotorSimple.Direction bL, DcMotorSimple.Direction bR){
         this.fl.getMotor().setDirection(fL);
         this.fr.getMotor().setDirection(fR);
@@ -29,6 +30,7 @@ public class Chassis{
         this.br.getMotor().setDirection(bR);
     }
 
+    //Brake or coast? set in init
     public void setZeroPowerBehaviors(DcMotor.ZeroPowerBehavior behavior){
         this.fl.getMotor().setZeroPowerBehavior(behavior);
         this.fr.getMotor().setZeroPowerBehavior(behavior);
@@ -43,6 +45,8 @@ public class Chassis{
         this.br.getMotor().setMode(mode);
     }
 
+    //Performs an instruction passed in with ChassisInstruction object. The robot will move in one direction for a
+    //certain number of milliseconds. Uses ChassisDirection object to tell which direction to go in
     public void perform(ChassisInstruction instruction) throws InterruptedException {
         //I tried this with a switch but it didn't like switching on objects
         ChassisDirection d = instruction.getDirection();
@@ -76,8 +80,6 @@ public class Chassis{
             this.bl.setPower(instruction.getReversePower());
             this.fr.setPower(instruction.getReversePower());
             this.br.setPower(instruction.getPower());
-        } else {
-            //ummm........... whaaaaaa??????
         }
 
         if(instruction.getMilliseconds() != ChassisInstruction.FOREVER){
@@ -87,6 +89,7 @@ public class Chassis{
         this.stop();
     }
 
+    //Perform an array of instructions.
     public void performAll(ChassisInstruction[] instructions) throws InterruptedException {
         for (ChassisInstruction i : instructions) {
             this.perform(i);
@@ -101,6 +104,7 @@ public class Chassis{
         this.br.setPower(power);
     }
 
+    //stop the robot in case of emergency.
     public void stop(){
         this.setAllPowers(0.0);
     }
@@ -110,6 +114,8 @@ public class Chassis{
         Thread.sleep(millis);
     }
 
+    //get() commands for each of the motors so that people can modify properties, etc, that I don't already
+    //have it set up for (e.g. modifier)
     public ChassisMotor getFrontLeftMotor(){
         return fl;
     }

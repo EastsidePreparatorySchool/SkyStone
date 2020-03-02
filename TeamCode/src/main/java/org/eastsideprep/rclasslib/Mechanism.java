@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Mechanism {
+    //Holds constraints and servo objects, and automatically goes to those constraints when you run open(), close(), or toggle()
     private Servo servo;
     private double max;
     private double min;
@@ -43,10 +44,5 @@ public class Mechanism {
     public void setPosition(int pos){
         servo.setPosition(pos);
     }
-
-//    public void openPercent(int p){
-//        int calc = (this.max - this.min) * p;
-//        servo.setPosition(this.min + calc);
-//    }
 
 }
