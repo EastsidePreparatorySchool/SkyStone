@@ -37,12 +37,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.eastsideprep.eps8103.Hardware8103;
 
-@TeleOp(name = "Trajan Teleop", group = "Summer")
+@TeleOp(name = "Trajan summer Teleop")
 
 public class SimpleTeleop extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Hardware8103 robot = new Hardware8103();
+    SimpleHardware robot = new SimpleHardware();
 
     @Override
     public void runOpMode() {

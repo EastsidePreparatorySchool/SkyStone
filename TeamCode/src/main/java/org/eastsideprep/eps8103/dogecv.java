@@ -38,19 +38,19 @@ public class dogecv extends OpMode {
     @Override
     public void init() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-
-        phoneCam.setPipeline(detectorPipeline);
-        // OR...  Do Not Activate the Camera Monitor View
-        //phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
-
-        /*
-         * Open the connection to the camera device
-         */
-        phoneCam.openCameraDevice();
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-
-        phoneCam.setPipeline(detectorPipeline);
+//        phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+//
+//        phoneCam.setPipeline(detectorPipeline);
+//        // OR...  Do Not Activate the Camera Monitor View
+//        //phoneCam = new OpenCvInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
+//
+//        /*
+//         * Open the connection to the camera device
+//         */
+//        phoneCam.openCameraDevice();
+//        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+//
+//        phoneCam.setPipeline(detectorPipeline);
 
         SkystoneDetector skystoneDetector = new SkystoneDetector();
         //skystoneDetector.useDefaults();

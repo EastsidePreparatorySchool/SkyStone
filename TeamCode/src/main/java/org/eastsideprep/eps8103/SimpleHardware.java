@@ -45,19 +45,19 @@ public class SimpleHardware {
         // hey bob
 
         // Define and Initialize Motors
-        leftFrontMotor = hwMap.dcMotor.get("lf");
-        rightFrontMotor = hwMap.dcMotor.get("rf");
-        leftBackMotor = hwMap.dcMotor.get("lb");
-        rightBackMotor = hwMap.dcMotor.get("rb");
+        leftFrontMotor = hwMap.dcMotor.get("LF");
+        rightFrontMotor = hwMap.dcMotor.get("RF");
+        leftBackMotor = hwMap.dcMotor.get("LB");
+        rightBackMotor = hwMap.dcMotor.get("RB");
 
 
         allMotors = new DcMotor[]{leftFrontMotor, rightFrontMotor, leftBackMotor, rightBackMotor};
         rotationArray = new double[]{-1.0, 1.0, -1.0, 1.0};
 
-        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
-        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
         for (DcMotor m : allMotors) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
