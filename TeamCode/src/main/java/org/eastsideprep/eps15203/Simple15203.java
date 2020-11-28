@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp(name = "Fun, Joy, Happiness, and No Toxicity Whatsoever in Team Number 15203 haha that's a good joke lol", group = "15203")
+@TeleOp(name = "15203 Driver Controlled Program", group = "15203")
 
 public class Simple15203 extends LinearOpMode {
 

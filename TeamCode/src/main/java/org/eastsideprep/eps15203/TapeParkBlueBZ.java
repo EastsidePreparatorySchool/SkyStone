@@ -33,14 +33,6 @@ public class TapeParkBlueBZ extends LinearOpMode {
 
         sleep(2000);
 
-//        //tells the servos where to go to
-//        robot.fingerServo1.setPosition(1);
-//        robot.fingerServo2.setPosition(0);
-//
-//        sleep(2000);
-
-
-
     }
 }
 

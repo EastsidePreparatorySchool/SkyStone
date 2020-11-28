@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 /**
  * Hardware definitions for 15203
  */
-public class Hardware15203 {
+public class  Hardware15203 {
     /* Public OpMode members. */
     public DcMotor leftFrontMotor = null;
     public DcMotor rightFrontMotor = null;
